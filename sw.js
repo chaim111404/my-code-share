@@ -1,17 +1,16 @@
 /* Code Bridge service worker. Bump VERSION on every deploy that changes shell files. */
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 const SHELL = `shell-${VERSION}`;
 const RUNTIME = `runtime-${VERSION}`;
 const SHELL_FILES = [
   "/",
   "/index.html",
-  "/manifest.webmanifest",
-  "/icons/icon.svg",
-  "/icons/icon-maskable.svg"
+  "/manifest.webmanifest"
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(SHELL).then((c) => c.addAll(SHELL_FILES)));
+  // Each file is cached on its own, so one missing file never breaks the install
+  event.waitUntil(caches.open(SHELL).then((c) => Promise.allSettled(SHELL_FILES.map((f) => c.add(f)))));
 });
 
 self.addEventListener("activate", (event) => {

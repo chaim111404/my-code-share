@@ -14,8 +14,7 @@
 <meta name="description" content="העברת קוד וטקסט בין הטלפון למחשב בזמן אמת">
 <title>גשר קוד</title>
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
-<link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"%3E%3Crect width="512" height="512" rx="116" fill="%2316203A"/%3E%3Cg fill="none" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M152 172 L84 256 L152 340" stroke="%23E7ECF4" stroke-width="40"/%3E%3Cpath d="M360 172 L428 256 L360 340" stroke="%23E7ECF4" stroke-width="40"/%3E%3Cpath d="M200 214 H312 M284 186 L312 214 L284 242" stroke="%235EE1D9" stroke-width="34"/%3E%3Cpath d="M312 298 H200 M228 270 L200 298 L228 326" stroke="%23F2B65A" stroke-width="34"/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="https://i.postimg.cc/Zn0bcgrB/IMG-2243.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +51,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--ink);transition:opacity .45s ease, visibility .45s}
 #splash.out{opacity:0;visibility:hidden}
 .splash-inner{display:grid;justify-items:center;gap:18px}
-.splash-logo{width:96px;height:96px;border-radius:24px;animation:breathe 2.4s ease-in-out infinite}
+.splash-logo{display:block;width:96px;height:96px;border-radius:24px;animation:breathe 2.4s ease-in-out infinite}
 .splash-name{font-weight:700;font-size:22px;letter-spacing:.01em}
 .splash-bar{width:120px;height:3px;border-radius:3px;background:var(--rule);overflow:hidden;position:relative}
 .splash-bar::after{content:"";position:absolute;inset:0;width:40%;border-radius:3px;background:linear-gradient(90deg,var(--desk),var(--phone));animation:slide 1.2s ease-in-out infinite}
@@ -99,7 +98,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .topbar-in{max-width:720px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:12px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.brand img{width:34px;height:34px;border-radius:9px}
+.brand-logo{width:34px;height:34px;border-radius:9px;display:block}
 .spacer{flex:1}
 .who{display:flex;align-items:center;gap:10px}
 .avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--deep-2);display:grid;place-items:center;font-weight:700;color:var(--phone)}
@@ -228,6 +227,16 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="0 0 512 512">
+    <rect width="512" height="512" rx="116" fill="#16203A"/>
+    <rect x="3" y="3" width="506" height="506" rx="113" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="6"/>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M152 172 L84 256 L152 340" stroke="#E7ECF4" stroke-width="36"/>
+      <path d="M360 172 L428 256 L360 340" stroke="#E7ECF4" stroke-width="36"/>
+      <path d="M200 214 H312 M284 186 L312 214 L284 242" stroke="#5EE1D9" stroke-width="30"/>
+      <path d="M312 298 H200 M228 270 L200 298 L228 326" stroke="#F2B65A" stroke-width="30"/>
+    </g>
+  </symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
   <symbol id="i-logout" viewBox="0 0 24 24"><path d="M15 21h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-4"/><polyline points="8 17 3 12 8 7"/><line x1="3" y1="12" x2="15" y2="12"/></symbol>
@@ -248,7 +257,7 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
 <!-- Splash -->
 <div id="splash" role="status" aria-label="טוען">
   <div class="splash-inner">
-    <img class="splash-logo" src="/icons/icon.svg" alt="">
+    <svg class="splash-logo" aria-hidden="true"><use href="#logo"/></svg>
     <div class="splash-name">גשר קוד</div>
     <div class="splash-bar"></div>
   </div>
@@ -257,7 +266,7 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
 <!-- Login -->
 <section id="screen-login" class="center-screen" data-screen hidden>
   <div class="gate">
-    <img class="gate-logo" src="/icons/icon.svg" alt="">
+    <svg class="gate-logo" aria-hidden="true"><use href="#logo"/></svg>
     <h1>גשר קוד</h1>
     <p class="lead">העברת קוד וטקסט בין הטלפון למחשב, בזמן אמת.</p>
     <button id="btn-login" class="btn-google" type="button">
@@ -283,7 +292,7 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
 <section id="screen-app" data-screen hidden>
   <header class="topbar">
     <div class="topbar-in">
-      <div class="brand"><img src="/icons/icon.svg" alt="">גשר קוד</div>
+      <div class="brand"><svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg>גשר קוד</div>
       <div class="spacer"></div>
       <div class="who">
         <div id="avatar" class="avatar" aria-hidden="true"></div>
