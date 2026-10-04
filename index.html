@@ -471,6 +471,61 @@ kbd{font-family:var(--mono);font-size:11.5px;line-height:1;padding:3px 6px;borde
 .sb-qs span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb-qs kbd{opacity:0;transition:opacity .15s} .sb-qs:hover kbd{opacity:1}
 @media (hover:hover){ .script:hover{border-color:var(--rule-2)} .qs:hover{border-color:var(--rule-2)} }
+
+/* Storage usage */
+.usage{border-radius:18px;border:1px solid var(--rule);background:linear-gradient(180deg,var(--deep-2),var(--deep));padding:18px;display:grid;gap:12px;--lvl:var(--ok)}
+.usage.warn{--lvl:var(--desk);border-color:rgba(242,182,90,.35)}
+.usage.danger{--lvl:var(--alert);border-color:rgba(255,122,107,.45)}
+.usage-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.usage-pct{font-size:34px;font-weight:700;line-height:1;color:var(--lvl);font-variant-numeric:tabular-nums}
+.usage-label{font-size:14px;color:var(--mist);margin-top:6px}
+.usage-num{font-family:var(--mono);font-size:13px;color:var(--mist);white-space:nowrap}
+.usage-bar{position:relative;height:12px;border-radius:999px;background:var(--ink);border:1px solid var(--rule);overflow:hidden}
+.usage-bar span{position:absolute;top:0;bottom:0;right:0;border-radius:999px;background:var(--lvl);transition:width .6s var(--ease)}
+.usage.ok .usage-bar span{background:linear-gradient(270deg,var(--ok),#4FD1C5)}
+.usage.warn .usage-bar span{background:linear-gradient(270deg,var(--ok),var(--desk))}
+.usage.danger .usage-bar span{background:linear-gradient(270deg,var(--desk),var(--alert))}
+.usage-bar i{position:absolute;top:0;bottom:0;width:1px;background:rgba(231,236,244,.18)}
+.usage-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mist)}
+.usage-legend span{display:inline-flex;align-items:center;gap:6px}
+.usage-legend b{width:9px;height:9px;border-radius:3px;display:inline-block}
+.usage-legend em{font-style:normal;color:var(--faint);font-family:var(--mono);font-size:12px}
+.usage-free{font-size:13px;color:var(--faint)}
+.usage-link{display:block;border-radius:18px}
+.usage-link:active .usage{background:var(--deep-2)}
+.dot-c{width:12px;height:12px;border-radius:4px;display:block}
+.mini-bar{height:5px;border-radius:999px;background:var(--ink);margin-top:7px;overflow:hidden;max-width:260px}
+.mini-bar span{display:block;height:100%;border-radius:999px}
+.row:disabled{opacity:.5;cursor:default}
+a.row{text-decoration:none}
+.storage-alert{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;font-size:14.5px;text-align:right;width:100%}
+.storage-alert.warn{background:rgba(242,182,90,.1);border:1px solid rgba(242,182,90,.35);color:#F8D49A}
+.storage-alert.danger{background:rgba(255,122,107,.1);border:1px solid rgba(255,122,107,.4);color:#FFC4BC}
+.storage-alert .ico{flex:none}
+.storage-alert b{display:block}
+.sb-usage{display:grid;gap:6px;cursor:pointer;border-radius:8px}
+.sb-usage .usage-bar{height:6px}
+.sb-usage div{display:flex;justify-content:space-between;font-size:12px;color:var(--faint)}
+.sb-usage.warn div span:first-child{color:var(--desk)} .sb-usage.danger div span:first-child{color:var(--alert)}
+.sb-usage .usage-bar span{background:var(--ok)} .sb-usage.warn .usage-bar span{background:var(--desk)} .sb-usage.danger .usage-bar span{background:var(--alert)}
+.show-more{width:100%;min-height:46px;border-radius:14px;border:1px dashed var(--rule-2);color:var(--phone);font-weight:600}
+
+/* Stage 5: projects */
+.batch-sum{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.batch-list{display:grid;gap:2px;margin-top:10px;max-height:34vh;overflow-y:auto;border:1px solid var(--rule);border-radius:12px;padding:4px;background:var(--ink)}
+.bfile{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;text-align:right}
+.bfile .row-ico{width:30px;height:30px}
+.bfile .row-title{font-size:14px}
+.bfile .row-sub{font-size:12.5px}
+.bfile.skip{opacity:.65}
+.chip.st-new{color:var(--phone);background:rgba(94,225,217,.1)}
+.chip.st-ver{color:var(--desk);background:rgba(242,182,90,.12)}
+.chip.st-skip{color:var(--alert);background:rgba(255,122,107,.1)}
+.group-title.proj{display:flex;align-items:center;justify-content:space-between}
+.proj-open{display:inline-flex;align-items:center;gap:4px;color:var(--phone);font-weight:600;font-size:13.5px;min-height:32px;padding:0 4px}
+.proj-open .ico{width:15px;height:15px}
+.desk .item-actions .desk-only{display:flex}
+.sb-proj.active-proj{background:rgba(94,225,217,.1);color:var(--phone)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -594,7 +649,7 @@ import {
   push as dbPush, get, query, orderByKey, limitToLast, increment
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-const APP_VERSION = "1.5.0";
+const APP_VERSION = "1.6.0";
 
 /* ================= Firebase ================= */
 const app = initializeApp({
@@ -1081,7 +1136,7 @@ async function readFile(file) {
 function readFiles(list) {
   const files = [...(list || [])];
   if (!files.length) return;
-  if (files.length > 1) toast("כרגע נשלח קובץ אחד בכל פעם");
+  if (files.length > 1) { startBatch(fromInputFiles(files)); return; }
   readFile(files[0]);
 }
 
@@ -1279,8 +1334,20 @@ document.addEventListener("paste", (e) => {
   stage(e.clipboardData?.getData("text/plain") || "");
 });
 const hasFiles = (e) => [...(e.dataTransfer?.types || [])].includes("Files");
-document.addEventListener("dragover", (e) => { if (homeOnTop() && hasFiles(e)) e.preventDefault(); });
-document.addEventListener("drop", (e) => { if (homeOnTop() && hasFiles(e)) { e.preventDefault(); readFiles(e.dataTransfer.files); } });
+document.addEventListener("dragover", (e) => { const t = stack.at(-1)?.name; if (hasFiles(e) && !stackEl.hidden && !sheetOpen && (homeOnTop() || t === "project" || t === "files")) e.preventDefault(); });
+async function handleDrop(dt, projectKeyTarget = null) {
+  const src = await collectDropped(dt);
+  if (!src.list.length) return;
+  if (src.list.length === 1 && !src.root && !projectKeyTarget) { readFile(src.list[0].file); return; }
+  startBatch(src, { project: projectKeyTarget ? projectName(projectKeyTarget) : "" });
+}
+document.addEventListener("drop", (e) => {
+  if (!hasFiles(e) || stackEl.hidden || sheetOpen) return;
+  const top = stack.at(-1);
+  if (homeOnTop()) { e.preventDefault(); handleDrop(e.dataTransfer); }
+  else if (top?.name === "project") { e.preventDefault(); handleDrop(e.dataTransfer, top.params.id); }
+  else if (top?.name === "files") { e.preventDefault(); handleDrop(e.dataTransfer); }
+});
 
 /* ================= Files and versions (stage 3) ================= */
 const NAME_MIN = 3, NAME_MAX = 80, PROJECT_MAX = 40, NOTE_MAX = 120;
@@ -1328,7 +1395,9 @@ function validateField(kind, raw) {
   if (v.length < NAME_MIN) return `לפחות ${NAME_MIN} תווים`;
   if (v.length > max) return `עד ${max} תווים`;
   if (!/[\p{L}\p{N}]/u.test(v)) return "חייב לכלול אותיות או ספרות";
-  if (/[\/\\#$\[\]]/.test(v)) return "בלי התווים / \\ # $ [ ]";
+  if (kind === "project") { if (/[\/\\#$\[\]]/.test(v)) return "בלי התווים / \\ # $ [ ]"; return ""; }
+  if (/[\\#$\[\]]/.test(v)) return "בלי התווים \\ # $ [ ]";
+  if (/^\/|\/$|\/\/|(^|\/)\.\.(\/|$)/.test(v)) return "נתיב לא תקין";
   return "";
 }
 const projects = () => { const seen = new Map(); for (const it of fileItems()) if (!seen.has(normKey(it.project))) seen.set(normKey(it.project), it.project); return [...seen.values()]; };
@@ -1339,9 +1408,9 @@ function versionFileName(item, n, isLatest) {
 }
 const itemIcon = (it) => esc((it.ext || "txt").toUpperCase().slice(0, 4));
 
-async function saveVersion({ item, project, name, note, a, details = null }) {
+async function buildVersionPatch({ item, project, name, note, a, details = null }) {
   const root = userRoot();
-  if (!root) return { result: "error" };
+  if (!root) return null;
   const t = detectType(a.text, name);
   const now = serverTimestamp();
   const itemId = item ? item.id : dbPush(ref(db, `${root}/items`)).key;
@@ -1376,12 +1445,20 @@ async function saveVersion({ item, project, name, note, a, details = null }) {
     };
   }
   cacheSet(`versionsBody/${itemId}/${vid}`, a.text);
+  return { patch, itemId, n, isNew: !item };
+}
+async function saveVersion(opts) {
+  const root = userRoot();
+  const built = root ? await buildVersionPatch(opts) : null;
+  if (!built) return { result: "error" };
+  const { patch, itemId, n, isNew } = built;
+  const { project } = opts;
   const result = await Promise.race([
     update(ref(db, root), patch).then(() => "saved"),
     wait(30000).then(() => "queued")
   ]).catch((e) => { onDbError(e); return "error"; });
   if (result !== "error" && project.trim() !== SCRIPT_PROJECT) store.set("cb.lastProject", project.trim());
-  return { result, itemId, n, isNew: !item };
+  return { result, itemId, n, isNew };
 }
 function savedToast(r) {
   if (r.result === "error") return toast("השמירה נכשלה, אפשר לנסות שוב");
@@ -1607,7 +1684,12 @@ function buildFiles(s) {
     <div data-ref="list" style="display:grid;gap:22px"></div>`;
   const q = $('[data-ref="q"]', s.content);
   q.addEventListener("input", () => s.update());
-  s.content.addEventListener("click", (e) => { const r = e.target.closest("[data-item]"); if (r) openItem(r.dataset.item); });
+  s.end.innerHTML = `<button class="nav-btn" type="button" data-act="upload"><svg class="ico"><use href="#i-plus-square"/></svg><span>העלאת קבצים</span></button>`;
+  $('[data-act="upload"]', s.end).addEventListener("click", () => pickFilesInto(null));
+  s.content.addEventListener("click", (e) => {
+    const po = e.target.closest("[data-proj-open]"); if (po) { openProject(po.dataset.projOpen); return; }
+    const r = e.target.closest("[data-item]"); if (r) openItem(r.dataset.item);
+  });
   s.update = () => {
     const term = normKey(q.value);
     const items = fileItems().filter(it => !term || normKey(it.name).includes(term) || normKey(it.project).includes(term));
@@ -1617,7 +1699,7 @@ function buildFiles(s) {
     const groups = new Map();
     for (const it of items) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
     box.innerHTML = [...groups.values()].map(g => `<section>
-        <div class="group-title">${esc(g.name)} <span style="color:var(--faint)">(${g.list.length})</span></div>
+        <div class="group-title proj"><span>${esc(g.name)} <span style="color:var(--faint)">(${g.list.length})</span></span><button class="proj-open" type="button" data-proj-open="${esc(normKey(g.name))}">לפרויקט<svg class="ico"><use href="#i-chev-fwd"/></svg></button></div>
         <div class="group with-ico">${g.list.map(itemRow).join("")}</div>
       </section>`).join("");
   };
@@ -1966,6 +2048,536 @@ function buildScripts(s) {
   };
 }
 
+/* ================= Storage usage ================= */
+const QUOTA_BYTES = 1024 * 1024 * 1024;     // Realtime Database free plan: 1 GB stored
+const META_OVERHEAD = 700;                    // rough bytes per stored entry for metadata and keys
+const WARN_AT = 0.6, DANGER_AT = 0.85;
+function usage() {
+  const files = fileItems(), scr = state.items.filter(isScript);
+  const sumItems = (list) => list.reduce((t, it) => t + (it.totalBytes || 0) + (it.count || 1) * META_OVERHEAD, 0);
+  const filesB = sumItems(files), scriptsB = sumItems(scr);
+  const clipsB = state.clips.reduce((t, c) => t + (c.bytes || 0) + META_OVERHEAD, 0);
+  const used = filesB + scriptsB + clipsB;
+  const pct = used / QUOTA_BYTES;
+  const level = pct >= DANGER_AT ? "danger" : pct >= WARN_AT ? "warn" : "ok";
+  return {
+    used, free: Math.max(0, QUOTA_BYTES - used), pct, level,
+    parts: [
+      { key: "files", label: "קבצים וגרסאות", bytes: filesB, count: files.length, sub: `${files.length} קבצים, ${files.reduce((t, it) => t + (it.count || 1), 0)} גרסאות`, go: "files", color: "var(--phone)" },
+      { key: "scripts", label: "סקריפטים", bytes: scriptsB, count: scr.length, sub: `${scr.length} סקריפטים`, go: "scripts", color: "var(--desk)" },
+      { key: "clips", label: "הגשר המהיר", bytes: clipsB, count: state.clips.length, sub: `${state.clips.length} פריטים`, go: "home", color: "#9AA8FF" }
+    ]
+  };
+}
+const pctText = (p) => p > 0 && p < 0.001 ? "פחות מ 0.1%" : `${(p * 100).toFixed(p < 0.1 ? 1 : 0)}%`;
+const levelText = { ok: "יש הרבה מקום", warn: "מתקרב למגבלה, כדאי לפנות מקום", danger: "כמעט מלא, חשוב לפנות מקום" };
+
+function usageCard(u, compact = false) {
+  return `<div class="usage ${u.level}">
+    <div class="usage-top">
+      <div><div class="usage-pct">${pctText(u.pct)}</div><div class="usage-label">${levelText[u.level]}</div></div>
+      <div class="usage-num" dir="ltr">${fmtBytes(u.used)} / 1 GB</div>
+    </div>
+    <div class="usage-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(u.pct * 100)}" aria-label="נפח בשימוש">
+      <span style="width:${Math.min(100, Math.max(u.used ? 0.8 : 0, u.pct * 100))}%"></span>
+      <i style="right:${WARN_AT * 100}%"></i><i style="right:${DANGER_AT * 100}%"></i>
+    </div>
+    ${compact ? "" : `<div class="usage-legend">${u.parts.map(p => `<span><b style="background:${p.color}"></b>${p.label} <em dir="ltr">${fmtBytes(p.bytes)}</em></span>`).join("")}</div>`}
+    <div class="usage-free">פנוי: <span dir="ltr">${fmtBytes(u.free)}</span></div>
+  </div>`;
+}
+
+/* Cleanup actions. Nothing is removed without an explicit confirmation. */
+const DAY = 86400000;
+function oldClips(days = 30) { const now = Date.now() + state.serverOffset; return state.clips.filter(c => c.createdAt && now - c.createdAt > days * DAY); }
+async function deleteClipsList(list, label) {
+  if (!list.length) return;
+  const patch = {};
+  list.forEach(c => { patch[`clipsMeta/${c.id}`] = null; patch[`clipsBody/${c.id}`] = null; bodyCache.delete(clipKey(c.id)); });
+  const r = await dbWrite(update(ref(db, userRoot()), patch));
+  toast(r === "saved" ? label : "יימחק כשהחיבור יחזור");
+}
+async function pruneAllVersions(keep = 3) {
+  const targets = state.items.filter(it => (it.count || 1) > keep);
+  if (!targets.length) return;
+  toast("מכין את הניקוי");
+  const root = userRoot(), patch = {};
+  let freed = 0, removed = 0;
+  for (const it of targets) {
+    try {
+      const snap = await get(ref(db, `${root}/versionsMeta/${it.id}`));
+      const vs = Object.entries(snap.val() || {}).map(([id, v]) => ({ id, ...v })).sort((a, b) => (a.id < b.id ? 1 : -1));
+      const drop = vs.slice(keep).filter(v => v.id !== it.latest?.vid);
+      let f = 0;
+      drop.forEach(v => { patch[`versionsMeta/${it.id}/${v.id}`] = null; patch[`versionsBody/${it.id}/${v.id}`] = null; f += v.bytes || 0; });
+      if (drop.length) {
+        patch[`items/${it.id}/count`] = vs.length - drop.length;
+        patch[`items/${it.id}/totalBytes`] = Math.max(0, (it.totalBytes || 0) - f);
+        freed += f; removed += drop.length;
+      }
+    } catch {}
+  }
+  if (!removed) { toast("אין גרסאות ישנות לניקוי"); return; }
+  const r = await dbWrite(update(ref(db, root), patch));
+  toast(r === "saved" ? `נמחקו ${removed} גרסאות, פונו ${fmtBytes(freed)}` : "יימחק כשהחיבור יחזור");
+}
+function largestEntries(n = 6) {
+  const list = [
+    ...state.items.map(it => ({ kind: isScript(it) ? "script" : "file", id: it.id, name: it.name, sub: isScript(it) ? "סקריפט" : it.project, bytes: (it.totalBytes || 0), extra: `${it.count || 1} גרסאות` })),
+    ...state.clips.map(c => ({ kind: "clip", id: c.id, name: c.name || `${c.type || "טקסט"} מהגשר`, sub: `${c.fromName || "מכשיר"}, ${ago(c.createdAt)}`, bytes: c.bytes || 0, extra: "" }))
+  ];
+  return list.sort((a, b) => b.bytes - a.bytes).slice(0, n).filter(x => x.bytes > 0);
+}
+
+function buildStorage(s) {
+  s.content.innerHTML = `
+    <section data-ref="card"></section>
+    <section>
+      <div class="group-title">לפי סוג</div>
+      <div class="group with-ico" data-ref="parts"></div>
+    </section>
+    <section>
+      <div class="group-title">הפריטים הגדולים ביותר</div>
+      <div class="group with-ico" data-ref="largest"></div>
+    </section>
+    <section>
+      <div class="group-title">פינוי מקום</div>
+      <div class="group with-ico" data-ref="clean"></div>
+      <p class="group-foot">כל פעולה מבקשת אישור לפני מחיקה. שום דבר לא נמחק אוטומטית.</p>
+    </section>
+    <section>
+      <div class="group-title">מגבלות התוכנית החינמית</div>
+      <div class="group with-ico">
+        <div class="row"><div class="row-ico"><svg class="ico"><use href="#i-layers"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>אחסון</span></div><div class="row-sub">1 GB. זה מה שמוצג למעלה, כהערכה לפי הנתונים עצמם.</div></div></div>
+        <div class="row"><div class="row-ico"><svg class="ico"><use href="#i-download"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>הורדות בחודש</span></div><div class="row-sub">10 GB. נספר אצל Firebase ולא מתוך האפליקציה. העתקה של קובץ ענק סופרת את הגודל שלו.</div></div></div>
+        <a class="row" href="https://console.firebase.google.com/project/my-code-shere/usage" target="_blank" rel="noopener">
+          <div class="row-ico phone"><svg class="ico"><use href="#i-external"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>השימוש הרשמי ב Firebase</span></div></div>
+          <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div></a>
+      </div>
+    </section>`;
+  s.content.addEventListener("click", (e) => {
+    const go = e.target.closest("[data-go]")?.dataset.go;
+    if (go) { if (isDesk() || go === "home") navRoot(go); else push(go); return; }
+    const big = e.target.closest("[data-big]");
+    if (big) {
+      const [kind, id] = big.dataset.big.split(":");
+      if (kind === "clip") { const c = state.clips.find(x => x.id === id); if (c) confirmDelete(c); }
+      else openItem(id);
+      return;
+    }
+    const act = e.target.closest("[data-clean]")?.dataset.clean;
+    if (act === "old-clips") {
+      const list = oldClips(30), b = list.reduce((t, c) => t + (c.bytes || 0), 0);
+      openSheet({ title: `למחוק ${list.length} פריטים מהגשר?`, message: `פריטים מלפני יותר מ 30 יום. יתפנו בערך ${fmtBytes(b)}.`,
+        actions: [{ label: "מחיקה", style: "danger", onClick: () => deleteClipsList(list, `נמחקו ${list.length} פריטים`) }] });
+    } else if (act === "big-clips") {
+      const list = state.clips.filter(c => (c.bytes || 0) >= BIG_CLIP), b = list.reduce((t, c) => t + (c.bytes || 0), 0);
+      openSheet({ title: `למחוק ${list.length} פריטים גדולים מהגשר?`, message: `פריטים של יותר מ ${fmtBytes(BIG_CLIP)}. יתפנו בערך ${fmtBytes(b)}.`,
+        actions: [{ label: "מחיקה", style: "danger", onClick: () => deleteClipsList(list, `נמחקו ${list.length} פריטים`) }] });
+    } else if (act === "versions") {
+      const n = state.items.reduce((t, it) => t + Math.max(0, (it.count || 1) - 3), 0);
+      openSheet({ title: `למחוק ${n} גרסאות ישנות?`, message: "בכל קובץ וסקריפט יישארו 3 הגרסאות האחרונות. אי אפשר לשחזר.",
+        actions: [{ label: "מחיקה", style: "danger", onClick: () => pruneAllVersions(3) }] });
+    }
+  });
+  s.update = () => {
+    const u = usage();
+    $('[data-ref="card"]', s.content).innerHTML = usageCard(u);
+    $('[data-ref="parts"]', s.content).innerHTML = u.parts.map(p => `
+      <button class="row" type="button" data-go="${p.go}">
+        <div class="row-ico"><span class="dot-c" style="background:${p.color}"></span></div>
+        <div class="row-main"><div class="row-title"><span>${p.label}</span></div><div class="row-sub">${p.sub}</div>
+          <div class="mini-bar"><span style="width:${u.used ? Math.max(p.bytes ? 1 : 0, p.bytes / u.used * 100) : 0}%;background:${p.color}"></span></div></div>
+        <div class="row-end"><span dir="ltr">${fmtBytes(p.bytes)}</span><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+      </button>`).join("");
+    const big = largestEntries();
+    $('[data-ref="largest"]', s.content).innerHTML = big.length ? big.map(x => `
+      <button class="row" type="button" data-big="${x.kind}:${esc(x.id)}">
+        <div class="row-ico ${x.kind === "script" ? "desk" : x.kind === "file" ? "phone" : ""}"><svg class="ico"><use href="#${x.kind === "script" ? "i-terminal" : x.kind === "file" ? "i-file" : "i-send"}"/></svg></div>
+        <div class="row-main"><div class="row-title"><span dir="auto">${esc(x.name)}</span></div><div class="row-sub">${esc(x.sub)}${x.extra ? `, ${x.extra}` : ""}</div></div>
+        <div class="row-end"><span dir="ltr">${fmtBytes(x.bytes)}</span><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+      </button>`).join("") : `<div class="row"><div class="row-main"><div class="row-sub">עדיין אין נתונים שמורים</div></div></div>`;
+    const oc = oldClips(30), bc = state.clips.filter(c => (c.bytes || 0) >= BIG_CLIP);
+    const vCount = state.items.reduce((t, it) => t + Math.max(0, (it.count || 1) - 3), 0);
+    const row = (key, icon, title, sub, n, enabled) => `
+      <button class="row danger" type="button" data-clean="${key}" ${enabled ? "" : "disabled"}>
+        <div class="row-ico danger"><svg class="ico"><use href="#${icon}"/></svg></div>
+        <div class="row-main"><div class="row-title"><span>${title}</span></div><div class="row-sub">${sub}</div></div>
+        <div class="row-end">${n}</div>
+      </button>`;
+    $('[data-ref="clean"]', s.content).innerHTML =
+      row("old-clips", "i-send", "פריטים ישנים מהגשר", "מלפני יותר מ 30 יום", oc.length || "אין", oc.length > 0) +
+      row("big-clips", "i-send", "פריטים גדולים מהגשר", `מעל ${fmtBytes(BIG_CLIP)}`, bc.length || "אין", bc.length > 0) +
+      row("versions", "i-layers", "גרסאות ישנות", "השארת 3 האחרונות בכל קובץ וסקריפט", vCount || "אין", vCount > 0);
+  };
+}
+/* ================= Multi file projects (stage 5) ================= */
+const BATCH_MAX = 100, CHUNK_BYTES = 8 * 1024 * 1024;
+const IGNORE_DIRS = new Set(["node_modules", ".git", ".svn", "dist", "build", ".next", ".nuxt", ".vercel", ".cache", "coverage", ".idea", ".vscode", "__pycache__", ".DS_Store"]);
+const BINARY_EXT = /\.(png|jpe?g|gif|webp|avif|ico|bmp|tiff?|psd|pdf|zip|rar|7z|gz|tar|mp[34]|mov|avi|webm|wav|ogg|woff2?|ttf|otf|eot|exe|dll|so|dylib|bin|dmg|apk|ipa|sqlite|db)$/i;
+const SECRET_FILE = /(^|\/)(\.env(\..*)?|.*\.pem|.*\.key|.*\.p12|.*\.pfx|id_rsa.*|id_ed25519.*|\.npmrc|credentials(\.json)?|service-?account.*\.json)$/i;
+const projectKey = (name) => normKey(name);
+const projectFiles = (key) => fileItems().filter(it => projectKey(it.project) === key).sort((a, b) => a.name.localeCompare(b.name, "he"));
+const projectName = (key) => projectFiles(key)[0]?.project || "";
+
+// Reads dropped files and folders. Entries must be grabbed before the first await.
+async function collectDropped(dt) {
+  const entries = [...(dt.items || [])].filter(i => i.kind === "file").map(i => i.webkitGetAsEntry?.()).filter(Boolean);
+  if (!entries.length) return { list: [...(dt.files || [])].map(f => ({ path: f.name, file: f })), root: "", skipped: [] };
+  const list = [], skipped = [];
+  const root = entries.length === 1 && entries[0].isDirectory ? entries[0].name : "";
+  async function walk(entry, prefix) {
+    if (list.length > BATCH_MAX * 4) return;
+    if (entry.isFile) { try { list.push({ path: prefix + entry.name, file: await new Promise((res, rej) => entry.file(res, rej)) }); } catch {} return; }
+    if (!entry.isDirectory) return;
+    if (IGNORE_DIRS.has(entry.name)) { skipped.push({ path: prefix + entry.name + "/", reason: "תיקייה שלא מעלים" }); return; }
+    const reader = entry.createReader();
+    let batch;
+    do { batch = await new Promise((res, rej) => reader.readEntries(res, rej)).catch(() => []); for (const e of batch) await walk(e, prefix + entry.name + "/"); } while (batch.length);
+  }
+  for (const e of entries) await walk(e, "");
+  if (root) list.forEach(o => { o.path = o.path.slice(root.length + 1); });
+  return { list, root, skipped };
+}
+function fromInputFiles(files) {
+  const arr = [...(files || [])];
+  const rel = arr.some(f => f.webkitRelativePath);
+  const root = rel ? (arr[0].webkitRelativePath.split("/")[0] || "") : "";
+  const list = [], skipped = [];
+  for (const f of arr) {
+    let path = rel ? f.webkitRelativePath : f.name;
+    if (root && path.startsWith(root + "/")) path = path.slice(root.length + 1);
+    const parts = path.split("/");
+    const bad = parts.slice(0, -1).find(p => IGNORE_DIRS.has(p));
+    if (bad) { if (!skipped.some(x => x.path === bad + "/")) skipped.push({ path: bad + "/", reason: "תיקייה שלא מעלים" }); continue; }
+    list.push({ path, file: f });
+  }
+  return { list, root, skipped };
+}
+async function prepareBatch({ list, root, skipped }) {
+  const out = [], skip = [...skipped];
+  for (const { path, file } of list) {
+    if (file.name === ".DS_Store") continue;
+    if (SECRET_FILE.test(path)) { skip.push({ path, reason: "קובץ סודות, לא עולה" }); continue; }
+    if (BINARY_EXT.test(path)) { skip.push({ path, reason: "קובץ בינארי" }); continue; }
+    if (file.size > MAX_FILE_BYTES) { skip.push({ path, reason: "גדול מדי" }); continue; }
+    if (out.length >= BATCH_MAX) { skip.push({ path, reason: `מעל ${BATCH_MAX} קבצים` }); continue; }
+    let text;
+    try { text = await file.text(); } catch { skip.push({ path, reason: "לא נקרא" }); continue; }
+    if (/\u0000/.test(text.slice(0, 8000))) { skip.push({ path, reason: "קובץ בינארי" }); continue; }
+    if (!text.trim()) { skip.push({ path, reason: "ריק" }); continue; }
+    if (validateField("name", path)) { skip.push({ path, reason: "שם לא תקין" }); continue; }
+    out.push({ path, a: analyze(text, path) });
+  }
+  return { files: out, skipped: skip, root };
+}
+
+async function startBatch(source, opts = {}) {
+  toast("קורא את הקבצים");
+  const prepared = await prepareBatch(source);
+  if (!prepared.files.length) {
+    openSheet({ title: "אין קבצים להעלאה", message: prepared.skipped.length ? `דולגו ${prepared.skipped.length} קבצים: ${[...new Set(prepared.skipped.map(x => x.reason))].join(", ")}.` : "לא נמצאו קבצים.", cancel: "הבנתי" });
+    return;
+  }
+  openBatch(prepared, opts);
+}
+
+function openBatch(prep, opts = {}) {
+  const projList = projects();
+  const project0 = opts.project || prep.root || store.get("cb.lastProject") || "";
+  let status = new Map(); // path -> {kind, item, n}
+  openSheet({
+    title: `העלאת ${prep.files.length} ${prep.files.length === 1 ? "קובץ" : "קבצים"}`,
+    message: "קובץ שכבר קיים בפרויקט יישמר כגרסה חדשה. קובץ שלא השתנה ידולג.",
+    body: `
+      <label class="field-l" for="b-project">פרויקט</label>
+      <input class="input" id="b-project" dir="auto" autocomplete="off" spellcheck="false" maxlength="${PROJECT_MAX + 10}" placeholder="לדוגמה: גשר קוד" value="${esc(project0)}">
+      ${projList.length ? `<div class="pick-row">${projList.map(p => `<button class="chip pick" type="button" data-pick-project="${esc(p)}">${esc(p)}</button>`).join("")}</div>` : ""}
+      <div class="batch-sum" data-ref="sum"></div>
+      <div class="batch-list" data-ref="list"></div>
+      <div class="input-hint"><span data-err></span></div>`,
+    actions: [{ label: "שמירה", keepOpen: true, onClick: () => submit() }]
+  });
+  const card = $(".sheet-card", sheetEl);
+  const P = $("#b-project", card), listEl = $('[data-ref="list"]', card), sumEl = $('[data-ref="sum"]', card);
+  const err = $("[data-err]", card), btn = $('[data-i="0"]', card);
+  let checkToken = 0;
+  async function recompute() {
+    const token = ++checkToken, pe = validateField("project", P.value);
+    status = new Map();
+    for (const f of prep.files) {
+      const it = pe ? null : findItem(P.value, f.path);
+      status.set(f.path, it ? { kind: "checking", item: it } : { kind: "new" });
+    }
+    paint();
+    for (const f of prep.files) {
+      const st = status.get(f.path);
+      if (st.kind !== "checking") continue;
+      let same = false;
+      try { same = (await fetchRel(`versionsBody/${st.item.id}/${st.item.latest.vid}`)) === f.a.text; } catch {}
+      if (token !== checkToken) return;
+      status.set(f.path, same ? { kind: "same", item: st.item } : { kind: "version", item: st.item, n: (st.item.seq || 0) + 1 });
+    }
+    paint();
+  }
+  function paint() {
+    const pe = validateField("project", P.value);
+    const counts = { new: 0, version: 0, same: 0, checking: 0 };
+    for (const v of status.values()) counts[v.kind]++;
+    const flagged = prep.files.reduce((t, f) => t + f.a.findings.length, 0);
+    const bytes = prep.files.reduce((t, f) => t + f.a.bytes, 0);
+    sumEl.innerHTML = `<span class="chip">${prep.files.length} קבצים</span><span class="chip" dir="ltr">${fmtBytes(bytes)}</span>
+      ${counts.new ? `<span class="chip st-new">${counts.new} חדשים</span>` : ""}${counts.version ? `<span class="chip st-ver">${counts.version} גרסאות חדשות</span>` : ""}
+      ${counts.same ? `<span class="chip">${counts.same} ללא שינוי</span>` : ""}${prep.skipped.length ? `<span class="chip st-skip">${prep.skipped.length} דולגו</span>` : ""}
+      ${flagged ? `<button class="chip warn" type="button" data-review><svg class="ico"><use href="#i-alert"/></svg>${flagged} פרטים רגישים</button>` : ""}`;
+    const label = (st) => st.kind === "new" ? `<span class="chip st-new">חדש</span>` : st.kind === "version" ? `<span class="chip st-ver">גרסה ${st.n}</span>` : st.kind === "same" ? `<span class="chip">ללא שינוי</span>` : `<span class="chip">בודק</span>`;
+    listEl.innerHTML = prep.files.map(f => `<div class="bfile">
+        <div class="row-ico ext">${esc((f.a.ext || "txt").toUpperCase().slice(0, 4))}</div>
+        <div class="row-main"><div class="row-title"><span dir="ltr">${esc(f.path)}</span></div><div class="row-sub">${nf.format(f.a.lines)} שורות, <span dir="ltr">${fmtBytes(f.a.bytes)}</span>${f.a.findings.length ? `, <span style="color:var(--desk)">${f.a.findings.length} רגישים</span>` : ""}</div></div>
+        ${label(status.get(f.path) || { kind: "new" })}</div>`).join("") +
+      prep.skipped.map(x => `<div class="bfile skip"><div class="row-ico"><svg class="ico"><use href="#i-x"/></svg></div>
+        <div class="row-main"><div class="row-title"><span dir="ltr">${esc(x.path)}</span></div><div class="row-sub">${esc(x.reason)}</div></div><span class="chip st-skip">דילוג</span></div>`).join("");
+    const toSave = counts.new + counts.version;
+    P.classList.toggle("invalid", !!pe && P.value.trim().length > 0);
+    btn.disabled = !!pe || counts.checking > 0 || toSave === 0;
+    btn.textContent = pe ? "צריך שם פרויקט" : counts.checking ? "בודק שינויים" : toSave ? `שמירת ${toSave} ${toSave === 1 ? "קובץ" : "קבצים"}` : "אין שינויים לשמירה";
+    err.textContent = pe && P.value.trim() ? `פרויקט: ${pe}` : "";
+  }
+  let timer;
+  P.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(recompute, 250); paint(); });
+  card.addEventListener("click", (e) => {
+    const pp = e.target.closest("[data-pick-project]"); if (pp) { P.value = pp.dataset.pickProject; recompute(); return; }
+    if (e.target.closest("[data-review]")) reviewFindings(prep.files.flatMap(f => f.a.findings.map(x => ({ ...x, label: `${x.label}, ${f.path}` }))));
+  });
+  recompute();
+  async function submit(force = false) {
+    const pe = validateField("project", P.value);
+    if (pe) { P.focus(); return; }
+    const flagged = prep.files.flatMap(f => f.a.findings.map(x => ({ ...x, label: `${x.label}, ${f.path}` })));
+    if (flagged.length && !force && !prep.reviewed) {
+      prep.reviewed = true;
+      const keep = P.value;
+      await closeSheet();
+      reviewFindings(flagged, () => openBatch(prep, { project: keep }), "המשך לשמירה");
+      return;
+    }
+    btn.disabled = true; btn.innerHTML = `<span class="spin dark"></span> שומר`;
+    const r = await saveBatch(P.value.trim(), prep.files.filter(f => ["new", "version"].includes(status.get(f.path)?.kind)), status);
+    if (r.result === "error") { btn.disabled = false; err.textContent = "השמירה נכשלה, אפשר לנסות שוב"; paint(); return; }
+    await closeSheet();
+    store.set("cb.lastProject", P.value.trim());
+    toast(r.result === "queued" ? "ממתין לחיבור. כדאי להשאיר את האפליקציה פתוחה" : `נשמרו ${r.saved} קבצים בפרויקט ${P.value.trim()}`);
+    opts.onDone?.();
+    if (isDesk() || opts.openProject) openProject(projectKey(P.value));
+  }
+}
+async function saveBatch(project, files, status) {
+  const root = userRoot();
+  if (!root || !files.length) return { result: "error", saved: 0 };
+  let chunk = {}, size = 0, result = "saved";
+  const flush = async () => {
+    if (!Object.keys(chunk).length) return;
+    const r = await Promise.race([update(ref(db, root), chunk).then(() => "saved"), wait(30000).then(() => "queued")]).catch((e) => { onDbError(e); return "error"; });
+    if (r !== "saved") result = r;
+    chunk = {}; size = 0;
+  };
+  for (const f of files) {
+    const st = status.get(f.path);
+    const built = await buildVersionPatch({ item: st?.kind === "version" ? st.item : null, project, name: f.path, note: "", a: f.a });
+    if (!built) return { result: "error", saved: 0 };
+    if (size + f.a.bytes > CHUNK_BYTES) await flush();
+    Object.assign(chunk, built.patch); size += f.a.bytes;
+    if (result === "error") return { result, saved: 0 };
+  }
+  await flush();
+  return { result, saved: files.length };
+}
+
+/* ZIP (stored, no compression). Small, dependency free, UTF-8 names. */
+const CRC_TABLE = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(bytes) { let c = 0xFFFFFFFF; for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files) {
+  const enc = new TextEncoder(), parts = [], central = [];
+  const d = new Date();
+  const dosTime = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  const dosDate = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  let offset = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, dosTime, true); lh.setUint16(12, dosDate, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    parts.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, dosTime, true); ch.setUint16(14, dosDate, true); ch.setUint32(16, crc, true); ch.setUint32(20, data.length, true);
+    ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true); ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + data.length;
+  }
+  const cSize = central.reduce((t, p) => t + p.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cSize, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: "application/zip" });
+}
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 8000);
+}
+const projectBodies = (key) => Promise.all(projectFiles(key).map(async it => ({ name: it.name, ext: it.ext, text: await fetchRel(`versionsBody/${it.id}/${it.latest.vid}`) })));
+async function downloadProjectZip(key) {
+  const files = projectFiles(key);
+  if (!files.length) return;
+  toast("מכין ZIP");
+  try {
+    const bodies = await projectBodies(key);
+    const safe = projectName(key).replace(/[\\/:*?"<>|]+/g, " ").trim() || "project";
+    downloadBlob(makeZip(bodies), `${safe}.zip`);
+    toast(`הורד ZIP עם ${bodies.length} קבצים`);
+  } catch { toast("הכנת ה ZIP נכשלה"); }
+}
+function projectMarkdown(name, bodies) {
+  return `# ${name}\n\n` + bodies.map(b => `## ${b.name}\n\n${asMarkdown(b.ext)(b.text)}`).join("\n\n") + "\n";
+}
+// Copies a text that still has to be built, while staying inside the tap
+async function copyProduced(producer, btn, okMsg) {
+  try {
+    if (window.ClipboardItem && navigator.clipboard?.write) await navigator.clipboard.write([new ClipboardItem({ "text/plain": producer().then(t => new Blob([t], { type: "text/plain" })) })]);
+    else await writeClipboard(await producer());
+  } catch { toast("ההעתקה נכשלה, אפשר לנסות שוב"); return false; }
+  if (btn) { const l = $("span", btn), o = l?.textContent; btn.classList.add("done"); if (l) l.textContent = "הועתק"; setTimeout(() => { btn.classList.remove("done"); if (l && l.isConnected) l.textContent = o; }, 1800); }
+  toast(okMsg);
+  return true;
+}
+const copyProject = (key, btn) => copyProduced(async () => projectMarkdown(projectName(key), await projectBodies(key)), btn, "הפרויקט הועתק כ Markdown, מוכן לצ'אט");
+
+function renameProject(key) {
+  const files = projectFiles(key), cur = projectName(key);
+  openSheet({
+    title: "שינוי שם הפרויקט", message: `ישנה את השם בכל ${files.length} הקבצים.`,
+    body: `<label class="field-l" for="rp">שם הפרויקט</label><input class="input" id="rp" dir="auto" autocomplete="off" maxlength="${PROJECT_MAX + 10}" value="${esc(cur)}"><div class="input-hint"><span data-err></span></div>`,
+    actions: [{ label: "שמירה", keepOpen: true, onClick: async () => {
+      const v = $("#rp", sheetEl).value.trim(), err = $("[data-err]", sheetEl);
+      const pe = validateField("project", v);
+      if (pe) { err.textContent = pe; return; }
+      const nk = projectKey(v);
+      if (nk !== key) {
+        const clash = projectFiles(nk).filter(o => files.some(f => normKey(f.name) === normKey(o.name)));
+        if (clash.length) { err.textContent = `בפרויקט ${v} כבר יש קבצים באותם שמות: ${clash.slice(0, 3).map(c => c.name).join(", ")}`; return; }
+      }
+      const patch = {};
+      files.forEach(f => { patch[`items/${f.id}/project`] = v; });
+      const r = await dbWrite(update(ref(db, userRoot()), patch));
+      await closeSheet();
+      toast(r === "saved" ? "שם הפרויקט עודכן" : "יעודכן כשהחיבור יחזור");
+      if (stack.at(-1)?.name === "project") { if (isDesk()) openProject(nk); else { history.back(); setTimeout(() => openProject(nk), 400); } }
+    } }]
+  });
+}
+function confirmDeleteProject(key) {
+  const files = projectFiles(key), name = projectName(key);
+  const versions = files.reduce((t, f) => t + (f.count || 1), 0);
+  openSheet({
+    title: `למחוק את הפרויקט ${name}?`, message: `${files.length} קבצים ו ${versions} גרסאות יימחקו מכל המכשירים. אי אפשר לשחזר.`,
+    actions: [{ label: "מחיקת הפרויקט", style: "danger", onClick: async () => {
+      const patch = {};
+      files.forEach(f => { patch[`items/${f.id}`] = null; patch[`versionsMeta/${f.id}`] = null; patch[`versionsBody/${f.id}`] = null; });
+      const r = await dbWrite(update(ref(db, userRoot()), patch));
+      toast(r === "saved" ? "הפרויקט נמחק" : "יימחק כשהחיבור יחזור");
+      if (stack.at(-1)?.name === "project") { if (isDesk()) navRoot("files"); else history.back(); }
+    } }]
+  });
+}
+function projectMenuEntries(key) {
+  return [
+    { label: "פתיחת הפרויקט", icon: "i-folder", run: () => openProject(key) },
+    { label: "העתקה לצ'אט כ Markdown", icon: "i-code", run: () => copyProject(key) },
+    { label: "הורדת ZIP", icon: "i-download", run: () => downloadProjectZip(key) },
+    { label: "הוספת קבצים", icon: "i-plus-square", run: () => pickFilesInto(key) },
+    "sep",
+    { label: "שינוי שם הפרויקט", icon: "i-edit", run: () => renameProject(key) },
+    { label: "מחיקת הפרויקט", icon: "i-trash", danger: true, run: () => confirmDeleteProject(key) }
+  ];
+}
+// A hidden picker shared by every "add files" entry point
+const batchPicker = Object.assign(document.createElement("input"), { type: "file", multiple: true, hidden: true });
+const folderPicker = Object.assign(document.createElement("input"), { type: "file", multiple: true, hidden: true });
+folderPicker.setAttribute("webkitdirectory", "");
+document.body.append(batchPicker, folderPicker);
+let pickTarget = null;
+function pickFilesInto(key, folder = false) { pickTarget = key || null; (folder ? folderPicker : batchPicker).click(); }
+for (const inp of [batchPicker, folderPicker]) inp.addEventListener("change", () => {
+  const src = fromInputFiles(inp.files); inp.value = "";
+  if (!src.list.length) return;
+  const key = pickTarget; pickTarget = null;
+  if (src.list.length === 1 && !key && !src.root) { readFile(src.list[0].file); return; }
+  startBatch(src, { project: key ? projectName(key) : "" });
+});
+
+function openProject(key) {
+  closeMenu(); closePalette();
+  if (!isDesk()) { push("project", { id: key }); return; }
+  enqueue(async () => { if (stack[0]?.name !== "files" || stack.length > 1) resetTo("files"); });
+  push("project", { id: key });
+}
+function buildProject(s, params) {
+  const key = params.id;
+  s.end.innerHTML = `<button class="nav-btn" type="button" data-act="menu" aria-label="אפשרויות"><svg class="ico"><use href="#i-more"/></svg></button>`;
+  s.content.classList.add("item-grid");
+  s.content.innerHTML = `
+    <div class="col-a">
+      <section class="item-head" data-ref="head"></section>
+      <section class="item-actions">
+        <button class="btn-primary big" type="button" data-act="copy-md"><svg class="ico"><use href="#i-code"/></svg><span>העתקה לצ'אט כ Markdown</span></button>
+        <div class="btn-row">
+          <button class="btn-sec" type="button" data-act="zip"><svg class="ico"><use href="#i-download"/></svg>הורדת ZIP</button>
+          <button class="btn-sec" type="button" data-act="add"><svg class="ico"><use href="#i-plus-square"/></svg>הוספת קבצים</button>
+        </div>
+        <button class="btn-sec desk-only" type="button" data-act="add-folder" style="width:100%"><svg class="ico"><use href="#i-folder"/></svg>העלאת תיקייה שלמה</button>
+      </section>
+    </div>
+    <div class="col-b">
+      <section>
+        <div class="section-head"><h2>קבצים</h2><span class="muted" data-ref="total"></span></div>
+        <div class="group with-ico" data-ref="files"></div>
+      </section>
+    </div>`;
+  s.end.addEventListener("click", (e) => { const r = e.currentTarget.getBoundingClientRect(); openSheet({ title: projectName(key), actions: projectMenuEntries(key).filter(x => x !== "sep" && !/פתיחת הפרויקט|העתקה לצ'אט/.test(x.label)).map(x => ({ label: x.label, style: x.danger ? "danger" : "", onClick: x.run })) }); });
+  s.content.addEventListener("pointerdown", (e) => { if (e.target.closest('[data-act="copy-md"],[data-act="zip"]')) projectFiles(key).forEach(it => fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {})); });
+  s.content.addEventListener("click", (e) => {
+    const act = e.target.closest("[data-act]")?.dataset.act;
+    if (act === "copy-md") return copyProject(key, e.target.closest("[data-act]"));
+    if (act === "zip") return downloadProjectZip(key);
+    if (act === "add") return pickFilesInto(key);
+    if (act === "add-folder") return pickFilesInto(key, true);
+    const r = e.target.closest("[data-item]"); if (r) openItem(r.dataset.item);
+  });
+  s.update = () => {
+    const files = projectFiles(key);
+    if (!files.length) {
+      $('[data-ref="head"]', s.content).innerHTML = `<div class="empty-card">הפרויקט ריק או נמחק.</div>`;
+      $(".item-actions", s.content).hidden = true; $('[data-ref="files"]', s.content).innerHTML = ""; return;
+    }
+    $(".item-actions", s.content).hidden = false;
+    const name = projectName(key); s.setTitle(name);
+    const bytes = files.reduce((t, f) => t + (f.latest?.bytes || 0), 0), versions = files.reduce((t, f) => t + (f.count || 1), 0);
+    const last = files.reduce((m, f) => Math.max(m, f.updatedAt || 0), 0);
+    const types = [...new Set(files.map(f => f.type).filter(Boolean))].slice(0, 5);
+    $('[data-ref="head"]', s.content).innerHTML = `
+      <div class="staged-head"><div class="type-ico"><svg class="ico"><use href="#i-folder"/></svg></div>
+        <div class="row-main"><div class="row-title" style="font-size:18px;font-weight:700"><span dir="auto">${esc(name)}</span></div><div class="row-sub">עודכן ${esc(ago(last))}</div></div></div>
+      <div class="chips"><span class="chip">${files.length} קבצים</span><span class="chip">${versions} גרסאות</span><span class="chip" dir="ltr">${fmtBytes(bytes)}</span>${types.map(t => `<span class="chip type">${esc(t)}</span>`).join("")}</div>`;
+    $('[data-ref="total"]', s.content).textContent = `${files.length} קבצים`;
+    $('[data-ref="files"]', s.content).innerHTML = files.map(itemRow).join("");
+  };
+}
 /* ================= Screens ================= */
 const SCREENS = {
   home:     { title: "גשר קוד", build: buildHome },
@@ -1973,6 +2585,8 @@ const SCREENS = {
   devices:  { title: "מכשירים", build: buildDevices },
   files:    { title: "קבצים", build: buildFiles },
   scripts:  { title: "סקריפטים", build: buildScripts },
+  storage:  { title: "נפח ופינוי מקום", build: buildStorage },
+  project:  { title: (p) => projectName(p.id) || "פרויקט", build: buildProject },
   item:     { title: (p) => state.items.find(it => it.id === p.id)?.name || "קובץ", build: buildItem }
 };
 
@@ -2015,6 +2629,7 @@ function clipCard(c) {
   </article>`;
 }
 
+let showAllClips = false;
 function buildHome(s) {
   s.start.innerHTML = `<svg class="nav-logo" aria-hidden="true"><use href="#logo"/></svg>`;
   s.end.innerHTML = `<button class="nav-btn" type="button" data-go="settings"><svg class="ico"><use href="#i-gear"/></svg><span>הגדרות</span></button>`;
@@ -2038,6 +2653,7 @@ function buildHome(s) {
       <div class="bridge-status"><h2 data-ref="bt"></h2><p data-ref="bx"></p></div>
     </section>
 
+    <button class="storage-alert" type="button" data-ref="salert" data-area="install" data-go="storage" hidden></button>
     <section class="install-card" data-ref="install" data-area="install" hidden>
       <div class="ic"><svg class="ico"><use href="#i-download"/></svg></div>
       <div class="txt"><div class="t">התקנה כאפליקציה</div><div class="s">מסך מלא ואייקון במסך הבית</div></div>
@@ -2057,7 +2673,7 @@ function buildHome(s) {
           <button class="btn-sec" type="button" data-act="write"><svg class="ico"><use href="#i-edit"/></svg>כתיבה ידנית</button>
         </div>
         <textarea class="paste-zone" data-ref="zone" rows="1" placeholder="${esc(zoneHint)}" aria-label="אזור הדבקה" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
-        <input type="file" data-ref="file" hidden>
+        <input type="file" data-ref="file" multiple hidden>
       </div>
       <div class="staged" data-ref="staged" hidden></div>
     </section>
@@ -2085,7 +2701,7 @@ function buildHome(s) {
     </section>
     </div>
 
-    <p class="footnote" data-area="foot">שלב 4 מתוך 8: מאגר סקריפטים<span class="desk-only">קליק ימני לפעולות מהירות, Ctrl+K לחיפוש ופקודות, ? לקיצורי מקלדת</span></p>`;
+    <p class="footnote" data-area="foot">שלב 5 מתוך 8: פרויקטים<span class="desk-only">קליק ימני לפעולות מהירות, Ctrl+K לחיפוש ופקודות, ? לקיצורי מקלדת</span></p>`;
 
   const zone = $('[data-ref="zone"]', s.content);
   const fileInput = $('[data-ref="file"]', s.content);
@@ -2101,7 +2717,7 @@ function buildHome(s) {
   zone.addEventListener("input", () => { const t = zone.value; zone.value = ""; if (t.trim()) { zone.blur(); stage(t); } });
   zone.addEventListener("dragover", (e) => { if (hasFiles(e)) { e.preventDefault(); zone.classList.add("over"); } });
   zone.addEventListener("dragleave", () => zone.classList.remove("over"));
-  zone.addEventListener("drop", (e) => { zone.classList.remove("over"); if (hasFiles(e)) { e.preventDefault(); e.stopPropagation(); readFiles(e.dataTransfer.files); } });
+  zone.addEventListener("drop", (e) => { zone.classList.remove("over"); if (hasFiles(e)) { e.preventDefault(); e.stopPropagation(); handleDrop(e.dataTransfer); } });
   fileInput.addEventListener("change", () => { readFiles(fileInput.files); fileInput.value = ""; });
 
   s.content.addEventListener("pointerdown", handleScriptPointer);
@@ -2141,6 +2757,7 @@ function buildHome(s) {
     }
     if (act === "save-script" && staged) return openScriptForm(staged);
     if (e.target.closest('[data-go="scripts"]')) return push("scripts");
+    if (e.target.closest('[data-go="storage"]')) { if (isDesk()) navRoot("settings"); return push("storage"); }
     if (handleScriptClick(e)) return;
     if (act === "not-this" && staged) { staged.suggest = null; return s.update(); }
     if (e.target.closest('[data-go="files"]')) return push("files");
@@ -2148,6 +2765,7 @@ function buildHome(s) {
     if (itemRowEl) return openItem(itemRowEl.dataset.item);
     if (act === "review") return reviewFindings(staged?.findings);
     if (act === "clear") return confirmClearAll();
+    if (act === "more-clips") { showAllClips = true; return s.update(); }
     if (act === "install") return doInstall();
     if (act === "dismiss") { store.set("cb.installDismissed", "1"); return s.update(); }
     if (e.target.closest('[data-go="devices"]')) return push("devices");
@@ -2177,6 +2795,12 @@ function buildHome(s) {
     $('[data-ref="bx"]', s.content).textContent = x;
 
     $('[data-ref="install"]', s.content).hidden = !(canInstall() && !store.get("cb.installDismissed"));
+    const su = usage(), sa = $('[data-ref="salert"]', s.content);
+    sa.hidden = su.level === "ok";
+    if (su.level !== "ok") {
+      sa.className = `storage-alert ${su.level}`;
+      sa.innerHTML = `<svg class="ico"><use href="#i-alert"/></svg><span style="flex:1"><b>הנפח ב ${pctText(su.pct)}</b>${levelText[su.level]}. לחיצה לפירוט ופינוי.</span><svg class="ico"><use href="#i-chev-fwd"/></svg>`;
+    }
 
     // Composer or staged item
     const st = $('[data-ref="staged"]', s.content);
@@ -2227,7 +2851,8 @@ function buildHome(s) {
     const clips = state.clips;
     $('[data-ref="clear"]', s.content).hidden = clips.length === 0;
     $('[data-ref="clips"]', s.content).innerHTML = clips.length
-      ? clips.map(clipCard).join("")
+      ? clips.slice(0, showAllClips ? clips.length : 50).map(clipCard).join("") +
+        (clips.length > 50 && !showAllClips ? `<button class="show-more" type="button" data-act="more-clips">הצגת כל ${nf.format(clips.length)} הפריטים</button>` : "")
       : `<div class="empty-card">${state.connected ? "עדיין לא נשלח כלום. מה שתשלח מכל מכשיר יופיע כאן, בכל המכשירים, בלי רענון." : "טוען"}</div>`;
 
     // Files preview
@@ -2271,6 +2896,11 @@ function buildSettings(s) {
     <section><div class="group"><div class="row" style="min-height:76px" data-ref="account"></div></div></section>
 
     <section>
+      <div class="section-head"><h2>נפח בשימוש</h2><button class="link-btn" type="button" data-act="storage">פירוט ופינוי מקום</button></div>
+      <button class="usage-link" type="button" data-act="storage" data-ref="usage" aria-label="פירוט נפח" style="width:100%;text-align:right"></button>
+    </section>
+
+    <section>
       <div class="group-title">אפליקציה</div>
       <div class="group with-ico">
         <button class="row" type="button" data-act="install" data-ref="install-row">
@@ -2283,11 +2913,6 @@ function buildSettings(s) {
           <div class="row-main"><div class="row-title"><span>בדיקת עדכונים</span></div></div>
           <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
         </button>
-        <div class="row">
-          <div class="row-ico"><svg class="ico"><use href="#i-layers"/></svg></div>
-          <div class="row-main"><div class="row-title"><span>נפח בשימוש</span></div><div class="row-sub">מתוך 1 GB בתוכנית החינמית</div></div>
-          <div class="row-end" dir="ltr" data-ref="usage"></div>
-        </div>
         <div class="row">
           <div class="row-ico"><svg class="ico"><use href="#i-info"/></svg></div>
           <div class="row-main"><div class="row-title"><span>גרסה</span></div></div>
@@ -2322,6 +2947,7 @@ function buildSettings(s) {
     if (act === "install") doInstall();
     else if (act === "update") checkUpdates();
     else if (act === "devices") push("devices");
+    else if (act === "storage") push("storage");
     else if (act === "logout") confirmLogout();
   });
 
@@ -2337,8 +2963,7 @@ function buildSettings(s) {
     $('[data-ref="install-row"]', s.content).hidden = !canInstall();
     const n = Object.keys(state.devices).length;
     $('[data-ref="dev-count"]', s.content).textContent = n ? String(n) : "";
-    const used = state.items.reduce((t, it) => t + (it.totalBytes || 0), 0) + state.clips.reduce((t, c) => t + (c.bytes || 0), 0);
-    $('[data-ref="usage"]', s.content).textContent = fmtBytes(used);
+    $('[data-ref="usage"]', s.content).innerHTML = usageCard(usage());
   };
 }
 
@@ -2540,7 +3165,7 @@ function startRealtime() {
   }, onDbError));
 
   let firstClips = true, known = new Set();
-  unsubs.push(onValue(query(ref(db, `${root}/clipsMeta`), orderByKey(), limitToLast(50)), (snap) => {
+  unsubs.push(onValue(query(ref(db, `${root}/clipsMeta`), orderByKey(), limitToLast(2000)), (snap) => {
     if (mine !== session) return;
     const val = snap.val() || {};
     const list = Object.entries(val).map(([id, m]) => ({ id, ...m })).sort((a, b) => (a.id < b.id ? 1 : -1));
@@ -2618,10 +3243,11 @@ function renderSidebar() {
     <div class="sb-sec"><span>פרויקטים</span></div>
     <div class="sb-tree">${groups.size ? [...groups.entries()].map(([k, g]) => {
       const closed = collapsed.has(k);
-      return `<button class="sb-proj ${closed ? "closed" : ""}" type="button" data-proj="${esc(k)}"><svg class="ico chev-d"><use href="#i-chev-down"/></svg><span>${esc(g.name)}</span><em>${g.list.length}</em></button>
+      return `<button class="sb-proj ${closed ? "closed" : ""} ${top?.name === "project" && top.params.id === k ? "active-proj" : ""}" type="button" data-proj="${esc(k)}" title="לחיצה כפולה פותחת את הפרויקט"><svg class="ico chev-d"><use href="#i-chev-down"/></svg><span>${esc(g.name)}</span><em>${g.list.length}</em></button>
         ${closed ? "" : g.list.map(it => `<button class="sb-file ${activeItem === it.id ? "active" : ""}" type="button" data-item="${esc(it.id)}"><i>${itemIcon(it)}</i><span dir="auto">${esc(it.name)}</span></button>`).join("")}`;
     }).join("") : `<div class="sb-empty">עדיין אין קבצים</div>`}</div>
     <div class="sb-foot">
+      ${(() => { const u = usage(); return `<div class="sb-usage ${u.level}" data-sb-storage title="פירוט נפח"><div><span>נפח ${pctText(u.pct)}</span><span dir="ltr">${fmtBytes(u.used)} / 1 GB</span></div><div class="usage-bar"><span style="width:${Math.min(100, Math.max(u.used ? 0.8 : 0, u.pct * 100))}%"></span></div></div>`; })()}
       <div class="sb-status ${state.connected ? "on" : ""}"><span class="dot"></span>${state.connected ? `מחובר, ${online} ${online === 1 ? "מכשיר פעיל" : "מכשירים פעילים"}` : "מתחבר לשרת"}</div>
       ${u ? `<div class="sb-user">${u.photoURL ? `<img class="avatar" src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : `<div class="avatar">${esc((u.displayName || u.email || "?").charAt(0).toUpperCase())}</div>`}<div>${esc(u.email || "")}</div></div>` : ""}
     </div>`;
@@ -2631,11 +3257,13 @@ sidebarEl.addEventListener("click", (e) => {
   if (b) { if (b.dataset.sb === "palette") openPalette(); else navRoot(b.dataset.sb); return; }
   const pj = e.target.closest("[data-proj]");
   if (pj) { const k = pj.dataset.proj; collapsed.has(k) ? collapsed.delete(k) : collapsed.add(k); store.set("cb.collapsed", JSON.stringify([...collapsed])); renderSidebar(); return; }
+  if (e.target.closest("[data-sb-storage]")) { enqueue(async () => { resetTo("settings"); }); push("storage"); return; }
   const qs = e.target.closest("[data-qs]");
   if (qs) { const it = state.items.find(x => x.id === qs.dataset.qs); if (it) copyScript(it); return; }
   const f = e.target.closest("[data-item]");
   if (f) openItem(f.dataset.item);
 });
+sidebarEl.addEventListener("dblclick", (e) => { const pj = e.target.closest("[data-proj]"); if (pj) openProject(pj.dataset.proj); });
 sidebarEl.addEventListener("pointerover", (e) => { const qs = e.target.closest("[data-qs]"); if (qs) { const it = state.items.find(x => x.id === qs.dataset.qs); if (it?.latest?.vid) fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {}); } });
 
 /* ================= Quick actions shared by menus, palette and shortcuts ================= */
@@ -2799,6 +3427,14 @@ function menuFor(target) {
       { label: "מחיקת הקובץ", icon: "i-trash", danger: true, run: () => confirmDeleteItem(it) }
     ] };
   }
+  // Project header (sidebar tree or files screen)
+  const pjEl = target.closest("[data-proj], [data-proj-open]");
+  if (pjEl) {
+    const key = pjEl.dataset.proj || pjEl.dataset.projOpen;
+    if (!projectFiles(key).length) return null;
+    projectFiles(key).forEach(it => fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {}));
+    return { title: projectName(key), entries: projectMenuEntries(key) };
+  }
   // Version row inside a file screen
   const vEl = target.closest("[data-version]");
   if (vEl) {
@@ -2874,6 +3510,8 @@ function menuFor(target) {
     { label: lastItem ? `העתקת ${lastItem.name}, גרסה אחרונה` : "העתקת הקובץ האחרון", icon: "i-file", disabled: !lastItem?.latest?.vid, run: () => lastItem && copyRel(`versionsBody/${lastItem.id}/${lastItem.latest.vid}`) },
     "sep",
     { label: "סקריפט חדש מהלוח", icon: "i-terminal", run: () => newScriptFromClipboard() },
+    { label: "העלאת קבצים לפרויקט", icon: "i-plus-square", run: () => pickFilesInto(null) },
+    { label: "העלאת תיקייה שלמה", icon: "i-folder", run: () => pickFilesInto(null, true) },
     { label: "בחירת קובץ לשליחה", icon: "i-file", run: async () => { await ensureHome(); $('[data-ref="file"]', stack[0].content)?.click(); } },
     { label: "כתיבה ידנית", icon: "i-edit", run: async () => { await ensureHome(); openWrite(); } },
     "sep",
@@ -2910,6 +3548,7 @@ function paletteCommands() {
     { group: "ניווט", label: "כל הקבצים", icon: "i-folder", kw: "files קבצים", run: () => navRoot("files") },
     { group: "ניווט", label: "מכשירים", icon: "i-devices", kw: "devices", run: () => navRoot("devices") },
     { group: "ניווט", label: "הגדרות", icon: "i-gear", kw: "settings", run: () => navRoot("settings") },
+    { group: "כללי", label: "נפח ופינוי מקום", icon: "i-layers", kw: "storage usage נפח אחסון", run: () => { enqueue(async () => { resetTo("settings"); }); push("storage"); } },
     { group: "כללי", label: "קיצורי מקלדת", icon: "i-keyboard", kw: "shortcuts keyboard", run: () => showShortcuts() },
     { group: "כללי", label: "בדיקת עדכונים", icon: "i-refresh", kw: "update", run: () => checkUpdates() }
   ];
@@ -2920,19 +3559,22 @@ function paletteCommands() {
     kw: `${tagsOf(it).join(" ")} ${it.description || ""} ${it.domain || ""}`,
     run: () => copyScript(it), alt: () => openItem(it.id)
   }));
+  cmds.push({ group: "פעולות", label: "העלאת קבצים לפרויקט", icon: "i-plus-square", kw: "upload batch project העלאה", run: () => pickFilesInto(null) });
+  const projs = projects().map(p => ({ group: "פרויקטים", label: p, sub: `${projectFiles(projectKey(p)).length} קבצים. Ctrl+Enter מעתיק לצ'אט`, icon: "i-folder", kw: "project פרויקט",
+    run: () => openProject(projectKey(p)), alt: () => copyProject(projectKey(p)) }));
   const files = fileItems().map(it => ({
     group: "קבצים", label: it.name, sub: `${it.project}, גרסה ${it.latest?.n || 1}`, icon: "i-file", kw: `${it.project} ${it.type}`,
     run: () => openItem(it.id),
     alt: () => it.latest?.vid && copyRel(`versionsBody/${it.id}/${it.latest.vid}`)
   }));
-  return { cmds, files, scr };
+  return { cmds, files, scr, projs };
 }
 function renderPalette() {
   const q = normKey(palInput.value), terms = q.split(" ").filter(Boolean);
-  const { cmds, files, scr } = paletteCommands();
+  const { cmds, files, scr, projs } = paletteCommands();
   const match = (x) => { const hay = normKey(`${x.label} ${x.sub || ""} ${x.kw || ""}`); return terms.every(t => hay.includes(t)); };
   // With no query: actions first. With a query: files first, since that is usually what you look for.
-  const list = q ? [...scr.filter(match), ...files.filter(match), ...cmds.filter(match)] : [...scr.filter(x => x.icon === "i-star"), ...cmds, ...files.slice(0, 8)];
+  const list = q ? [...scr.filter(match), ...projs.filter(match), ...files.filter(match), ...cmds.filter(match)] : [...scr.filter(x => x.icon === "i-star"), ...cmds, ...files.slice(0, 8)];
   palResults = list.slice(0, 60);
   palIndex = Math.min(palIndex, Math.max(0, palResults.length - 1));
   if (!palResults.length) { palList.innerHTML = `<div class="pal-empty">לא נמצא קובץ או פעולה</div>`; return; }
