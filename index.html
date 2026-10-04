@@ -556,6 +556,21 @@ a.row{text-decoration:none}
 .switch::after{content:"";position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;background:var(--paper);transition:transform .2s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .switch[aria-pressed="true"]{background:var(--ok)}
 .switch[aria-pressed="true"]::after{transform:translateX(-20px)}
+
+/* Drag in overlay, empty project */
+.drop-overlay{position:fixed;inset:0;z-index:96;background:rgba(7,10,17,.72);display:grid;place-items:center;pointer-events:none}
+.drop-box{display:grid;justify-items:center;gap:10px;padding:34px 40px;border-radius:22px;border:2px dashed var(--phone);background:rgba(94,225,217,.06);text-align:center;max-width:min(520px,86vw)}
+.drop-box .ico{width:40px;height:40px;color:var(--phone)}
+.drop-box b{font-size:20px;font-weight:700}
+.drop-box span{font-size:14px;color:var(--mist)}
+.files-top{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ext-warn{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(242,182,90,.1);border:1px solid rgba(242,182,90,.35);font-size:14px;color:#F8D49A}
+.ext-warn .ico{flex:none}
+.ext-warn button{margin-inline-start:auto;color:var(--desk);font-weight:700;white-space:nowrap}
+[draggable="true"]{-webkit-user-drag:element}
+.sb-add{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:var(--faint)}
+.sb-add:hover{background:var(--deep);color:var(--phone)}
+.sb-add .ico{width:15px;height:15px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -650,6 +665,7 @@ a.row{text-decoration:none}
 <div id="stack" hidden></div>
 <aside id="sidebar" hidden aria-label="ניווט"></aside>
 <div id="ctx" class="ctx" role="menu" hidden></div>
+<div id="drop-overlay" class="drop-overlay" hidden><div class="drop-box"><svg class="ico"><use href="#i-download"/></svg><b data-t></b><span>אפשר לשחרר בכל מקום בחלון</span></div></div>
 <div id="palette" class="palette" hidden>
   <div class="palette-box" role="dialog" aria-modal="true" aria-label="חיפוש ופקודות">
     <div class="palette-in"><svg class="ico"><use href="#i-search"/></svg><input class="palette-input" id="palette-input" type="text" autocomplete="off" spellcheck="false" placeholder="חיפוש קובץ או פעולה" aria-label="חיפוש קובץ או פעולה"><kbd>Esc</kbd></div>
@@ -679,7 +695,7 @@ import {
   push as dbPush, get, query, orderByKey, limitToLast, increment
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-const APP_VERSION = "1.7.0";
+const APP_VERSION = "1.7.1";
 
 /* ================= Firebase ================= */
 const app = initializeApp({
@@ -760,7 +776,7 @@ const DEVICE = detectDevice();
 const userRoot = () => auth.currentUser ? `users/${auth.currentUser.uid}` : null;
 
 /* ================= App state ================= */
-const state = { devices: {}, clips: [], items: [], settings: {}, connected: false, serverOffset: 0 };
+const state = { devices: {}, clips: [], items: [], settings: {}, projectsReg: {}, connected: false, serverOffset: 0 };
 const freshClips = new Set();
 const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
 function ago(ts) {
@@ -1366,7 +1382,7 @@ document.addEventListener("paste", (e) => {
   stage(e.clipboardData?.getData("text/plain") || "");
 });
 const hasFiles = (e) => [...(e.dataTransfer?.types || [])].includes("Files");
-document.addEventListener("dragover", (e) => { const t = stack.at(-1)?.name; if (hasFiles(e) && !stackEl.hidden && !sheetOpen && (homeOnTop() || t === "project" || t === "files")) e.preventDefault(); });
+document.addEventListener("dragover", (e) => { if (hasFiles(e) && !stackEl.hidden) { e.preventDefault(); e.dataTransfer.dropEffect = sheetOpen ? "none" : "copy"; } });
 async function handleDrop(dt, projectKeyTarget = null) {
   const src = await collectDropped(dt);
   if (!src.list.length) return;
@@ -1374,11 +1390,15 @@ async function handleDrop(dt, projectKeyTarget = null) {
   startBatch(src, { project: projectKeyTarget ? projectName(projectKeyTarget) : "" });
 }
 document.addEventListener("drop", (e) => {
-  if (!hasFiles(e) || stackEl.hidden || sheetOpen) return;
-  const top = stack.at(-1);
-  if (homeOnTop()) { e.preventDefault(); handleDrop(e.dataTransfer); }
-  else if (top?.name === "project") { e.preventDefault(); handleDrop(e.dataTransfer, top.params.id); }
-  else if (top?.name === "files") { e.preventDefault(); handleDrop(e.dataTransfer); }
+  dragDepth = 0; $("#drop-overlay").hidden = true;
+  if (!hasFiles(e) || stackEl.hidden) return;
+  e.preventDefault(); // never let the browser navigate away to the dropped file
+  if (sheetOpen) { toast("קודם לסגור את החלון הפתוח"); return; }
+  const target = dropTarget();
+  if (target.kind === "item") dropOnItem(e.dataTransfer, target.it);
+  else if (target.kind === "project") handleDrop(e.dataTransfer, target.key);
+  else if (target.kind === "files") handleDrop(e.dataTransfer);
+  else { const dt = e.dataTransfer; const go = homeOnTop() ? Promise.resolve() : ensureHome(); handleDrop(dt); go.catch(() => {}); }
 });
 
 /* ================= Files and versions (stage 3) ================= */
@@ -1432,7 +1452,7 @@ function validateField(kind, raw) {
   if (/^\/|\/$|\/\/|(^|\/)\.\.(\/|$)/.test(v)) return "נתיב לא תקין";
   return "";
 }
-const projects = () => { const seen = new Map(); for (const it of fileItems()) if (!seen.has(normKey(it.project))) seen.set(normKey(it.project), it.project); return [...seen.values()]; };
+const projects = () => allProjects().map(p => p.name);
 function versionFileName(item, n, isLatest) {
   const m = item.name.match(/^(.*?)(\.[a-z0-9]+)?$/i);
   const base = m[1] || item.name, ext = m[2] || `.${item.ext || "txt"}`;
@@ -1513,6 +1533,7 @@ function openSaveForm(a, prefill = {}) {
       ${projList.length ? `<div class="pick-row" data-ref="projects">${projList.map(p => `<button class="chip pick" type="button" data-pick-project="${esc(p)}">${esc(p)}</button>`).join("")}</div>` : ""}
       <label class="field-l" for="f-name">שם הקובץ</label>
       <input class="input" id="f-name" data-f="name" dir="auto" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="${NAME_MAX + 10}" placeholder="${esc(placeholder)}" value="${esc(name0)}">
+      <div class="pick-row"><button class="chip pick" type="button" data-ref="fixext" hidden></button></div>
       <div class="pick-row" data-ref="files"></div>
       <label class="field-l" for="f-note">מה השתנה <span style="color:var(--faint)">(לא חובה)</span></label>
       <input class="input" id="f-note" data-f="note" dir="auto" autocomplete="off" maxlength="${NOTE_MAX}" placeholder="לדוגמה: תיקון התחברות">
@@ -1522,13 +1543,18 @@ function openSaveForm(a, prefill = {}) {
   });
   const P = $('[data-f="project"]', sheetEl), N = $('[data-f="name"]', sheetEl), NOTE = $('[data-f="note"]', sheetEl);
   const btn = $('[data-i="0"]', sheetEl), err = $("[data-err]", sheetEl), match = $('[data-ref="match"]', sheetEl), files = $('[data-ref="files"]', sheetEl);
+  const fixExt = $('[data-ref="fixext"]', sheetEl);
+  fixExt.addEventListener("click", () => { N.value = `${N.value.trim()}.${a.ext || "txt"}`; paint(); });
   let touched = false;
   const paint = () => {
-    const pe = validateField("project", P.value), ne = validateField("name", N.value);
+    const pe = validateField("project", P.value), ne = fileNameError(N.value);
     P.classList.toggle("invalid", touched && !!pe);
     N.classList.toggle("invalid", touched && !!ne);
     err.textContent = touched ? (pe ? `פרויקט: ${pe}` : ne ? `שם הקובץ: ${ne}` : "") : "";
-    const inProject = state.items.filter(it => normKey(it.project) === normKey(P.value));
+    const needExt = !validateField("name", N.value) && extError(N.value);
+    fixExt.hidden = !needExt;
+    fixExt.textContent = `הוספת .${a.ext || "txt"}`;
+    const inProject = fileItems().filter(it => normKey(it.project) === normKey(P.value));
     files.innerHTML = inProject.slice(0, 12).map(it => `<button class="chip pick" type="button" data-pick-name="${esc(it.name)}" dir="auto">${esc(it.name)}</button>`).join("");
     files.hidden = !inProject.length;
     const existing = !pe && !ne ? findItem(P.value, N.value) : null;
@@ -1643,7 +1669,7 @@ function renameItem(item) {
       <div class="input-hint"><span data-err></span></div>`,
     actions: [{ label: "שמירה", keepOpen: true, onClick: async () => {
       const P = $("#r-project", sheetEl), N = $("#r-name", sheetEl), err = $("[data-err]", sheetEl);
-      const pe = validateField("project", P.value), ne = validateField("name", N.value);
+      const pe = validateField("project", P.value), ne = fileNameError(N.value);
       P.classList.toggle("invalid", !!pe); N.classList.toggle("invalid", !!ne);
       if (pe || ne) { err.textContent = pe ? `פרויקט: ${pe}` : `שם הקובץ: ${ne}`; return; }
       const clash = findItem(P.value, N.value);
@@ -1701,7 +1727,7 @@ function versionSheet(item, v, versions) {
 }
 
 function itemRow(it) {
-  return `<button class="row" type="button" data-item="${esc(it.id)}">
+  return `<button class="row" type="button" data-item="${esc(it.id)}" ${IS_DESKTOP ? 'draggable="true" title="אפשר לגרור לתיקייה במחשב"' : ""}>
     <div class="row-ico ext">${itemIcon(it)}</div>
     <div class="row-main">
       <div class="row-title"><span dir="auto">${esc(it.name)}</span></div>
@@ -1713,13 +1739,20 @@ function itemRow(it) {
 
 function buildFiles(s) {
   s.content.innerHTML = `
+    <div class="files-top">
+      <button class="btn-secondary" type="button" data-act="new-project"><svg class="ico"><use href="#i-plus-square"/></svg>פרויקט חדש</button>
+      <button class="btn-sec" type="button" data-act="upload-files"><svg class="ico"><use href="#i-download"/></svg>העלאת קבצים</button>
+    </div>
     <input class="input search" type="search" dir="auto" placeholder="חיפוש לפי שם קובץ או פרויקט" aria-label="חיפוש קבצים" data-ref="q" autocomplete="off" spellcheck="false">
     <div data-ref="list" style="display:grid;gap:22px"></div>`;
   const q = $('[data-ref="q"]', s.content);
   q.addEventListener("input", () => s.update());
-  s.end.innerHTML = `<button class="nav-btn" type="button" data-act="upload"><svg class="ico"><use href="#i-plus-square"/></svg><span>העלאת קבצים</span></button>`;
-  $('[data-act="upload"]', s.end).addEventListener("click", () => pickFilesInto(null));
+  s.end.innerHTML = `<button class="nav-btn" type="button" data-act="new-project"><svg class="ico"><use href="#i-plus-square"/></svg><span>פרויקט חדש</span></button>`;
+  $('[data-act="new-project"]', s.end).addEventListener("click", newProject);
   s.content.addEventListener("click", (e) => {
+    const act = e.target.closest("[data-act]")?.dataset.act;
+    if (act === "new-project") { newProject(); return; }
+    if (act === "upload-files") { pickFilesInto(null); return; }
     const po = e.target.closest("[data-proj-open]"); if (po) { openProject(po.dataset.projOpen); return; }
     const r = e.target.closest("[data-item]"); if (r) openItem(r.dataset.item);
   });
@@ -1727,13 +1760,15 @@ function buildFiles(s) {
     const term = normKey(q.value);
     const items = fileItems().filter(it => !term || normKey(it.name).includes(term) || normKey(it.project).includes(term));
     const box = $('[data-ref="list"]', s.content);
-    if (!fileItems().length) { box.innerHTML = `<div class="empty-card">עדיין אין קבצים. מדביקים בדף הבית ובוחרים "שמירה כקובץ".</div>`; return; }
-    if (!items.length) { box.innerHTML = `<div class="empty-card">לא נמצא קובץ שמתאים לחיפוש.</div>`; return; }
+    const all = allProjects();
+    if (!all.length) { box.innerHTML = `<div class="empty-card">עדיין אין פרויקטים. "פרויקט חדש" יוצר אחד, ואפשר גם לגרור תיקייה או להדביק ולבחור "שמירה כקובץ".</div>`; return; }
     const groups = new Map();
+    for (const p of all) if (!term || normKey(p.name).includes(term)) groups.set(p.key, { name: p.name, list: [] });
     for (const it of items) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
+    if (!groups.size) { box.innerHTML = `<div class="empty-card">לא נמצא קובץ או פרויקט שמתאים לחיפוש.</div>`; return; }
     box.innerHTML = [...groups.values()].map(g => `<section>
         <div class="group-title proj"><span>${esc(g.name)} <span style="color:var(--faint)">(${g.list.length})</span></span><button class="proj-open" type="button" data-proj-open="${esc(normKey(g.name))}">לפרויקט<svg class="ico"><use href="#i-chev-fwd"/></svg></button></div>
-        <div class="group with-ico">${g.list.map(itemRow).join("")}</div>
+        <div class="group with-ico">${g.list.length ? g.list.map(itemRow).join("") : `<button class="row" type="button" data-proj-open="${esc(normKey(g.name))}"><div class="row-main"><div class="row-sub">פרויקט ריק. לחיצה כדי להוסיף קבצים.</div></div></button>`}</div>
       </section>`).join("");
   };
 }
@@ -1786,6 +1821,13 @@ function buildItem(s, params) {
     const act = e.target.closest("[data-act]")?.dataset.act;
     if (act === "copy-latest") return isScript(it) ? copyScript(it, e.target.closest("[data-act]")) : copyRel(`versionsBody/${id}/${it.latest.vid}`, e.target.closest("[data-act]"));
     if (act === "copy-safe") return copyScript(it, e.target.closest("[data-act]"), "safe");
+    if (act === "fix-ext") {
+      const nn = `${it.name}.${it.ext || "txt"}`, clash = findItem(it.project, nn);
+      if (clash && clash.id !== it.id) { toast("כבר קיים קובץ בשם הזה"); return; }
+      const r = await dbWrite(update(ref(db, `${userRoot()}/items/${it.id}`), { name: nn }));
+      toast(r === "saved" ? `השם עודכן ל ${nn}` : "יעודכן כשהחיבור יחזור");
+      return;
+    }
     if (act === "advice") {
       try {
         const text = await fetchRel(`versionsBody/${id}/${it.latest.vid}`);
@@ -1825,7 +1867,8 @@ function buildItem(s, params) {
     $('[data-ref="script-actions"]', s.content).hidden = !isScript(it);
     const L = it.latest || {};
     $('[data-ref="head"]', s.content).innerHTML = `
-      <div class="staged-head">
+      ${!isScript(it) && extError(it.name) ? `<div class="ext-warn"><svg class="ico"><use href="#i-alert"/></svg><span>לקובץ אין סיומת, אז שמירה וגרירה למחשב יוצאות בלי סוג.</span><button type="button" data-act="fix-ext">הוספת .${esc(it.ext || "txt")}</button></div>` : ""}
+      <div class="staged-head" ${IS_DESKTOP ? `draggable="true" data-drag-item="${esc(it.id)}" title="אפשר לגרור לתיקייה במחשב"` : ""}>
         <div class="type-ico">${itemIcon(it)}</div>
         <div class="row-main">
           <div class="row-title" style="font-size:18px;font-weight:700"><span dir="auto">${esc(it.name)}</span></div>
@@ -1846,7 +1889,7 @@ function buildItem(s, params) {
     $('[data-ref="total"]', s.content).textContent = `${fmtBytes(it.totalBytes)} בסך הכל`;
     $('[data-ref="versions"]', s.content).innerHTML = !loaded
       ? `<div class="row"><div class="row-main"><div class="row-sub">טוען גרסאות</div></div></div>`
-      : versions.map(v => `<button class="row" type="button" data-version="${esc(v.id)}">
+      : versions.map(v => `<button class="row" type="button" data-version="${esc(v.id)}" ${IS_DESKTOP ? 'draggable="true"' : ""}>
           <div class="row-ico ${v.id === L.vid ? "phone" : ""}"><span class="vnum">${v.n}</span></div>
           <div class="row-main">
             <div class="row-title"><span>גרסה ${v.n}</span>${v.id === L.vid ? `<span class="tag">אחרונה</span>` : ""}</div>
@@ -2264,7 +2307,7 @@ const BINARY_EXT = /\.(png|jpe?g|gif|webp|avif|ico|bmp|tiff?|psd|pdf|zip|rar|7z|
 const SECRET_FILE = /(^|\/)(\.env(\..*)?|.*\.pem|.*\.key|.*\.p12|.*\.pfx|id_rsa.*|id_ed25519.*|\.npmrc|credentials(\.json)?|service-?account.*\.json)$/i;
 const projectKey = (name) => normKey(name);
 const projectFiles = (key) => fileItems().filter(it => projectKey(it.project) === key).sort((a, b) => a.name.localeCompare(b.name, "he"));
-const projectName = (key) => projectFiles(key)[0]?.project || "";
+const projectName = (key) => projectFiles(key)[0]?.project || Object.values(state.projectsReg || {}).find(p => projectKey(p?.name) === key)?.name || "";
 
 // Reads dropped files and folders. Entries must be grabbed before the first await.
 async function collectDropped(dt) {
@@ -2313,6 +2356,7 @@ async function prepareBatch({ list, root, skipped }) {
     if (/\u0000/.test(text.slice(0, 8000))) { skip.push({ path, reason: "קובץ בינארי" }); continue; }
     if (!text.trim()) { skip.push({ path, reason: "ריק" }); continue; }
     if (validateField("name", path)) { skip.push({ path, reason: "שם לא תקין" }); continue; }
+    if (extError(path)) { skip.push({ path, reason: "קובץ בלי סיומת" }); continue; }
     out.push({ path, a: analyze(text, path) });
   }
   return { files: out, skipped: skip, root };
@@ -2504,7 +2548,7 @@ const copyProject = (key, btn) => copyProduced(async () => projectMarkdown(proje
 function renameProject(key) {
   const files = projectFiles(key), cur = projectName(key);
   openSheet({
-    title: "שינוי שם הפרויקט", message: `ישנה את השם בכל ${files.length} הקבצים.`,
+    title: "שינוי שם הפרויקט", message: files.length ? `ישנה את השם בכל ${files.length} הקבצים.` : "",
     body: `<label class="field-l" for="rp">שם הפרויקט</label><input class="input" id="rp" dir="auto" autocomplete="off" maxlength="${PROJECT_MAX + 10}" value="${esc(cur)}"><div class="input-hint"><span data-err></span></div>`,
     actions: [{ label: "שמירה", keepOpen: true, onClick: async () => {
       const v = $("#rp", sheetEl).value.trim(), err = $("[data-err]", sheetEl);
@@ -2515,8 +2559,12 @@ function renameProject(key) {
         const clash = projectFiles(nk).filter(o => files.some(f => normKey(f.name) === normKey(o.name)));
         if (clash.length) { err.textContent = `בפרויקט ${v} כבר יש קבצים באותם שמות: ${clash.slice(0, 3).map(c => c.name).join(", ")}`; return; }
       }
+      if (nk !== key && allProjects().some(p => p.key === nk) && !projectFiles(nk).length) { err.textContent = "כבר קיים פרויקט בשם הזה"; return; }
       const patch = {};
       files.forEach(f => { patch[`items/${f.id}/project`] = v; });
+      const rid = regIdOf(key);
+      if (rid) patch[`projects/${rid}/name`] = v;
+      else patch[`projects/${dbPush(ref(db, `${userRoot()}/projects`)).key}`] = { name: v, createdAt: serverTimestamp() };
       const r = await dbWrite(update(ref(db, userRoot()), patch));
       await closeSheet();
       toast(r === "saved" ? "שם הפרויקט עודכן" : "יעודכן כשהחיבור יחזור");
@@ -2528,10 +2576,11 @@ function confirmDeleteProject(key) {
   const files = projectFiles(key), name = projectName(key);
   const versions = files.reduce((t, f) => t + (f.count || 1), 0);
   openSheet({
-    title: `למחוק את הפרויקט ${name}?`, message: `${files.length} קבצים ו ${versions} גרסאות יימחקו מכל המכשירים. אי אפשר לשחזר.`,
+    title: `למחוק את הפרויקט ${name}?`, message: files.length ? `${files.length} קבצים ו ${versions} גרסאות יימחקו מכל המכשירים. אי אפשר לשחזר.` : "הפרויקט ריק.",
     actions: [{ label: "מחיקת הפרויקט", style: "danger", onClick: async () => {
       const patch = {};
       files.forEach(f => { patch[`items/${f.id}`] = null; patch[`versionsMeta/${f.id}`] = null; patch[`versionsBody/${f.id}`] = null; });
+      const rid = regIdOf(key); if (rid) patch[`projects/${rid}`] = null;
       const r = await dbWrite(update(ref(db, userRoot()), patch));
       toast(r === "saved" ? "הפרויקט נמחק" : "יימחק כשהחיבור יחזור");
       if (stack.at(-1)?.name === "project") { if (isDesk()) navRoot("files"); else history.back(); }
@@ -2543,6 +2592,7 @@ function projectMenuEntries(key) {
     { label: "פתיחת הפרויקט", icon: "i-folder", run: () => openProject(key) },
     { label: "העתקה לצ'אט כ Markdown", icon: "i-code", run: () => copyProject(key) },
     { label: "הורדת ZIP", icon: "i-download", run: () => downloadProjectZip(key) },
+    { label: "קובץ חדש מהלוח", icon: "i-clipboard", run: () => newFileInProject(key) },
     { label: "הוספת קבצים", icon: "i-plus-square", run: () => pickFilesInto(key) },
     "sep",
     { label: "שינוי שם הפרויקט", icon: "i-edit", run: () => renameProject(key) },
@@ -2580,9 +2630,10 @@ function buildProject(s, params) {
       <section class="item-actions">
         <button class="btn-primary big" type="button" data-act="copy-md"><svg class="ico"><use href="#i-code"/></svg><span>העתקה לצ'אט כ Markdown</span></button>
         <div class="btn-row">
-          <button class="btn-sec" type="button" data-act="zip"><svg class="ico"><use href="#i-download"/></svg>הורדת ZIP</button>
+          <button class="btn-sec" type="button" data-act="new-file"><svg class="ico"><use href="#i-clipboard"/></svg>קובץ חדש מהלוח</button>
           <button class="btn-sec" type="button" data-act="add"><svg class="ico"><use href="#i-plus-square"/></svg>הוספת קבצים</button>
         </div>
+        <button class="btn-sec" type="button" data-act="zip" style="width:100%"><svg class="ico"><use href="#i-download"/></svg>הורדת ZIP</button>
         <button class="btn-sec desk-only" type="button" data-act="add-folder" style="width:100%"><svg class="ico"><use href="#i-folder"/></svg>העלאת תיקייה שלמה</button>
       </section>
     </div>
@@ -2600,13 +2651,25 @@ function buildProject(s, params) {
     if (act === "zip") return downloadProjectZip(key);
     if (act === "add") return pickFilesInto(key);
     if (act === "add-folder") return pickFilesInto(key, true);
+    if (act === "new-file") return newFileInProject(key);
     const r = e.target.closest("[data-item]"); if (r) openItem(r.dataset.item);
   });
   s.update = () => {
     const files = projectFiles(key);
     if (!files.length) {
-      $('[data-ref="head"]', s.content).innerHTML = `<div class="empty-card">הפרויקט ריק או נמחק.</div>`;
-      $(".item-actions", s.content).hidden = true; $('[data-ref="files"]', s.content).innerHTML = ""; return;
+      const reg = regIdOf(key);
+      $(".item-actions", s.content).hidden = true; $('[data-ref="total"]', s.content).textContent = "";
+      if (!reg) { $('[data-ref="head"]', s.content).innerHTML = `<div class="empty-card">הפרויקט נמחק.</div>`; $('[data-ref="files"]', s.content).innerHTML = ""; return; }
+      s.setTitle(projectName(key));
+      $('[data-ref="head"]', s.content).innerHTML = `
+        <div class="staged-head"><div class="type-ico"><svg class="ico"><use href="#i-folder"/></svg></div>
+          <div class="row-main"><div class="row-title" style="font-size:18px;font-weight:700"><span dir="auto">${esc(projectName(key))}</span></div><div class="row-sub">פרויקט ריק</div></div></div>
+        <button class="btn-primary big" type="button" data-act="new-file"><svg class="ico"><use href="#i-clipboard"/></svg><span>קובץ חדש מהלוח</span></button>
+        <div class="btn-row"><button class="btn-sec" type="button" data-act="add"><svg class="ico"><use href="#i-plus-square"/></svg>הוספת קבצים</button>
+          <button class="btn-sec desk-only" type="button" data-act="add-folder" style="display:flex"><svg class="ico"><use href="#i-folder"/></svg>תיקייה שלמה</button></div>
+        <p class="row-sub">${IS_DESKTOP ? "אפשר גם לגרור קבצים או תיקייה לכאן." : ""}</p>`;
+      $('[data-ref="files"]', s.content).innerHTML = `<div class="row"><div class="row-main"><div class="row-sub">עדיין אין קבצים</div></div></div>`;
+      return;
     }
     $(".item-actions", s.content).hidden = false;
     const name = projectName(key); s.setTitle(name);
@@ -2779,6 +2842,116 @@ function buildLimits(s) {
         <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
       </button>`;
   };
+}
+/* ================= Project registry, file extensions, drag in and out ================= */
+// A project can exist before it has files. Registry entries live under users/<uid>/projects.
+function allProjects() {
+  const m = new Map();
+  for (const [id, p] of Object.entries(state.projectsReg || {})) if (p?.name) m.set(projectKey(p.name), { key: projectKey(p.name), name: p.name, regId: id });
+  for (const it of fileItems()) { const k = projectKey(it.project); if (!m.has(k)) m.set(k, { key: k, name: it.project, regId: null }); }
+  return [...m.values()];
+}
+const regIdOf = (key) => Object.entries(state.projectsReg || {}).find(([, p]) => projectKey(p?.name) === key)?.[0] || null;
+function newProject() {
+  openSheet({
+    title: "פרויקט חדש", message: "כל קובץ שייך לפרויקט, כדי שתמיד יהיה ברור מה של מה.",
+    body: `<label class="field-l" for="np">שם הפרויקט</label><input class="input" id="np" dir="auto" autocomplete="off" spellcheck="false" maxlength="${PROJECT_MAX + 10}" placeholder="לדוגמה: אתר הלקוח"><div class="input-hint"><span data-err></span></div>`,
+    actions: [{ label: "יצירת פרויקט", keepOpen: true, onClick: async () => {
+      const inp = $("#np", sheetEl), err = $("[data-err]", sheetEl), v = inp.value.trim();
+      const pe = validateField("project", v);
+      if (pe) { err.textContent = pe; inp.classList.add("invalid"); return; }
+      if (allProjects().some(p => p.key === projectKey(v))) { err.textContent = "כבר קיים פרויקט בשם הזה"; inp.classList.add("invalid"); return; }
+      const id = dbPush(ref(db, `${userRoot()}/projects`)).key;
+      const r = await dbWrite(update(ref(db, `${userRoot()}/projects/${id}`), { name: v, createdAt: serverTimestamp() }));
+      await closeSheet();
+      toast(r === "saved" ? `הפרויקט ${v} נוצר` : "יישמר כשהחיבור יחזור");
+      openProject(projectKey(v));
+    } }]
+  });
+}
+async function newFileInProject(key) {
+  const t = await readClipboardText();
+  if (t == null) return;
+  if (!t.trim()) { toast("אין טקסט בלוח"); return; }
+  const a = analyze(t, "");
+  openSaveForm(a, { project: projectName(key) });
+}
+
+// Every file keeps an extension, so saving or dragging it out always gives the right file name
+const NO_EXT_OK = /^(Dockerfile|Makefile|LICENSE|README|Procfile|Gemfile|Rakefile|CNAME)$/;
+function extError(name) {
+  const base = String(name || "").trim().split("/").pop();
+  if (NO_EXT_OK.test(base) || /\.[A-Za-z0-9]{1,12}$/.test(base)) return "";
+  return "צריך סיומת, למשל .html";
+}
+function fileNameError(name) { return validateField("name", name) || extError(name); }
+const baseName = (it) => { const b = it.name.split("/").pop(); return extError(b) ? `${b}.${it.ext || "txt"}` : b; };
+
+// Drag out: rows of files and versions can be dragged straight into a folder or an editor
+function prepareDragOut(e, rel, name) {
+  const t = bodyCache.get(rel);
+  if (t == null) { e.preventDefault(); fetchRel(rel).catch(() => {}); toast("התוכן נטען, אפשר לגרור שוב"); return; }
+  e.dataTransfer.effectAllowed = "copy";
+  e.dataTransfer.setData("text/plain", t);
+  try {
+    const url = URL.createObjectURL(new Blob([t], { type: "text/plain" }));
+    e.dataTransfer.setData("DownloadURL", `text/plain:${name}:${url}`);
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch {}
+}
+document.addEventListener("dragstart", (e) => {
+  if (e.target.closest?.("[data-clip]")) return; // clips handle themselves
+  const vEl = e.target.closest?.("[data-version][draggable]");
+  if (vEl) {
+    const sc = screenOf(vEl), it = state.items.find(x => x.id === sc?.params?.id);
+    const v = sc?.getVersions?.().find(x => x.id === vEl.dataset.version);
+    if (!it || !v) return;
+    const isLatest = it.latest?.vid === v.id;
+    prepareDragOut(e, `versionsBody/${it.id}/${v.id}`, isLatest ? baseName(it) : versionFileName({ ...it, name: baseName(it) }, v.n, false));
+    return;
+  }
+  const iEl = e.target.closest?.("[data-item][draggable], [data-drag-item]");
+  if (iEl) {
+    const it = state.items.find(x => x.id === (iEl.dataset.item || iEl.dataset.dragItem));
+    if (!it?.latest?.vid) return;
+    prepareDragOut(e, `versionsBody/${it.id}/${it.latest.vid}`, isScript(it) ? `${it.name.replace(/[\\/:*?"<>|]+/g, " ").trim()}.${it.ext || "js"}` : baseName(it));
+  }
+});
+// Warm the cache on hover so the drag has the text ready
+document.addEventListener("mouseover", (e) => {
+  if (!IS_DESKTOP) return;
+  const vEl = e.target.closest?.("[data-version]");
+  if (vEl) { const sc = screenOf(vEl); if (sc?.params?.id) fetchRel(`versionsBody/${sc.params.id}/${vEl.dataset.version}`).catch(() => {}); return; }
+  const iEl = e.target.closest?.("[data-item], [data-drag-item]");
+  if (iEl) { const it = state.items.find(x => x.id === (iEl.dataset.item || iEl.dataset.dragItem)); if (it?.latest?.vid && (it.latest.chars || 0) <= 2000000) fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {}); }
+});
+
+// Drag in: a clear overlay says what will happen, and a drop is never lost
+const dropEl = $("#drop-overlay");
+let dragDepth = 0;
+function dropTarget() {
+  const top = stack.at(-1);
+  if (top?.name === "item") { const it = state.items.find(x => x.id === top.params.id); if (it) return { kind: "item", it, text: `שחרור כגרסה חדשה של ${it.name}` }; }
+  if (top?.name === "project") return { kind: "project", key: top.params.id, text: `שחרור כדי לעדכן את הפרויקט ${projectName(top.params.id)}` };
+  if (top?.name === "files") return { kind: "files", text: "שחרור להעלאה לפרויקט" };
+  return { kind: "home", text: "שחרור לשליחה או לשמירה" };
+}
+document.addEventListener("dragenter", (e) => {
+  if (!hasFiles(e) || stackEl.hidden || sheetOpen) return;
+  dragDepth++;
+  $("[data-t]", dropEl).textContent = dropTarget().text;
+  dropEl.hidden = false;
+});
+document.addEventListener("dragleave", () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) dropEl.hidden = true; });
+async function dropOnItem(dt, it) {
+  const src = await collectDropped(dt);
+  if (!src.list.length) return;
+  if (src.list.length > 1 || src.root) { startBatch(src, { project: isScript(it) ? "" : it.project }); return; }
+  const f = src.list[0].file;
+  if (f.size > MAX_FILE_BYTES) { toast("הקובץ גדול מדי"); return; }
+  const text = await f.text();
+  if (/\u0000/.test(text.slice(0, 8000))) { toast("קובץ בינארי לא נתמך"); return; }
+  newVersionFor(it, text, f.name);
 }
 /* ================= Screens ================= */
 const SCREENS = {
@@ -3338,7 +3511,7 @@ function teardown() {
   unsubs = [];
   clearTimeout(netTimer);
   $("#net-banner").hidden = true;
-  state.devices = {}; state.clips = []; state.items = []; state.settings = {}; state.connected = false;
+  state.devices = {}; state.clips = []; state.items = []; state.settings = {}; state.projectsReg = {}; state.connected = false;
   staged = null; sending = false;
   bodyCache.clear(); freshClips.clear();
 }
@@ -3369,6 +3542,12 @@ function startRealtime() {
   unsubs.push(onValue(ref(db, `${root}/settings`), (snap) => {
     if (mine !== session) return;
     state.settings = snap.val() || {};
+    refreshScreens();
+  }, onDbError));
+
+  unsubs.push(onValue(ref(db, `${root}/projects`), (snap) => {
+    if (mine !== session) return;
+    state.projectsReg = snap.val() || {};
     refreshScreens();
   }, onDbError));
 
@@ -3452,6 +3631,7 @@ function renderSidebar() {
   const activeItem = top?.name === "item" ? top.params.id : null;
   const devs = deviceList(), online = devs.filter(d => d.online).length;
   const groups = new Map();
+  for (const pr of allProjects()) groups.set(pr.key, { name: pr.name, list: [] });
   for (const it of fileItems()) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
   const pinned = scriptList().filter(it => it.pinned).slice(0, 8);
   const link = (name, icon, label, count) =>
@@ -3467,11 +3647,11 @@ function renderSidebar() {
       ${link("settings", "i-gear", "הגדרות", null)}
     </nav>
     ${pinned.length ? `<div class="sb-sec"><span>העתקה מהירה</span></div><div style="padding:0 10px">${pinned.map(it => `<button class="sb-qs" type="button" data-qs="${esc(it.id)}" title="לחיצה מעתיקה"><svg class="ico"><use href="#i-star"/></svg><span dir="auto">${esc(it.name)}</span><kbd>העתקה</kbd></button>`).join("")}</div>` : ""}
-    <div class="sb-sec"><span>פרויקטים</span></div>
+    <div class="sb-sec"><span>פרויקטים</span><button class="sb-add" type="button" data-sb-new title="פרויקט חדש" aria-label="פרויקט חדש"><svg class="ico"><use href="#i-plus-square"/></svg></button></div>
     <div class="sb-tree">${groups.size ? [...groups.entries()].map(([k, g]) => {
       const closed = collapsed.has(k);
       return `<button class="sb-proj ${closed ? "closed" : ""} ${top?.name === "project" && top.params.id === k ? "active-proj" : ""}" type="button" data-proj="${esc(k)}" title="לחיצה כפולה פותחת את הפרויקט"><svg class="ico chev-d"><use href="#i-chev-down"/></svg><span>${esc(g.name)}</span><em>${g.list.length}</em></button>
-        ${closed ? "" : g.list.map(it => `<button class="sb-file ${activeItem === it.id ? "active" : ""}" type="button" data-item="${esc(it.id)}"><i>${itemIcon(it)}</i><span dir="auto">${esc(it.name)}</span></button>`).join("")}`;
+        ${closed ? "" : !g.list.length ? `<div class="sb-empty" style="padding-inline-start:28px">ריק</div>` : g.list.map(it => `<button class="sb-file ${activeItem === it.id ? "active" : ""}" type="button" data-item="${esc(it.id)}"><i>${itemIcon(it)}</i><span dir="auto">${esc(it.name)}</span></button>`).join("")}`;
     }).join("") : `<div class="sb-empty">עדיין אין קבצים</div>`}</div>
     <div class="sb-foot">
       ${(() => { const u = usage(); return `<div class="sb-usage ${u.level}" data-sb-storage title="פירוט נפח"><div><span>נפח ${pctText(u.pct)}</span><span dir="ltr">${fmtBytes(u.used)} / 1 GB</span></div><div class="usage-bar"><span style="width:${Math.min(100, Math.max(u.used ? 0.8 : 0, u.pct * 100))}%"></span></div></div>`; })()}
@@ -3484,6 +3664,7 @@ sidebarEl.addEventListener("click", (e) => {
   if (b) { if (b.dataset.sb === "palette") openPalette(); else navRoot(b.dataset.sb); return; }
   const pj = e.target.closest("[data-proj]");
   if (pj) { const k = pj.dataset.proj; collapsed.has(k) ? collapsed.delete(k) : collapsed.add(k); store.set("cb.collapsed", JSON.stringify([...collapsed])); renderSidebar(); return; }
+  if (e.target.closest("[data-sb-new]")) { newProject(); return; }
   if (e.target.closest("[data-sb-storage]")) { enqueue(async () => { resetTo("settings"); }); push("storage"); return; }
   const qs = e.target.closest("[data-qs]");
   if (qs) { const it = state.items.find(x => x.id === qs.dataset.qs); if (it) copyScript(it); return; }
@@ -3658,7 +3839,7 @@ function menuFor(target) {
   const pjEl = target.closest("[data-proj], [data-proj-open]");
   if (pjEl) {
     const key = pjEl.dataset.proj || pjEl.dataset.projOpen;
-    if (!projectFiles(key).length) return null;
+    if (!projectFiles(key).length && !regIdOf(key)) return null;
     projectFiles(key).forEach(it => fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {}));
     return { title: projectName(key), entries: projectMenuEntries(key) };
   }
@@ -3737,6 +3918,7 @@ function menuFor(target) {
     { label: lastItem ? `העתקת ${lastItem.name}, גרסה אחרונה` : "העתקת הקובץ האחרון", icon: "i-file", disabled: !lastItem?.latest?.vid, run: () => lastItem && copyRel(`versionsBody/${lastItem.id}/${lastItem.latest.vid}`) },
     "sep",
     { label: "סקריפט חדש מהלוח", icon: "i-terminal", run: () => newScriptFromClipboard() },
+    { label: "פרויקט חדש", icon: "i-folder", run: () => newProject() },
     { label: "העלאת קבצים לפרויקט", icon: "i-plus-square", run: () => pickFilesInto(null) },
     { label: "העלאת תיקייה שלמה", icon: "i-folder", run: () => pickFilesInto(null, true) },
     { label: "בחירת קובץ לשליחה", icon: "i-file", run: async () => { await ensureHome(); $('[data-ref="file"]', stack[0].content)?.click(); } },
@@ -3787,8 +3969,9 @@ function paletteCommands() {
     kw: `${tagsOf(it).join(" ")} ${it.description || ""} ${it.domain || ""}`,
     run: () => copyScript(it), alt: () => openItem(it.id)
   }));
+  cmds.push({ group: "פעולות", label: "פרויקט חדש", icon: "i-folder", kw: "new project פרויקט חדש", run: () => newProject() });
   cmds.push({ group: "פעולות", label: "העלאת קבצים לפרויקט", icon: "i-plus-square", kw: "upload batch project העלאה", run: () => pickFilesInto(null) });
-  const projs = projects().map(p => ({ group: "פרויקטים", label: p, sub: `${projectFiles(projectKey(p)).length} קבצים. Ctrl+Enter מעתיק לצ'אט`, icon: "i-folder", kw: "project פרויקט",
+  const projs = projects().map(p => ({ group: "פרויקטים", label: p, sub: projectFiles(projectKey(p)).length ? `${projectFiles(projectKey(p)).length} קבצים. Ctrl+Enter מעתיק לצ'אט` : "פרויקט ריק", icon: "i-folder", kw: "project פרויקט",
     run: () => openProject(projectKey(p)), alt: () => copyProject(projectKey(p)) }));
   const files = fileItems().map(it => ({
     group: "קבצים", label: it.name, sub: `${it.project}, גרסה ${it.latest?.n || 1}`, icon: "i-file", kw: `${it.project} ${it.type}`,
