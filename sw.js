@@ -1,5 +1,5 @@
 /* Code Bridge service worker. Bump VERSION on every deploy that changes shell files. */
-const VERSION = "1.3.0";
+const VERSION = "1.4.0";
 const SHELL = `shell-${VERSION}`;
 const RUNTIME = `runtime-${VERSION}`;
 const SHELL_FILES = [

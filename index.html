@@ -307,6 +307,136 @@ button.row:active{background:var(--deep-2)}
 .sheet{display:flex;flex-direction:column}
 .sheet-card{overflow-y:auto;min-height:0;overscroll-behavior:contain}
 .spin.dark{border-color:rgba(231,236,244,.25);border-top-color:var(--paper)}
+
+/* ================= Desktop (wide screen + mouse). Mobile is untouched. ================= */
+.col-a,.col-b{display:contents}
+.home-grid [data-area="bridge"]{order:1} .home-grid [data-area="install"]{order:2} .home-grid [data-area="send"]{order:3}
+.home-grid [data-area="files"]{order:4} .home-grid [data-area="received"]{order:5} .home-grid [data-area="devices"]{order:6} .home-grid [data-area="foot"]{order:7}
+.desk-only{display:none}
+kbd{font-family:var(--mono);font-size:11.5px;line-height:1;padding:3px 6px;border-radius:6px;border:1px solid var(--rule-2);border-bottom-width:2px;background:var(--deep-2);color:var(--mist);direction:ltr;unicode-bidi:isolate}
+.kbd-hint{font-size:13px;color:var(--faint);display:inline-flex;align-items:center;gap:4px}
+
+#sidebar{display:none}
+.desk #sidebar{position:fixed;top:0;bottom:0;right:0;width:var(--sb-w);z-index:5;display:flex;flex-direction:column;
+  background:#0A0F1A;border-left:1px solid var(--rule)}
+.desk #sidebar[hidden]{display:none!important}
+.desk{--sb-w:276px}
+.desk #stack{right:var(--sb-w)}
+.desk .screen.pushed{box-shadow:none}
+.desk .nav-in{height:58px;grid-template-columns:auto 1fr auto;padding:0 18px}
+.desk .nav-title{text-align:right;max-width:none;font-size:18px;font-weight:700;padding:0 6px}
+.desk .screen[data-name="home"] .nav-start,.desk .screen[data-name="home"] .nav-end{display:none}
+.desk .content{max-width:820px;padding:28px 36px 56px;gap:28px}
+.desk .content.home-grid,.desk .content.item-grid{max-width:1320px;grid-template-columns:minmax(380px,1fr) minmax(0,1.3fr);align-items:start;column-gap:32px}
+.desk .col-a,.desk .col-b{display:grid;gap:26px;align-content:start;min-width:0}
+.desk .home-grid .footnote{grid-column:1/-1}
+.desk .footnote .desk-only{display:block;margin-top:4px}
+.desk .desk-only.kbd-hint{display:inline-flex}
+.desk .bridge{padding:14px 14px 14px}
+.desk .bridge-art{max-width:340px}
+.desk .clip-preview{max-height:9.5em}
+.desk [data-ref="list"]{grid-template-columns:repeat(auto-fill,minmax(340px,1fr));align-items:start}
+.desk .input.search{max-width:520px}
+.desk .net-banner{top:70px}
+
+/* Centered dialogs instead of bottom sheets */
+.desk .sheet{top:50%;bottom:auto!important;left:var(--sb-w-left,0);right:var(--sb-w);max-width:500px;padding:0;
+  transform:translateY(-46%) scale(.98);opacity:0;transition:transform .2s var(--ease),opacity .2s}
+.desk .sheet.open{transform:translateY(-50%);opacity:1}
+.desk .sheet-cancel{margin-top:10px}
+
+/* Sidebar content */
+.sb-brand{display:flex;align-items:center;gap:12px;padding:18px 18px 14px}
+.sb-brand svg{width:36px;height:36px;border-radius:10px;flex:none}
+.sb-brand b{display:block;font-size:17px}
+.sb-brand small{display:block;font-size:12px;color:var(--faint);font-family:var(--mono);direction:ltr;text-align:right}
+.sb-cmd{margin:0 14px 12px;min-height:40px;border-radius:10px;border:1px solid var(--rule-2);background:var(--deep);color:var(--faint);
+  display:flex;align-items:center;gap:8px;padding:0 10px;font-size:14px}
+.sb-cmd span{flex:1;text-align:right}
+.sb-cmd:hover{border-color:var(--mist);color:var(--mist)}
+.sb-cmd .ico{width:17px;height:17px}
+.sb-nav{display:grid;gap:2px;padding:0 10px}
+.sb-link{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 10px;border-radius:9px;color:var(--mist);font-size:15px;font-weight:500;text-align:right}
+.sb-link .ico{width:18px;height:18px}
+.sb-link span{flex:1}
+.sb-link em{font-style:normal;font-size:12.5px;color:var(--faint);font-family:var(--mono)}
+.sb-link:hover{background:var(--deep);color:var(--paper)}
+.sb-link.active{background:rgba(94,225,217,.1);color:var(--phone)}
+.sb-sec{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 6px;font-size:12.5px;color:var(--faint);font-weight:600}
+.sb-tree{flex:1;min-height:0;overflow-y:auto;padding:0 10px 12px}
+.sb-proj{display:flex;align-items:center;gap:6px;width:100%;min-height:32px;padding:0 8px;border-radius:8px;color:var(--paper);font-size:14px;font-weight:600;text-align:right}
+.sb-proj:hover{background:var(--deep)}
+.sb-proj .ico{width:15px;height:15px;color:var(--faint);transition:transform .15s}
+.sb-proj.closed .chev-d{transform:rotate(90deg)}
+.sb-proj span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-proj em{font-style:normal;font-size:12px;color:var(--faint)}
+.sb-file{display:flex;align-items:center;gap:8px;width:100%;min-height:30px;padding:0 8px 0 8px;padding-inline-start:28px;border-radius:8px;color:var(--mist);font-size:13.5px;text-align:right}
+.sb-file:hover{background:var(--deep);color:var(--paper)}
+.sb-file.active{background:rgba(94,225,217,.1);color:var(--phone)}
+.sb-file i{font-style:normal;font-family:var(--mono);font-size:10px;min-width:30px;color:var(--faint);direction:ltr;text-align:left}
+.sb-file span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-empty{padding:6px 12px;color:var(--faint);font-size:13px}
+.sb-foot{border-top:1px solid var(--rule);padding:12px 16px;display:grid;gap:10px}
+.sb-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mist)}
+.sb-status .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.sb-status.on .dot{background:var(--ok);box-shadow:0 0 0 3px rgba(107,227,162,.15)}
+.sb-user{display:flex;align-items:center;gap:10px;min-width:0}
+.sb-user .avatar{width:30px;height:30px;font-size:13px}
+.sb-user div{min-width:0;font-size:12.5px;color:var(--faint);direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Context menu */
+.ctx{position:fixed;z-index:95;min-width:230px;max-width:320px;padding:6px;border-radius:12px;background:#151E30;border:1px solid var(--rule-2);
+  box-shadow:0 16px 40px rgba(0,0,0,.55);opacity:0;transform:scale(.97);transform-origin:top right;transition:opacity .1s,transform .1s}
+.ctx.open{opacity:1;transform:none}
+.ctx-title{padding:6px 10px 6px;font-size:12px;color:var(--faint);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctx-item{display:flex;align-items:center;gap:10px;width:100%;min-height:34px;padding:0 10px;border-radius:8px;color:var(--paper);font-size:14px;text-align:right;outline:none}
+.ctx-item .ico{width:16px;height:16px;color:var(--mist)}
+.ctx-item span{flex:1;white-space:nowrap}
+.ctx-item kbd{font-size:10.5px;padding:2px 5px}
+.ctx-item:hover:not(:disabled),.ctx-item:focus-visible,.ctx-item.focus{background:rgba(94,225,217,.12);color:var(--phone);border-radius:8px}
+.ctx-item:hover:not(:disabled) .ico,.ctx-item.focus .ico{color:var(--phone)}
+.ctx-item.danger{color:var(--alert)} .ctx-item.danger .ico{color:var(--alert)}
+.ctx-item.danger:hover:not(:disabled),.ctx-item.danger.focus{background:rgba(255,122,107,.12);color:var(--alert)}
+.ctx-item:disabled{color:var(--faint);cursor:default} .ctx-item:disabled .ico{color:var(--faint)}
+.ctx-sep{height:1px;margin:5px 4px;background:var(--rule-2)}
+
+/* Command palette */
+.palette{position:fixed;inset:0;z-index:92;background:rgba(3,6,12,.55);display:flex;justify-content:center;align-items:flex-start;padding-top:12vh}
+.palette-box{width:min(620px,92vw);border-radius:14px;background:#121A2B;border:1px solid var(--rule-2);box-shadow:0 24px 60px rgba(0,0,0,.6);overflow:hidden}
+.palette-in{display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--rule)}
+.palette-in .ico{color:var(--faint)}
+.palette-input{flex:1;min-height:52px;background:none;border:0;outline:none;color:var(--paper);font:inherit;font-size:16px}
+.palette-list{max-height:52vh;overflow-y:auto;padding:6px}
+.pal-group{padding:8px 10px 4px;font-size:12px;color:var(--faint);font-weight:600}
+.pal-item{display:flex;align-items:center;gap:12px;width:100%;min-height:42px;padding:0 10px;border-radius:9px;text-align:right;color:var(--paper)}
+.pal-item .ico{width:17px;height:17px;color:var(--mist)}
+.pal-item .x{flex:1;min-width:0}
+.pal-item .x b{display:block;font-weight:500;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pal-item .x small{display:block;font-size:12px;color:var(--faint)}
+.pal-item.on{background:rgba(94,225,217,.12)}
+.pal-item.on .ico{color:var(--phone)}
+.pal-foot{display:flex;gap:16px;padding:9px 14px;border-top:1px solid var(--rule);font-size:12px;color:var(--faint)}
+.pal-empty{padding:20px;text-align:center;color:var(--faint);font-size:14px}
+.short-list{display:grid;grid-template-columns:1fr auto;gap:10px 18px;font-size:14.5px;text-align:right;align-items:center}
+.short-list span:nth-child(even){display:flex;gap:4px;justify-content:flex-end}
+
+@media (hover:hover){
+  button.row:hover{background:var(--deep-2)}
+  .btn-sec:hover{border-color:var(--mist)}
+  .btn-copy:hover{background:rgba(94,225,217,.2)}
+  .btn-more:hover{background:var(--deep-2);color:var(--paper)}
+  .clip:hover{border-color:var(--rule-2)}
+  .nav-btn:hover{background:rgba(94,225,217,.08)}
+  .sheet-action:hover:not(:disabled){background:var(--deep-3)}
+  .btn-hero:hover{border-color:rgba(94,225,217,.6)}
+  .chip.pick:hover{border-color:var(--mist)}
+  .link-btn:hover{text-decoration:underline}
+}
+.desk ::-webkit-scrollbar{width:10px;height:10px}
+.desk ::-webkit-scrollbar-thumb{background:var(--rule-2);border-radius:10px;border:3px solid transparent;background-clip:content-box}
+.desk ::-webkit-scrollbar-thumb:hover{background:var(--faint);background-clip:content-box}
+.desk ::-webkit-scrollbar-track{background:transparent}
+.desk *{scrollbar-width:thin;scrollbar-color:var(--rule-2) transparent}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -350,6 +480,15 @@ button.row:active{background:var(--deep-2)}
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
   <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
   <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="6" y1="9" x2="6.01" y2="9"/><line x1="10" y1="9" x2="10.01" y2="9"/><line x1="14" y1="9" x2="14.01" y2="9"/><line x1="18" y1="9" x2="18.01" y2="9"/><line x1="7" y1="15" x2="17" y2="15"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><line x1="7.5" y1="7.5" x2="7.51" y2="7.5"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></symbol>
+  <symbol id="i-chev-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
 </svg>
 
@@ -385,6 +524,15 @@ button.row:active{background:var(--deep-2)}
 </section>
 
 <div id="stack" hidden></div>
+<aside id="sidebar" hidden aria-label="ניווט"></aside>
+<div id="ctx" class="ctx" role="menu" hidden></div>
+<div id="palette" class="palette" hidden>
+  <div class="palette-box" role="dialog" aria-modal="true" aria-label="חיפוש ופקודות">
+    <div class="palette-in"><svg class="ico"><use href="#i-search"/></svg><input class="palette-input" id="palette-input" type="text" autocomplete="off" spellcheck="false" placeholder="חיפוש קובץ או פעולה" aria-label="חיפוש קובץ או פעולה"><kbd>Esc</kbd></div>
+    <div class="palette-list" id="palette-list" role="listbox"></div>
+    <div class="pal-foot"><span><kbd>Enter</kbd> ביצוע</span><span><kbd>Ctrl</kbd><kbd>Enter</kbd> העתקת קובץ</span><span><kbd>↑</kbd><kbd>↓</kbd> מעבר</span></div>
+  </div>
+</div>
 
 <div id="sheet-backdrop" class="sheet-backdrop" hidden></div>
 <div id="sheet" class="sheet" hidden></div>
@@ -407,7 +555,7 @@ import {
   push as dbPush, get, query, orderByKey, limitToLast
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-const APP_VERSION = "1.3.0";
+const APP_VERSION = "1.4.0";
 
 /* ================= Firebase ================= */
 const app = initializeApp({
@@ -609,7 +757,7 @@ const enqueue = (fn) => (navQueue = navQueue.then(fn).catch(console.error));
 
 function slide(el, from, to, dur = 340) {
   const f = `translateX(${from})`, t = `translateX(${to})`;
-  if (REDUCED || dur === 0) { el.style.transform = t; return Promise.resolve(); }
+  if (REDUCED || dur === 0 || document.body.classList.contains("desk")) { el.style.transform = t; return Promise.resolve(); }
   const a = el.animate([{ transform: f }, { transform: t }], { duration: dur, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" });
   return a.finished.then(() => { el.style.transform = t; a.cancel(); }).catch(() => { el.style.transform = t; });
 }
@@ -620,6 +768,7 @@ function createScreen(name, prev, params = {}) {
   const el = document.createElement("section");
   el.className = "screen" + (prev ? " pushed" : "");
   el.dataset.name = name;
+  if (params.id) el.dataset.id = params.id;
   el.innerHTML = `
     <header class="nav"><div class="nav-in">
       <div class="nav-start"></div>
@@ -657,6 +806,7 @@ function push(name, params = {}) {
     if (prev) { prev.el.inert = true; }
     await Promise.all([slide(s.el, "-100%", "0%"), prev ? slide(prev.el, "0%", "30%") : null]);
     navBusy = false;
+    renderSidebar();
   });
 }
 
@@ -669,6 +819,7 @@ async function popVisual(fromTop = "0%", fromPrev = "30%", dur = 340) {
   try { top.destroy(); } catch {}
   top.el.remove();
   navBusy = false;
+  renderSidebar();
 }
 
 addEventListener("popstate", () => {
@@ -685,9 +836,10 @@ function resetTo(name) {
   stackEl.appendChild(s.el);
   history.replaceState({ depth: 1 }, "");
   s.update();
+  renderSidebar();
 }
 
-function refreshScreens() { stack.forEach(s => { try { s.update(); } catch (e) { console.error(e); } }); }
+function refreshScreens() { stack.forEach(s => { try { s.update(); } catch (e) { console.error(e); } }); try { renderSidebar(); } catch (e) { console.error(e); } }
 
 /* Swipe back from the right edge */
 let g = null;
@@ -967,13 +1119,14 @@ async function writeClipboard(text) {
 }
 const askedDelete = new Set();
 // Copies a stored body. Must be called directly from a tap so Safari allows the clipboard write.
-async function copyRel(rel, btn) {
+async function copyRel(rel, btn, transform) {
+  const tf = transform || ((t) => t);
   const cached = bodyCache.get(rel);
   try {
-    if (cached != null) await writeClipboard(cached);
+    if (cached != null) await writeClipboard(tf(cached));
     else if (window.ClipboardItem && navigator.clipboard?.write) {
-      await navigator.clipboard.write([new ClipboardItem({ "text/plain": fetchRel(rel).then(t => new Blob([t], { type: "text/plain" })) })]);
-    } else await writeClipboard(await fetchRel(rel));
+      await navigator.clipboard.write([new ClipboardItem({ "text/plain": fetchRel(rel).then(t => new Blob([tf(t)], { type: "text/plain" })) })]);
+    } else await writeClipboard(tf(await fetchRel(rel)));
   } catch (e) {
     try { await fetchRel(rel); } catch {}
     toast("התוכן נטען. לחיצה נוספת על העתקה");
@@ -984,7 +1137,7 @@ async function copyRel(rel, btn) {
     btn.classList.add("done"); if (label) label.textContent = "הועתק";
     setTimeout(() => { btn.classList.remove("done"); if (label && label.isConnected) label.textContent = orig; }, 1800);
   }
-  toast("הועתק, מוכן להדבקה");
+  toast(transform ? "הועתק כבלוק קוד" : "הועתק, מוכן להדבקה");
   return true;
 }
 async function copyClip(c, btn) {
@@ -1361,9 +1514,7 @@ function itemMenu(item, versions) {
       ...(old ? [{ label: `מחיקת ${old} גרסאות ישנות`, style: "danger", onClick: () => openSheet({
         title: `למחוק ${old} גרסאות ישנות?`, message: "3 הגרסאות האחרונות יישארו. אי אפשר לשחזר.",
         actions: [{ label: "מחיקה", style: "danger", onClick: () => pruneVersions(item, versions, 3) }] }) }] : []),
-      { label: "מחיקת הקובץ", style: "danger", onClick: () => openSheet({
-        title: `למחוק את ${item.name}?`, message: `הקובץ וכל ${item.count || 1} הגרסאות שלו יימחקו מכל המכשירים. אי אפשר לשחזר.`,
-        actions: [{ label: "מחיקת הקובץ", style: "danger", onClick: async () => { await deleteItem(item); if (stack.at(-1)?.params?.id === item.id) history.back(); } }] }) }
+      { label: "מחיקת הקובץ", style: "danger", onClick: () => confirmDeleteItem(item) }
     ]
   });
 }
@@ -1411,7 +1562,7 @@ function buildFiles(s) {
     <div data-ref="list" style="display:grid;gap:22px"></div>`;
   const q = $('[data-ref="q"]', s.content);
   q.addEventListener("input", () => s.update());
-  s.content.addEventListener("click", (e) => { const r = e.target.closest("[data-item]"); if (r) push("item", { id: r.dataset.item }); });
+  s.content.addEventListener("click", (e) => { const r = e.target.closest("[data-item]"); if (r) openItem(r.dataset.item); });
   s.update = () => {
     const term = normKey(q.value);
     const items = state.items.filter(it => !term || normKey(it.name).includes(term) || normKey(it.project).includes(term));
@@ -1430,8 +1581,11 @@ function buildFiles(s) {
 function buildItem(s, params) {
   const id = params.id;
   let versions = [], loaded = false;
+  s.content.classList.add("item-grid");
+  s.getVersions = () => versions;
   s.end.innerHTML = `<button class="nav-btn" type="button" data-act="menu" aria-label="אפשרויות"><svg class="ico"><use href="#i-more"/></svg></button>`;
   s.content.innerHTML = `
+    <div class="col-a">
     <section class="item-head" data-ref="head"></section>
     <section class="item-actions">
       <button class="btn-primary big" type="button" data-act="copy-latest"><svg class="ico"><use href="#i-copy"/></svg><span>העתקת הגרסה האחרונה</span></button>
@@ -1441,10 +1595,13 @@ function buildItem(s, params) {
       </div>
       <input type="file" data-ref="file" hidden>
     </section>
+    </div>
+    <div class="col-b">
     <section>
       <div class="section-head"><h2>גרסאות</h2><span class="muted" data-ref="total"></span></div>
       <div class="group with-ico" data-ref="versions"></div>
-    </section>`;
+    </section>
+    </div>`;
   const fileInput = $('[data-ref="file"]', s.content);
   const item = () => state.items.find(it => it.id === id);
   const unsub = onValue(query(ref(db, `${userRoot()}/versionsMeta/${id}`), orderByKey(), limitToLast(100)), (snap) => {
@@ -1573,8 +1730,10 @@ function buildHome(s) {
   s.start.innerHTML = `<svg class="nav-logo" aria-hidden="true"><use href="#logo"/></svg>`;
   s.end.innerHTML = `<button class="nav-btn" type="button" data-go="settings"><svg class="ico"><use href="#i-gear"/></svg><span>הגדרות</span></button>`;
   const zoneHint = IS_DESKTOP ? "או Ctrl+V בכל מקום בעמוד, או גרירת קובץ לכאן" : "או לחיצה ארוכה כאן ובחירה בהדבקה";
+  s.content.classList.add("home-grid");
   s.content.innerHTML = `
-    <section class="bridge" data-ref="bridge" aria-live="polite">
+    <div class="col-a">
+    <section class="bridge" data-ref="bridge" data-area="bridge" aria-live="polite">
       <svg class="bridge-art" viewBox="0 0 520 140" aria-hidden="true">
         <path class="span" d="M110 60 C 200 18, 320 18, 410 60"/>
         <path class="span" d="M110 60 C 200 102, 320 102, 410 60"/>
@@ -1590,15 +1749,15 @@ function buildHome(s) {
       <div class="bridge-status"><h2 data-ref="bt"></h2><p data-ref="bx"></p></div>
     </section>
 
-    <section class="install-card" data-ref="install" hidden>
+    <section class="install-card" data-ref="install" data-area="install" hidden>
       <div class="ic"><svg class="ico"><use href="#i-download"/></svg></div>
       <div class="txt"><div class="t">התקנה כאפליקציה</div><div class="s">מסך מלא ואייקון במסך הבית</div></div>
       <button class="btn-pill" type="button" data-act="install">להתקנה</button>
       <button class="icon-x" type="button" data-act="dismiss" aria-label="הסתרה"><svg class="ico"><use href="#i-x"/></svg></button>
     </section>
 
-    <section>
-      <div class="section-head"><h2>שליחה</h2></div>
+    <section data-area="send">
+      <div class="section-head"><h2>שליחה</h2><span class="desk-only kbd-hint"><kbd>Ctrl</kbd><kbd>V</kbd> בכל מקום</span></div>
       <div class="composer" data-ref="composer">
         <button class="btn-hero" type="button" data-act="paste">
           <span class="hi"><svg class="ico"><use href="#i-clipboard"/></svg></span>
@@ -1614,22 +1773,25 @@ function buildHome(s) {
       <div class="staged" data-ref="staged" hidden></div>
     </section>
 
-    <section>
+    <section data-area="files">
       <div class="group-title">קבצים</div>
       <div class="group with-ico" data-ref="files"></div>
     </section>
 
-    <section>
-      <div class="section-head"><h2>התקבלו לאחרונה</h2><button class="link-btn danger" type="button" data-act="clear" data-ref="clear" hidden>מחיקת הכל</button></div>
-      <div class="clips" data-ref="clips"></div>
-    </section>
-
-    <section>
+    <section data-area="devices">
       <div class="group-title">המכשירים שלך</div>
       <div class="group with-ico" data-ref="devs"></div>
     </section>
+    </div>
 
-    <p class="footnote">שלב 3 מתוך 8: קבצים וגרסאות</p>`;
+    <div class="col-b">
+    <section data-area="received">
+      <div class="section-head"><h2>התקבלו לאחרונה</h2><button class="link-btn danger" type="button" data-act="clear" data-ref="clear" hidden>מחיקת הכל</button></div>
+      <div class="clips" data-ref="clips"></div>
+    </section>
+    </div>
+
+    <p class="footnote" data-area="foot">שלב 3 מתוך 8: קבצים וגרסאות<span class="desk-only">קליק ימני לפעולות מהירות, Ctrl+K לחיפוש ופקודות, ? לקיצורי מקלדת</span></p>`;
 
   const zone = $('[data-ref="zone"]', s.content);
   const fileInput = $('[data-ref="file"]', s.content);
@@ -1682,7 +1844,7 @@ function buildHome(s) {
     if (act === "not-this" && staged) { staged.suggest = null; return s.update(); }
     if (e.target.closest('[data-go="files"]')) return push("files");
     const itemRowEl = e.target.closest("[data-item]");
-    if (itemRowEl) return push("item", { id: itemRowEl.dataset.item });
+    if (itemRowEl) return openItem(itemRowEl.dataset.item);
     if (act === "review") return reviewFindings(staged?.findings);
     if (act === "clear") return confirmClearAll();
     if (act === "install") return doInstall();
@@ -2076,10 +2238,420 @@ function startRealtime() {
 }
 setInterval(() => { if (!stackEl.hidden) refreshScreens(); }, 30000);
 
+/* ================= Desktop mode ================= */
+const deskMQ = matchMedia("(min-width: 1024px) and (pointer: fine)");
+const isDesk = () => document.body.classList.contains("desk");
+function applyDesk() {
+  document.body.classList.toggle("desk", !!deskMQ.matches);
+  syncSidebar(); refreshScreens();
+}
+deskMQ.addEventListener?.("change", applyDesk);
+const sidebarEl = $("#sidebar");
+const collapsed = new Set(JSON.parse(store.get("cb.collapsed") || "[]"));
+function syncSidebar() { sidebarEl.hidden = !isDesk() || stackEl.hidden; }
+
+function navRoot(name) {
+  closeMenu(); closePalette();
+  if (stack.length === 1 && stack[0].name === name) return;
+  enqueue(async () => { resetTo(name); });
+}
+function openItem(id) {
+  closeMenu(); closePalette();
+  if (!isDesk()) { push("item", { id }); return; }
+  enqueue(async () => {
+    while (stack.length > 1) { const t = stack.pop(); try { t.destroy(); } catch {} t.el.remove(); }
+    stack[0].el.inert = false; stack[0].el.style.transform = "translateX(0%)";
+  });
+  push("item", { id });
+}
+function ensureHome() {
+  if (stack.length === 1 && stack[0].name === "home") return Promise.resolve();
+  return enqueue(async () => { resetTo("home"); });
+}
+
+function renderSidebar() {
+  if (!isDesk() || stackEl.hidden) return;
+  const u = auth.currentUser;
+  const root = stack[0]?.name, top = stack.at(-1);
+  const activeItem = top?.name === "item" ? top.params.id : null;
+  const devs = deviceList(), online = devs.filter(d => d.online).length;
+  const groups = new Map();
+  for (const it of state.items) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
+  const link = (name, icon, label, count) =>
+    `<button class="sb-link ${root === name && !activeItem ? "active" : ""}" type="button" data-sb="${name}"><svg class="ico"><use href="#${icon}"/></svg><span>${label}</span>${count != null ? `<em>${count}</em>` : ""}</button>`;
+  sidebarEl.innerHTML = `
+    <div class="sb-brand"><svg aria-hidden="true"><use href="#logo"/></svg><div><b>גשר קוד</b><small>v${APP_VERSION}</small></div></div>
+    <button class="sb-cmd" type="button" data-sb="palette"><svg class="ico"><use href="#i-search"/></svg><span>חיפוש ופקודות</span><kbd>Ctrl K</kbd></button>
+    <nav class="sb-nav">
+      ${link("home", "i-home", "בית", state.clips.length || null)}
+      ${link("files", "i-folder", "קבצים", state.items.length || null)}
+      ${link("devices", "i-devices", "מכשירים", devs.length ? `${online}/${devs.length}` : null)}
+      ${link("settings", "i-gear", "הגדרות", null)}
+    </nav>
+    <div class="sb-sec"><span>פרויקטים</span></div>
+    <div class="sb-tree">${groups.size ? [...groups.entries()].map(([k, g]) => {
+      const closed = collapsed.has(k);
+      return `<button class="sb-proj ${closed ? "closed" : ""}" type="button" data-proj="${esc(k)}"><svg class="ico chev-d"><use href="#i-chev-down"/></svg><span>${esc(g.name)}</span><em>${g.list.length}</em></button>
+        ${closed ? "" : g.list.map(it => `<button class="sb-file ${activeItem === it.id ? "active" : ""}" type="button" data-item="${esc(it.id)}"><i>${itemIcon(it)}</i><span dir="auto">${esc(it.name)}</span></button>`).join("")}`;
+    }).join("") : `<div class="sb-empty">עדיין אין קבצים</div>`}</div>
+    <div class="sb-foot">
+      <div class="sb-status ${state.connected ? "on" : ""}"><span class="dot"></span>${state.connected ? `מחובר, ${online} ${online === 1 ? "מכשיר פעיל" : "מכשירים פעילים"}` : "מתחבר לשרת"}</div>
+      ${u ? `<div class="sb-user">${u.photoURL ? `<img class="avatar" src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : `<div class="avatar">${esc((u.displayName || u.email || "?").charAt(0).toUpperCase())}</div>`}<div>${esc(u.email || "")}</div></div>` : ""}
+    </div>`;
+}
+sidebarEl.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-sb]");
+  if (b) { if (b.dataset.sb === "palette") openPalette(); else navRoot(b.dataset.sb); return; }
+  const pj = e.target.closest("[data-proj]");
+  if (pj) { const k = pj.dataset.proj; collapsed.has(k) ? collapsed.delete(k) : collapsed.add(k); store.set("cb.collapsed", JSON.stringify([...collapsed])); renderSidebar(); return; }
+  const f = e.target.closest("[data-item]");
+  if (f) openItem(f.dataset.item);
+});
+
+/* ================= Quick actions shared by menus, palette and shortcuts ================= */
+const FENCE = { js:"javascript", mjs:"javascript", cjs:"javascript", jsx:"jsx", ts:"typescript", tsx:"tsx", html:"html", htm:"html", css:"css", scss:"scss",
+  json:"json", py:"python", sh:"bash", sql:"sql", md:"markdown", php:"php", svg:"xml", xml:"xml", yml:"yaml", yaml:"yaml", vue:"vue", go:"go", rb:"ruby", java:"java", kt:"kotlin", swift:"swift", cs:"csharp", c:"c", cpp:"cpp" };
+const asMarkdown = (ext) => (t) => { const f = t.includes("```") ? "````" : "```"; return `${f}${FENCE[ext] || ""}\n${t.replace(/\n$/, "")}\n${f}`; };
+function viewInWindow(rel) {
+  const win = window.open("", "_blank");
+  if (!win) { toast("הדפדפן חסם חלון חדש"); return; }
+  try { win.document.title = "טוען"; win.document.body.style.cssText = "background:#0D1320;color:#8796AD;font:15px sans-serif;padding:24px"; win.document.body.textContent = "טוען"; } catch {}
+  fetchRel(rel).then(t => {
+    // Shown as plain text, so code inside never runs
+    const url = URL.createObjectURL(new Blob([t], { type: "text/plain;charset=utf-8" }));
+    win.location.href = url;
+    setTimeout(() => URL.revokeObjectURL(url), 120000);
+  }).catch(() => { try { win.close(); } catch {} toast("הטעינה נכשלה"); });
+}
+async function downloadRel(rel, name) {
+  try { downloadText(await fetchRel(rel), name); } catch { toast("ההורדה נכשלה"); }
+}
+async function readClipboardText() {
+  if (!navigator.clipboard?.readText) { toast("הדפדפן לא מאפשר קריאה מהלוח"); return null; }
+  try { return await navigator.clipboard.readText(); } catch { toast("אין הרשאה ללוח"); return null; }
+}
+async function quickPaste(mode) {
+  const t = await readClipboardText();
+  if (t == null) return;
+  await ensureHome();
+  stage(t);
+  if (!staged) return;
+  if (mode === "send") sendStaged();
+  else if (mode === "save") openSaveForm(staged, staged.suggest ? { project: staged.suggest.item.project, name: staged.suggest.item.name } : {});
+}
+async function clipToFile(c) {
+  try {
+    const a = analyze(await fetchRel(clipKey(c.id)), c.name || "");
+    a.suggest = suggestItem(a);
+    openSaveForm(a, a.suggest ? { project: a.suggest.item.project, name: a.suggest.item.name } : {});
+  } catch { toast("הטעינה נכשלה"); }
+}
+async function pasteVersionInto(item) {
+  const t = await readClipboardText();
+  if (t != null) newVersionFor(item, t);
+}
+function confirmDeleteItem(item) {
+  openSheet({
+    title: `למחוק את ${item.name}?`, message: `הקובץ וכל ${item.count || 1} הגרסאות שלו יימחקו מכל המכשירים. אי אפשר לשחזר.`,
+    actions: [{ label: "מחיקת הקובץ", style: "danger", onClick: async () => { await deleteItem(item); if (stack.at(-1)?.params?.id === item.id) history.back(); } }]
+  });
+}
+async function restoreVersion(item, v) {
+  try {
+    const a = analyze(await fetchRel(`versionsBody/${item.id}/${v.id}`), item.name);
+    savedToast(await saveVersion({ item, project: item.project, name: item.name, note: `שוחזר מגרסה ${v.n}`, a }));
+  } catch { toast("השחזור נכשל"); }
+}
+const latestClipFromOther = () => state.clips.find(c => c.from !== DEVICE_ID) || state.clips[0];
+function showShortcuts() {
+  const K = (...k) => k.map(x => `<kbd>${x}</kbd>`).join("");
+  openSheet({
+    title: "קיצורי מקלדת",
+    body: `<div class="short-list">
+      <span>חיפוש ופקודות</span><span>${K("Ctrl", "K")}</span>
+      <span>הדבקה לשליחה, בדף הבית</span><span>${K("Ctrl", "V")}</span>
+      <span>שליחה מהירה של מה שמוכן</span><span>${K("Ctrl", "Enter")}</span>
+      <span>שמירה כקובץ של מה שמוכן</span><span>${K("Ctrl", "S")}</span>
+      <span>ביטול או סגירה</span><span>${K("Esc")}</span>
+      <span>העתקת הגרסה האחרונה, במסך קובץ</span><span>${K("Ctrl", "Shift", "C")}</span>
+      <span>הדבקת גרסה חדשה, במסך קובץ</span><span>${K("Ctrl", "Shift", "V")}</span>
+      <span>חיפוש קבצים</span><span>${K("/")}</span>
+      <span>התפריט הרגיל של הדפדפן</span><span>${K("Shift")} + קליק ימני</span>
+      <span>רשימה זו</span><span>${K("?")}</span>
+    </div>`,
+    cancel: "סגירה"
+  });
+}
+
+/* ================= Context menu ================= */
+const ctxEl = $("#ctx");
+let menuOpen = false, menuItems = [], menuFocus = -1;
+function closeMenu() {
+  if (!menuOpen) return;
+  menuOpen = false; ctxEl.classList.remove("open"); ctxEl.hidden = true; ctxEl.innerHTML = ""; menuItems = [];
+}
+function openMenu(entries, x, y, title = "") {
+  closeMenu();
+  menuItems = entries.filter(e => e && e !== "sep");
+  let i = -1;
+  ctxEl.innerHTML = (title ? `<div class="ctx-title">${esc(title)}</div>` : "") + entries.filter(Boolean).map(e => {
+    if (e === "sep") return `<div class="ctx-sep" role="separator"></div>`;
+    i++;
+    return `<button class="ctx-item ${e.danger ? "danger" : ""}" type="button" role="menuitem" data-mi="${i}" ${e.disabled ? "disabled" : ""}>
+      <svg class="ico"><use href="#${e.icon || "i-zap"}"/></svg><span>${esc(e.label)}</span>${e.kbd ? `<kbd>${esc(e.kbd)}</kbd>` : ""}</button>`;
+  }).join("").replace(/^(<div class="ctx-sep"[^>]*><\/div>)+|(<div class="ctx-sep"[^>]*><\/div>)+$/g, "");
+  ctxEl.hidden = false; menuOpen = true; menuFocus = -1;
+  const r = ctxEl.getBoundingClientRect(), W = innerWidth, H = innerHeight;
+  // RTL: open towards the left of the cursor, flip when there is no room
+  let left = x - r.width; if (left < 8) left = Math.min(x, W - r.width - 8);
+  let top = y; if (top + r.height > H - 8) top = Math.max(8, y - r.height);
+  ctxEl.style.left = `${Math.max(8, left)}px`; ctxEl.style.top = `${top}px`;
+  requestAnimationFrame(() => ctxEl.classList.add("open"));
+}
+ctxEl.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-mi]");
+  if (!b || b.disabled) return;
+  const item = menuItems[+b.dataset.mi];
+  closeMenu();
+  item?.run?.(); // runs inside the click, so clipboard writes are allowed
+});
+ctxEl.addEventListener("contextmenu", (e) => e.preventDefault());
+function moveMenuFocus(d) {
+  const btns = [...ctxEl.querySelectorAll(".ctx-item:not(:disabled)")];
+  if (!btns.length) return;
+  const cur = btns.indexOf(document.activeElement);
+  const next = btns[(cur + d + btns.length) % btns.length];
+  next.focus();
+}
+document.addEventListener("pointerdown", (e) => { if (menuOpen && !ctxEl.contains(e.target)) closeMenu(); }, true);
+addEventListener("resize", closeMenu);
+addEventListener("blur", closeMenu);
+document.addEventListener("scroll", closeMenu, true);
+
+function screenOf(el) { const sc = el.closest(".screen"); return stack.find(x => x.el === sc); }
+function menuFor(target) {
+  // Item shown somewhere (home list, files list, sidebar)
+  const itEl = target.closest("[data-item]");
+  if (itEl) {
+    const it = state.items.find(x => x.id === itEl.dataset.item);
+    if (!it) return null;
+    const rel = `versionsBody/${it.id}/${it.latest?.vid}`;
+    fetchRel(rel).catch(() => {});
+    return { title: `${it.project} / ${it.name}`, entries: [
+      { label: "פתיחה", icon: "i-file", run: () => openItem(it.id) },
+      { label: "העתקת הגרסה האחרונה", icon: "i-copy", run: () => copyRel(rel) },
+      { label: "העתקה כבלוק קוד", icon: "i-code", run: () => copyRel(rel, null, asMarkdown(it.ext)) },
+      { label: "הדבקת גרסה חדשה מהלוח", icon: "i-clipboard", run: () => pasteVersionInto(it) },
+      "sep",
+      { label: "צפייה בחלון חדש", icon: "i-external", run: () => viewInWindow(rel) },
+      { label: "הורדה כקובץ", icon: "i-download", run: () => downloadRel(rel, versionFileName(it, it.latest?.n, true)) },
+      { label: "העתקת שם הקובץ", icon: "i-tag", run: () => writeClipboard(it.name).then(() => toast("השם הועתק")) },
+      "sep",
+      { label: "שינוי שם או פרויקט", icon: "i-edit", run: () => renameItem(it) },
+      { label: "מחיקת הקובץ", icon: "i-trash", danger: true, run: () => confirmDeleteItem(it) }
+    ] };
+  }
+  // Version row inside a file screen
+  const vEl = target.closest("[data-version]");
+  if (vEl) {
+    const sc = screenOf(vEl), it = state.items.find(x => x.id === sc?.params?.id);
+    const versions = sc?.getVersions?.() || [];
+    const v = versions.find(x => x.id === vEl.dataset.version);
+    if (!it || !v) return null;
+    const rel = `versionsBody/${it.id}/${v.id}`, isLatest = it.latest?.vid === v.id;
+    fetchRel(rel).catch(() => {});
+    return { title: `${it.name}, גרסה ${v.n}`, entries: [
+      { label: "העתקה", icon: "i-copy", run: () => copyRel(rel) },
+      { label: "העתקה כבלוק קוד", icon: "i-code", run: () => copyRel(rel, null, asMarkdown(it.ext)) },
+      { label: "צפייה בחלון חדש", icon: "i-external", run: () => viewInWindow(rel) },
+      { label: "הורדה כקובץ", icon: "i-download", run: () => downloadRel(rel, versionFileName(it, v.n, isLatest)) },
+      ...(isLatest ? [] : [{ label: "שחזור כגרסה אחרונה", icon: "i-rotate", run: () => restoreVersion(it, v) }]),
+      "sep",
+      { label: "מחיקת הגרסה", icon: "i-trash", danger: true, disabled: versions.length < 2, run: () => openSheet({
+        title: `למחוק את גרסה ${v.n}?`, message: "אי אפשר לשחזר.",
+        actions: [{ label: "מחיקה", style: "danger", onClick: () => deleteVersion(it, v, versions) }] }) }
+    ] };
+  }
+  // Received item
+  const cEl = target.closest("[data-clip]");
+  if (cEl) {
+    const c = state.clips.find(x => x.id === cEl.dataset.clip);
+    if (!c) return null;
+    const rel = clipKey(c.id);
+    fetchRel(rel).catch(() => {});
+    return { title: c.name || `${c.type}, ${nf.format(c.chars || 0)} תווים`, entries: [
+      { label: "העתקה", icon: "i-copy", run: () => copyRel(rel) },
+      { label: "העתקה כבלוק קוד", icon: "i-code", run: () => copyRel(rel, null, asMarkdown(c.ext)) },
+      { label: "שמירה כקובץ עם גרסאות", icon: "i-layers", run: () => clipToFile(c) },
+      "sep",
+      { label: "צפייה בחלון חדש", icon: "i-external", run: () => viewInWindow(rel) },
+      { label: "הורדה כקובץ", icon: "i-download", run: () => downloadRel(rel, fileNameFor(c)) },
+      "sep",
+      { label: "מחיקה", icon: "i-trash", danger: true, run: () => confirmDelete(c) }
+    ] };
+  }
+  // Device
+  const dEl = target.closest("[data-device]");
+  if (dEl) {
+    const d = deviceList().find(x => x.id === dEl.dataset.device);
+    if (!d) return null;
+    const canRemove = d.id !== DEVICE_ID && !d.online;
+    return { title: displayName(d), entries: [
+      { label: "שינוי שם", icon: "i-edit", run: () => renameDevice(d) },
+      { label: "הסרה מהרשימה", icon: "i-trash", danger: true, disabled: !canRemove, run: () => confirmRemove(d) }
+    ] };
+  }
+  // Item ready to send
+  if (target.closest('[data-ref="staged"]') && staged) {
+    const sug = staged.suggest;
+    return { title: "מוכן לשליחה", entries: [
+      { label: "שליחה מהירה", icon: "i-send", kbd: "Ctrl+Enter", run: () => sendStaged() },
+      sug ? { label: `שמירה כגרסה ${(sug.item.seq || 0) + 1} של ${sug.item.name}`, icon: "i-layers", kbd: "Ctrl+S", run: () => openSaveForm(staged, { project: sug.item.project, name: sug.item.name }) }
+          : { label: "שמירה כקובץ", icon: "i-layers", kbd: "Ctrl+S", run: () => openSaveForm(staged) },
+      ...(staged.findings.length ? [{ label: "הצגת הפרטים הרגישים", icon: "i-alert", run: () => reviewFindings(staged.findings) }] : []),
+      "sep",
+      { label: "ביטול", icon: "i-x", kbd: "Esc", run: () => discardStaged() }
+    ] };
+  }
+  // General
+  const lastClip = latestClipFromOther(), lastItem = state.items[0];
+  return { title: "פעולות מהירות", entries: [
+    { label: "הדבקה ושליחה מיידית", icon: "i-zap", run: () => quickPaste("send") },
+    { label: "הדבקה ושמירה כקובץ", icon: "i-layers", run: () => quickPaste("save") },
+    { label: "הדבקה לבדיקה לפני שליחה", icon: "i-clipboard", kbd: "Ctrl+V", run: () => quickPaste("stage") },
+    "sep",
+    { label: "העתקת הפריט האחרון שהתקבל", icon: "i-copy", disabled: !lastClip, run: () => lastClip && copyRel(clipKey(lastClip.id)) },
+    { label: lastItem ? `העתקת ${lastItem.name}, גרסה אחרונה` : "העתקת הקובץ האחרון", icon: "i-file", disabled: !lastItem?.latest?.vid, run: () => lastItem && copyRel(`versionsBody/${lastItem.id}/${lastItem.latest.vid}`) },
+    "sep",
+    { label: "בחירת קובץ לשליחה", icon: "i-file", run: async () => { await ensureHome(); $('[data-ref="file"]', stack[0].content)?.click(); } },
+    { label: "כתיבה ידנית", icon: "i-edit", run: async () => { await ensureHome(); openWrite(); } },
+    "sep",
+    { label: "חיפוש ופקודות", icon: "i-search", kbd: "Ctrl+K", run: () => openPalette() },
+    { label: "קיצורי מקלדת", icon: "i-keyboard", kbd: "?", run: () => showShortcuts() },
+    { label: "בדיקת עדכונים", icon: "i-refresh", run: () => checkUpdates() }
+  ] };
+}
+document.addEventListener("contextmenu", (e) => {
+  if (!IS_DESKTOP || e.shiftKey || stackEl.hidden || sheetOpen) return;
+  if (e.target.closest("input, textarea, select, [contenteditable], .clip-preview, #palette, a[href]")) return;
+  const sel = window.getSelection?.();
+  if (sel && String(sel).trim()) return; // selected text keeps the native Copy
+  const m = menuFor(e.target);
+  if (!m) return;
+  e.preventDefault();
+  openMenu(m.entries, e.clientX, e.clientY, m.title);
+  const first = ctxEl.querySelector(".ctx-item:not(:disabled)");
+  first?.focus({ preventScroll: true });
+});
+
+/* ================= Command palette ================= */
+const palEl = $("#palette"), palInput = $("#palette-input"), palList = $("#palette-list");
+let paletteOpen = false, palResults = [], palIndex = 0;
+function paletteCommands() {
+  const cmds = [
+    { group: "פעולות", label: "הדבקה ושליחה מיידית", icon: "i-zap", kw: "paste send שליחה הדבקה", run: () => quickPaste("send") },
+    { group: "פעולות", label: "הדבקה ושמירה כקובץ", icon: "i-layers", kw: "paste save שמירה", run: () => quickPaste("save") },
+    { group: "פעולות", label: "הדבקה לבדיקה לפני שליחה", icon: "i-clipboard", kw: "paste הדבקה", run: () => quickPaste("stage") },
+    { group: "פעולות", label: "בחירת קובץ לשליחה", icon: "i-file", kw: "file upload קובץ", run: async () => { await ensureHome(); $('[data-ref="file"]', stack[0].content)?.click(); } },
+    { group: "פעולות", label: "כתיבה ידנית", icon: "i-edit", kw: "write text כתיבה", run: async () => { await ensureHome(); openWrite(); } },
+    { group: "פעולות", label: "העתקת הפריט האחרון שהתקבל", icon: "i-copy", kw: "copy last העתקה", run: () => { const c = latestClipFromOther(); if (c) copyRel(clipKey(c.id)); else toast("אין פריטים"); } },
+    { group: "ניווט", label: "בית", icon: "i-home", kw: "home", run: () => navRoot("home") },
+    { group: "ניווט", label: "כל הקבצים", icon: "i-folder", kw: "files קבצים", run: () => navRoot("files") },
+    { group: "ניווט", label: "מכשירים", icon: "i-devices", kw: "devices", run: () => navRoot("devices") },
+    { group: "ניווט", label: "הגדרות", icon: "i-gear", kw: "settings", run: () => navRoot("settings") },
+    { group: "כללי", label: "קיצורי מקלדת", icon: "i-keyboard", kw: "shortcuts keyboard", run: () => showShortcuts() },
+    { group: "כללי", label: "בדיקת עדכונים", icon: "i-refresh", kw: "update", run: () => checkUpdates() }
+  ];
+  const files = state.items.map(it => ({
+    group: "קבצים", label: it.name, sub: `${it.project}, גרסה ${it.latest?.n || 1}`, icon: "i-file", kw: `${it.project} ${it.type}`,
+    run: () => openItem(it.id),
+    alt: () => it.latest?.vid && copyRel(`versionsBody/${it.id}/${it.latest.vid}`)
+  }));
+  return { cmds, files };
+}
+function renderPalette() {
+  const q = normKey(palInput.value), terms = q.split(" ").filter(Boolean);
+  const { cmds, files } = paletteCommands();
+  const match = (x) => { const hay = normKey(`${x.label} ${x.sub || ""} ${x.kw || ""}`); return terms.every(t => hay.includes(t)); };
+  // With no query: actions first. With a query: files first, since that is usually what you look for.
+  const list = q ? [...files.filter(match), ...cmds.filter(match)] : [...cmds, ...files.slice(0, 8)];
+  palResults = list.slice(0, 60);
+  palIndex = Math.min(palIndex, Math.max(0, palResults.length - 1));
+  if (!palResults.length) { palList.innerHTML = `<div class="pal-empty">לא נמצא קובץ או פעולה</div>`; return; }
+  let last = "";
+  palList.innerHTML = palResults.map((r, i) => {
+    const head = r.group !== last ? `<div class="pal-group">${esc(r.group)}</div>` : "";
+    last = r.group;
+    return `${head}<button class="pal-item ${i === palIndex ? "on" : ""}" type="button" role="option" data-pi="${i}" aria-selected="${i === palIndex}">
+      <svg class="ico"><use href="#${r.icon}"/></svg><span class="x"><b dir="auto">${esc(r.label)}</b>${r.sub ? `<small>${esc(r.sub)}</small>` : ""}</span></button>`;
+  }).join("");
+  const onEl = palList.querySelector(".pal-item.on");
+  if (onEl && typeof onEl.scrollIntoView === "function") onEl.scrollIntoView({ block: "nearest" });
+}
+function openPalette() {
+  if (stackEl.hidden) return;
+  closeMenu(); closeSheet();
+  paletteOpen = true; palEl.hidden = false; palInput.value = ""; palIndex = 0; renderPalette();
+  setTimeout(() => palInput.focus(), 0);
+}
+function closePalette() { if (!paletteOpen) return; paletteOpen = false; palEl.hidden = true; }
+function runPalette(i, alt = false) {
+  const r = palResults[i]; if (!r) return;
+  closePalette();
+  (alt && r.alt ? r.alt : r.run)();
+}
+palInput.addEventListener("input", () => { palIndex = 0; renderPalette(); });
+palInput.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown") { e.preventDefault(); palIndex = Math.min(palResults.length - 1, palIndex + 1); renderPalette(); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); palIndex = Math.max(0, palIndex - 1); renderPalette(); }
+  else if (e.key === "Enter") { e.preventDefault(); runPalette(palIndex, e.ctrlKey || e.metaKey); }
+});
+palList.addEventListener("click", (e) => { const b = e.target.closest("[data-pi]"); if (b) runPalette(+b.dataset.pi, e.ctrlKey || e.metaKey); });
+palList.addEventListener("mousemove", (e) => { const b = e.target.closest("[data-pi]"); if (b && +b.dataset.pi !== palIndex) { palIndex = +b.dataset.pi; renderPalette(); } });
+palEl.addEventListener("pointerdown", (e) => { if (e.target === palEl) closePalette(); });
+
+/* ================= Keyboard shortcuts (desktop) ================= */
+const inField = (t) => !!t.closest?.("input, textarea, select, [contenteditable]");
+document.addEventListener("keydown", (e) => {
+  const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+  if (menuOpen) {
+    if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); closeMenu(); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); moveMenuFocus(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); moveMenuFocus(-1); }
+    else if (e.key === "Tab") closeMenu();
+    return;
+  }
+  if (paletteOpen) { if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); closePalette(); } return; }
+  if (stackEl.hidden) return;
+  if (mod && k === "k") { e.preventDefault(); openPalette(); return; }
+  if (sheetOpen) return; // the sheet handles Escape itself
+  const top = stack.at(-1);
+  if (e.key === "Escape" && staged && homeOnTop()) { discardStaged(); return; }
+  if (mod && e.key === "Enter" && staged && homeOnTop()) { e.preventDefault(); sendStaged(); return; }
+  if (mod && k === "s" && staged && homeOnTop()) {
+    e.preventDefault();
+    openSaveForm(staged, staged.suggest ? { project: staged.suggest.item.project, name: staged.suggest.item.name } : {});
+    return;
+  }
+  if (top?.name === "item" && mod && e.shiftKey) {
+    const it = state.items.find(x => x.id === top.params.id);
+    if (it && k === "c") { e.preventDefault(); copyRel(`versionsBody/${it.id}/${it.latest.vid}`); return; }
+    if (it && k === "v") { e.preventDefault(); pasteVersionInto(it); return; }
+  }
+  if (inField(e.target) || mod || e.altKey) return;
+  if (e.key === "?") { e.preventDefault(); showShortcuts(); return; }
+  if (e.key === "/") {
+    e.preventDefault();
+    if (top?.name !== "files") navRoot("files");
+    setTimeout(() => $('#stack .screen[data-name="files"] [data-ref="q"]')?.focus(), 30);
+  }
+}, true);
+
 /* ================= Screens switching ================= */
 function showGate(id) {
-  closeSheet();
+  closeSheet(); closeMenu(); closePalette();
   stackEl.hidden = true;
+  syncSidebar();
   $("#gate-login").hidden = id !== "login";
   $("#gate-denied").hidden = id !== "denied";
 }
@@ -2087,6 +2659,7 @@ function showApp() {
   $("#gate-login").hidden = true;
   $("#gate-denied").hidden = true;
   stackEl.hidden = false;
+  syncSidebar();
 }
 function enterDenied() {
   teardown();
@@ -2102,6 +2675,8 @@ onAuthStateChanged(auth, (user) => {
   startRealtime();
   hideSplash();
 });
+
+applyDesk();
 
 /* ================= Zoom guard (iOS ignores user-scalable) ================= */
 document.addEventListener("gesturestart", (e) => e.preventDefault(), { passive: false });
