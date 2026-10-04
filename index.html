@@ -208,6 +208,105 @@ button.row:active{background:var(--deep-2)}
 .update-bar button{background:var(--phone);color:var(--ink);font-weight:600;min-height:40px;padding:0 14px;border-radius:12px;display:flex;align-items:center;gap:8px}
 .update-bar .ico{width:16px;height:16px}
 
+
+/* Stage 2: quick bridge */
+.bridge{padding:18px 14px 16px}
+.bridge-art{max-width:420px}
+.bridge-status h2{font-size:19px}
+.composer{display:grid;gap:10px}
+.btn-hero{width:100%;display:flex;align-items:center;gap:14px;padding:18px;border-radius:18px;text-align:right;
+  background:linear-gradient(135deg,rgba(94,225,217,.16),rgba(94,225,217,.04));border:1px solid rgba(94,225,217,.35);transition:transform .12s}
+.btn-hero:active{transform:scale(.99)}
+.btn-hero .hi{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;background:var(--phone);color:var(--ink);flex:none}
+.btn-hero .hi .ico{width:24px;height:24px}
+.btn-hero .ht{display:block;font-size:18px;font-weight:700}
+.btn-hero .hs{display:block;font-size:13.5px;color:var(--mist);line-height:1.4;margin-top:2px}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-sec{min-height:50px;border-radius:14px;border:1px solid var(--rule-2);background:var(--deep);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px}
+.btn-sec:active{background:var(--deep-2)}
+.paste-zone{display:block;width:100%;height:58px;resize:none;border-radius:14px;border:1.5px dashed var(--rule-2);background:transparent;
+  color:transparent;caret-color:transparent;font:inherit;font-size:16px;line-height:24px;padding:16px;text-align:center;outline:none;overflow:hidden}
+.paste-zone::placeholder{color:var(--faint);font-size:14.5px}
+.paste-zone:focus,.paste-zone.over{border-color:var(--phone);background:rgba(94,225,217,.05)}
+.staged{border-radius:18px;border:1px solid rgba(94,225,217,.35);background:var(--deep-2);padding:16px;display:grid;gap:14px}
+.staged-head{display:flex;align-items:center;gap:12px}
+.type-ico{min-width:46px;height:46px;padding:0 6px;border-radius:12px;display:grid;place-items:center;background:var(--deep-3);color:var(--phone);flex:none;font-family:var(--mono);font-size:12px;font-weight:500;direction:ltr}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;padding:3px 10px;border-radius:999px;background:var(--deep-3);color:var(--mist);white-space:nowrap}
+.chip.type{color:var(--phone);background:rgba(94,225,217,.1)}
+.chip.warn{color:var(--desk);background:rgba(242,182,90,.12)}
+.chip .ico{width:13px;height:13px}
+.actions-2{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.btn-primary{min-height:52px;border-radius:14px;background:var(--phone);color:var(--ink);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:active{transform:scale(.99)}
+.btn-primary:disabled{opacity:.7}
+.btn-ghost{min-height:52px;border-radius:14px;border:1px solid var(--rule-2);font-weight:600}
+.btn-ghost:active{background:var(--deep-3)}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(13,19,32,.25);border-top-color:var(--ink);animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px 10px}
+.section-head h2{font-size:17px;font-weight:700}
+.link-btn{color:var(--phone);font-size:14.5px;font-weight:500;min-height:40px;padding:0 6px}
+.link-btn.danger{color:var(--alert)}
+.clips{display:grid;gap:10px}
+.clip{border-radius:16px;border:1px solid var(--rule);background:var(--deep);padding:14px;display:grid;gap:10px;transition:border-color .6s,box-shadow .6s}
+.clip.fresh{border-color:var(--phone);box-shadow:0 0 0 3px rgba(94,225,217,.12)}
+.clip[draggable="true"]{cursor:grab}
+.clip-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--mist)}
+.clip-from{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clip-from .ico{width:16px;height:16px;flex:none}
+.clip-name{font-weight:600;font-size:15.5px;direction:ltr;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clip-preview{font-family:var(--mono);font-size:12.5px;line-height:1.55;color:#AEB9CB;background:var(--ink);border-radius:10px;padding:10px 12px;
+  direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-all;max-height:6.4em;overflow:hidden;
+  -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.clip-actions{display:grid;grid-template-columns:1fr auto;gap:8px}
+.btn-copy{min-height:48px;border-radius:12px;background:rgba(94,225,217,.12);color:var(--phone);font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-copy:active{background:rgba(94,225,217,.2)}
+.btn-copy.done{background:rgba(107,227,162,.14);color:var(--ok)}
+.btn-more{width:48px;min-height:48px;border-radius:12px;border:1px solid var(--rule-2);display:grid;place-items:center;color:var(--mist)}
+.btn-more:active{background:var(--deep-2)}
+.empty-card{border:1.5px dashed var(--rule);border-radius:16px;padding:22px 18px;text-align:center;color:var(--faint);font-size:14.5px}
+.finds{display:grid;gap:8px;max-height:42vh;overflow:auto;text-align:right}
+.find{display:grid;gap:2px;padding:10px 12px;border-radius:10px;background:var(--ink)}
+.find b{font-size:14.5px}
+.find code{font-family:var(--mono);font-size:12px;color:var(--mist);direction:ltr;unicode-bidi:isolate;text-align:right}
+.find small{color:var(--faint);font-size:12.5px}
+.textarea{display:block;width:100%;min-height:170px;max-height:40vh;resize:none;padding:12px 14px;border-radius:12px;border:1px solid var(--rule-2);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:16px;line-height:1.5;outline:none}
+.textarea:focus{border-color:var(--phone)}
+.details{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14.5px;text-align:right}
+.details dt{color:var(--faint)}
+
+/* Stage 3: files and versions */
+.field-l{display:block;font-size:14px;color:var(--mist);margin:14px 0 6px;text-align:right}
+.sheet-body .field-l:first-child{margin-top:0}
+.pick-row{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none;touch-action:pan-x}
+.pick-row::-webkit-scrollbar{display:none}
+.chip.pick{min-height:32px;padding:0 12px;border:1px solid var(--rule-2);background:var(--deep);color:var(--paper);font-size:13.5px;flex:none}
+.chip.pick:active{background:var(--deep-3)}
+.chip.add,.diff-add{color:var(--ok)} .chip.del,.diff-del{color:var(--alert)}
+.chip.add{background:rgba(107,227,162,.1)} .chip.del{background:rgba(255,122,107,.1)}
+.diff-add,.diff-del{font-family:var(--mono);font-size:12.5px}
+.match{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px;border-radius:12px;background:rgba(94,225,217,.08);border:1px solid rgba(94,225,217,.25);font-size:14px;text-align:right;color:var(--paper)}
+.match .ico{color:var(--phone);margin-top:2px}
+.suggest{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;background:rgba(94,225,217,.08);border:1px solid rgba(94,225,217,.25);font-size:14px}
+.suggest .ico{color:var(--phone);margin-top:2px;flex:none}
+.suggest b{font-weight:600}
+.suggest .link-btn{min-height:28px;padding:0;margin-top:2px;display:block}
+.actions-3{display:grid;gap:10px}
+.actions-3 .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-secondary{min-height:52px;border-radius:14px;border:1px solid rgba(94,225,217,.35);background:rgba(94,225,217,.08);color:var(--phone);font-weight:700;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary:active{background:rgba(94,225,217,.16)}
+.btn-text{min-height:40px;color:var(--mist);font-weight:500}
+.row-ico.ext{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--phone);direction:ltr}
+.vnum{font-family:var(--mono);font-size:13px;font-weight:500}
+.item-head{border-radius:18px;border:1px solid var(--rule);background:var(--deep);padding:16px;display:grid;gap:12px}
+.item-actions{display:grid;gap:10px}
+.btn-primary.big{min-height:56px;font-size:17px}
+.muted{color:var(--faint);font-size:13.5px}
+.input.search{min-height:46px}
+.sheet{display:flex;flex-direction:column}
+.sheet-card{overflow-y:auto;min-height:0;overscroll-behavior:contain}
+.spin.dark{border-color:rgba(231,236,244,.25);border-top-color:var(--paper)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -242,6 +341,15 @@ button.row:active{background:var(--deep-2)}
   <symbol id="i-chev-back" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
 </svg>
 
@@ -295,10 +403,11 @@ import {
   setPersistence, browserLocalPersistence, indexedDBLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import {
-  getDatabase, ref, update, onValue, onDisconnect, serverTimestamp
+  getDatabase, ref, update, onValue, onDisconnect, serverTimestamp,
+  push as dbPush, get, query, orderByKey, limitToLast
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.3.0";
 
 /* ================= Firebase ================= */
 const app = initializeApp({
@@ -379,7 +488,8 @@ const DEVICE = detectDevice();
 const userRoot = () => auth.currentUser ? `users/${auth.currentUser.uid}` : null;
 
 /* ================= App state ================= */
-const state = { devices: {}, connected: false, serverOffset: 0 };
+const state = { devices: {}, clips: [], items: [], connected: false, serverOffset: 0 };
+const freshClips = new Set();
 const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
 function ago(ts) {
   if (!ts) return "";
@@ -422,6 +532,7 @@ function openSheet({ title = "", message = "", body = "", actions = [], cancel =
   sheetEl.querySelector("[data-cancel]")?.addEventListener("click", () => closeSheet());
   sheetEl.hidden = false; backdrop.hidden = false;
   sheetOpen = true;
+  sheetEl.style.maxHeight = (window.visualViewport ? visualViewport.height : innerHeight) - 16 + "px";
   requestAnimationFrame(() => requestAnimationFrame(() => { sheetEl.classList.add("open"); backdrop.classList.add("open"); }));
 }
 function closeSheet() {
@@ -431,7 +542,7 @@ function closeSheet() {
   sheetEl.classList.remove("open"); backdrop.classList.remove("open");
   return wait(REDUCED ? 0 : 300).then(() => {
     if (sheetOpen) return;
-    sheetEl.hidden = true; backdrop.hidden = true; sheetEl.innerHTML = ""; sheetEl.style.bottom = "";
+    sheetEl.hidden = true; backdrop.hidden = true; sheetEl.innerHTML = ""; sheetEl.style.bottom = ""; sheetEl.style.maxHeight = "";
   });
 }
 backdrop.addEventListener("click", () => closeSheet());
@@ -439,7 +550,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet
 // Keep the sheet above the iOS keyboard
 if (window.visualViewport) {
   const vv = window.visualViewport;
-  const fit = () => { if (sheetOpen) sheetEl.style.bottom = Math.max(0, innerHeight - vv.height - vv.offsetTop) + "px"; };
+  const fit = () => { if (!sheetOpen) return; sheetEl.style.bottom = Math.max(0, innerHeight - vv.height - vv.offsetTop) + "px"; sheetEl.style.maxHeight = Math.max(240, vv.height - 16) + "px"; };
   vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit);
 }
 
@@ -503,38 +614,40 @@ function slide(el, from, to, dur = 340) {
   return a.finished.then(() => { el.style.transform = t; a.cancel(); }).catch(() => { el.style.transform = t; });
 }
 
-function createScreen(name, prev) {
+function createScreen(name, prev, params = {}) {
   const def = SCREENS[name];
+  const title = typeof def.title === "function" ? def.title(params) : def.title;
   const el = document.createElement("section");
   el.className = "screen" + (prev ? " pushed" : "");
   el.dataset.name = name;
   el.innerHTML = `
     <header class="nav"><div class="nav-in">
       <div class="nav-start"></div>
-      <h1 class="nav-title">${esc(def.title)}</h1>
+      <h1 class="nav-title">${esc(title)}</h1>
       <div class="nav-end"></div>
     </div></header>
     <div class="scroll"><div class="content"></div></div>`;
   const s = {
-    el, name, title: def.title,
+    el, name, params, title,
     nav: $(".nav", el), start: $(".nav-start", el), end: $(".nav-end", el),
     scroll: $(".scroll", el), content: $(".content", el),
-    update() {}
+    update() {}, destroy() {},
+    setTitle(t) { this.title = t; $(".nav-title", el).textContent = t; }
   };
   s.scroll.addEventListener("scroll", () => s.nav.classList.toggle("scrolled", s.scroll.scrollTop > 2), { passive: true });
   if (prev) {
     s.start.innerHTML = `<button class="nav-btn back" type="button" aria-label="חזרה ל${esc(prev.title)}"><svg class="ico"><use href="#i-chev-back"/></svg><span>${esc(prev.title)}</span></button>`;
     $("button", s.start).addEventListener("click", () => history.back());
   }
-  def.build(s);
+  def.build(s, params);
   return s;
 }
 
-function push(name) {
+function push(name, params = {}) {
   enqueue(async () => {
     const prev = stack[stack.length - 1];
-    if (prev?.name === name) return;
-    const s = createScreen(name, prev);
+    if (prev?.name === name && prev.params?.id === params.id) return;
+    const s = createScreen(name, prev, params);
     stack.push(s);
     s.update();
     s.el.style.transform = "translateX(-100%)";
@@ -553,6 +666,7 @@ async function popVisual(fromTop = "0%", fromPrev = "30%", dur = 340) {
   navBusy = true;
   prev.el.inert = false;
   await Promise.all([slide(top.el, fromTop, "-100%", dur), slide(prev.el, fromPrev, "0%", dur)]);
+  try { top.destroy(); } catch {}
   top.el.remove();
   navBusy = false;
 }
@@ -564,7 +678,7 @@ addEventListener("popstate", () => {
 });
 
 function resetTo(name) {
-  stack.splice(0).forEach(s => s.el.remove());
+  stack.splice(0).forEach(s => { try { s.destroy(); } catch {} s.el.remove(); });
   const s = createScreen(name, null);
   stack.push(s);
   s.el.style.transform = "translateX(0%)";
@@ -656,11 +770,764 @@ async function checkUpdates() {
   else toast("יש לך את הגרסה האחרונה");
 }
 
+/* ================= Quick bridge engine (stage 2) ================= */
+const MAX_CHARS = 3000000;
+const MAX_FILE_BYTES = 6 * 1024 * 1024;
+const BIG_CLIP = 100000;
+const IS_DESKTOP = matchMedia("(pointer: fine)").matches;
+const nf = new Intl.NumberFormat("he-IL");
+function fmtBytes(b) {
+  if (!b) return "0 B";
+  if (b < 1024) return `${b} B`;
+  if (b < 1048576) return `${(b / 1024).toFixed(b < 10240 ? 1 : 0)} KB`;
+  return `${(b / 1048576).toFixed(2)} MB`;
+}
+
+const EXT_TYPES = { html:"HTML", htm:"HTML", js:"JavaScript", mjs:"JavaScript", cjs:"JavaScript", jsx:"JSX", ts:"TypeScript", tsx:"TSX",
+  css:"CSS", scss:"SCSS", json:"JSON", md:"Markdown", py:"Python", sh:"Shell", sql:"SQL", php:"PHP", svg:"SVG", xml:"XML",
+  yml:"YAML", yaml:"YAML", txt:"טקסט", env:"ENV", webmanifest:"JSON", vue:"Vue", java:"Java", kt:"Kotlin", swift:"Swift", go:"Go", rb:"Ruby", cs:"C#", c:"C", cpp:"C++" };
+function detectType(text, fileName = "") {
+  const ext = (fileName.match(/\.([a-z0-9]+)$/i)?.[1] || "").toLowerCase();
+  if (ext && EXT_TYPES[ext]) return { label: EXT_TYPES[ext], ext };
+  const head = text.slice(0, 20000), s = head.trimStart();
+  if (/^<!doctype html|^<html[\s>]/i.test(s)) return { label: "HTML", ext: "html" };
+  if (/^<svg[\s>]/i.test(s)) return { label: "SVG", ext: "svg" };
+  if (/^<\?php/.test(s)) return { label: "PHP", ext: "php" };
+  if (/^[\[{]/.test(s) && text.length < 2000000) { try { JSON.parse(text); return { label: "JSON", ext: "json" }; } catch {} }
+  if (/^#!.*\b(bash|sh|zsh)\b/.test(s)) return { label: "Shell", ext: "sh" };
+  if (/<\/?(div|span|section|body|head|script|style|main|template|button)\b/i.test(head)) return { label: "HTML", ext: "html" };
+  if (/^\s*(import|export|const|let|var|function|class|async)\b|=>|\bdocument\.|\bconsole\.|\bwindow\./m.test(head)) return { label: "JavaScript", ext: "js" };
+  if (/^\s*(def|class)\s+\w+[^\n]*:\s*$/m.test(head) || /^\s*from\s+[\w.]+\s+import\s+/m.test(head)) return { label: "Python", ext: "py" };
+  if (/\b(SELECT\s+.+\s+FROM|INSERT INTO|CREATE TABLE|DELETE FROM|UPDATE\s+\w+\s+SET)\b/i.test(head)) return { label: "SQL", ext: "sql" };
+  if (/^[^{}\n]+\{[^}]*?[a-z-]+\s*:[^;{}]+;[^}]*\}/im.test(head)) return { label: "CSS", ext: "css" };
+  if (/^#{1,6}\s|\[[^\]]+\]\([^)]+\)/m.test(head)) return { label: "Markdown", ext: "md" };
+  return { label: "טקסט", ext: "txt" };
+}
+
+/* Sensitive data scanner. Runs locally before anything leaves the device. */
+const SECRET_RULES = [
+  { id: "private-key", label: "מפתח פרטי", re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/g, show: () => "BEGIN PRIVATE KEY" },
+  { id: "service-account", label: "קובץ Service Account של Google", re: /"private_key_id"\s*:\s*"[^"]+"/g },
+  { id: "aws", label: "מפתח AWS", re: /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/g },
+  { id: "github", label: "טוקן GitHub", re: /\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{50,})\b/g },
+  { id: "anthropic", label: "מפתח Anthropic", re: /\bsk-ant-[A-Za-z0-9_-]{20,}/g },
+  { id: "openai", label: "מפתח OpenAI", re: /\bsk-(?!ant-)(?:proj-)?[A-Za-z0-9_-]{20,}/g },
+  { id: "stripe", label: "מפתח Stripe", re: /\b(?:sk|rk)_live_[A-Za-z0-9]{16,}/g },
+  { id: "slack", label: "טוקן Slack", re: /\bxox[abposr]-[A-Za-z0-9-]{10,}/g },
+  { id: "conn", label: "כתובת חיבור עם סיסמה", re: /\b[a-z][a-z0-9+.-]*:\/\/[^\s:/@"'`]+:[^\s@/"'`]{3,}@[^\s"'`]+/gi },
+  { id: "jwt", label: "טוקן JWT", re: /\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g },
+  { id: "google", label: "מפתח Google API", re: /\bAIza[0-9A-Za-z_-]{35}\b/g, note: "אם זה מפתח Firebase של צד הלקוח, הוא ציבורי מטבעו." },
+  { id: "assign", label: "סיסמה או סוד בקוד", re: /\b(?:pass(?:word)?|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|client[_-]?secret)\b["']?\s*[:=]\s*["'`]([^"'`\s]{8,})["'`]/gi, group: 1 }
+];
+const PLACEHOLDER = /^(your|example|xxx|changeme|placeholder|dummy|sample|<|\*+|\$\{|process\.env)/i;
+const maskVal = (v) => { v = String(v); return v.length <= 8 ? "••••" : v.slice(0, 4) + "••••" + v.slice(-2); };
+function scanSecrets(text) {
+  const out = [], seen = new Set();
+  let nl = null;
+  const lineAt = (i) => {
+    if (!nl) { nl = []; for (let k = 0; k < text.length; k++) if (text.charCodeAt(k) === 10) nl.push(k); }
+    let lo = 0, hi = nl.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (nl[m] < i) lo = m + 1; else hi = m; }
+    return lo + 1;
+  };
+  for (const r of SECRET_RULES) {
+    r.re.lastIndex = 0;
+    let m, n = 0;
+    while ((m = r.re.exec(text)) && n < 25) {
+      n++;
+      const raw = r.group ? m[r.group] : m[0];
+      if (r.id === "assign" && PLACEHOLDER.test(raw)) continue;
+      const key = r.id + raw;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push({ id: r.id, label: r.label, note: r.note || "", line: lineAt(m.index), raw, masked: r.show ? r.show() : maskVal(raw) });
+      if (out.length >= 30) return out;
+    }
+  }
+  return out;
+}
+function makePreview(text, findings) {
+  let p = text.slice(0, 700);
+  for (const f of [...findings, ...scanSecrets(p)]) if (f.raw && f.raw.length > 3) p = p.split(f.raw).join(maskVal(f.raw));
+  return p.split("\n").map(l => l.replace(/\s+$/, "")).filter(l => l.trim()).slice(0, 4).join("\n").slice(0, 260);
+}
+function analyze(text, fileName = "") {
+  const chars = text.length;
+  let lines = chars ? 1 : 0;
+  for (let i = 0; i < chars; i++) if (text.charCodeAt(i) === 10) lines++;
+  const t = detectType(text, fileName);
+  return { text, chars, lines, bytes: new TextEncoder().encode(text).length, type: t.label, ext: t.ext, name: fileName, findings: scanSecrets(text) };
+}
+
+/* Staging: the text lives only in memory, it is never drawn on screen */
+let staged = null, sending = false;
+function stage(text, fileName = "") {
+  if (typeof text !== "string" || !text.trim()) { toast("אין טקסט להעברה"); return; }
+  if (text.length > MAX_CHARS) {
+    openSheet({ title: "התוכן גדול מדי", message: `המגבלה היא ${nf.format(MAX_CHARS)} תווים, והתוכן כאן ${nf.format(text.length)}.`, cancel: "הבנתי" });
+    return;
+  }
+  staged = analyze(text, fileName);
+  staged.suggest = suggestItem(staged);
+  refreshScreens();
+}
+function discardStaged() { staged = null; refreshScreens(); }
+
+async function readFile(file) {
+  if (!file) return;
+  if (file.size > MAX_FILE_BYTES) {
+    openSheet({ title: "הקובץ גדול מדי", message: `המגבלה היא ${fmtBytes(MAX_FILE_BYTES)} לקובץ, והקובץ הזה ${fmtBytes(file.size)}.`, cancel: "הבנתי" });
+    return;
+  }
+  let text;
+  try { text = await file.text(); } catch { toast("לא הצלחתי לקרוא את הקובץ"); return; }
+  if (/\u0000/.test(text.slice(0, 8000))) {
+    openSheet({ title: "הקובץ לא נתמך", message: "נראה כמו קובץ בינארי, כמו תמונה או PDF. כרגע אפשר להעביר קוד וטקסט בלבד.", cancel: "הבנתי" });
+    return;
+  }
+  stage(text, file.name);
+}
+function readFiles(list) {
+  const files = [...(list || [])];
+  if (!files.length) return;
+  if (files.length > 1) toast("כרגע נשלח קובץ אחד בכל פעם");
+  readFile(files[0]);
+}
+
+async function pasteFromClipboard() {
+  if (!navigator.clipboard?.readText) { toast("הדפדפן לא מאפשר קריאה מהלוח. לחיצה ארוכה על אזור ההדבקה"); return; }
+  try { stage(await navigator.clipboard.readText()); }
+  catch { toast("אין הרשאה ללוח. לחיצה ארוכה על אזור ההדבקה"); }
+}
+
+function reviewFindings(findings, onContinue, continueLabel = "שליחה בכל זאת") {
+  const f = findings || [];
+  const extra = Math.max(0, f.length - 8);
+  const items = f.slice(0, 8).map(x => `<div class="find"><b>${esc(x.label)}</b><code>${esc(x.masked)}</code><small>שורה ${nf.format(x.line)}${x.note ? `. ${esc(x.note)}` : ""}</small></div>`).join("");
+  openSheet({
+    title: f.length === 1 ? "זוהה פרט שנראה רגיש" : `זוהו ${f.length} פרטים שנראים רגישים`,
+    message: "התוכן נשמר רק במרחב הפרטי שלך, אבל סודות עדיף לא להעביר בכלל.",
+    body: `<div class="finds">${items}${extra ? `<small style="color:var(--faint)">ועוד ${extra}</small>` : ""}</div>`,
+    actions: onContinue ? [{ label: continueLabel, style: "danger", onClick: onContinue }] : [],
+    cancel: onContinue ? "חזרה לבדיקה" : "הבנתי"
+  });
+}
+async function sendStaged(force = false) {
+  if (!staged || sending) return;
+  if (!force && staged.findings.length) { reviewFindings(staged.findings, () => sendStaged(true)); return; }
+  const root = userRoot();
+  if (!root) return;
+  sending = true; refreshScreens();
+  const item = staged;
+  const id = dbPush(ref(db, `${root}/clipsMeta`)).key;
+  const me = state.devices[DEVICE_ID];
+  const meta = {
+    chars: item.chars, lines: item.lines, bytes: item.bytes, type: item.type, ext: item.ext,
+    preview: makePreview(item.text, item.findings), flagged: item.findings.length,
+    from: DEVICE_ID, fromName: me?.customName || DEVICE.name, fromKind: DEVICE.kind,
+    createdAt: serverTimestamp(),
+    ...(item.name ? { name: item.name.slice(0, 120) } : {})
+  };
+  cacheSet(clipKey(id), item.text);
+  const r = await Promise.race([
+    update(ref(db, root), { [`clipsBody/${id}`]: item.text, [`clipsMeta/${id}`]: meta }).then(() => "saved"),
+    wait(30000).then(() => "queued")
+  ]).catch((e) => { onDbError(e); return "error"; });
+  sending = false;
+  if (r === "error") { toast("השליחה נכשלה, אפשר לנסות שוב"); refreshScreens(); return; }
+  staged = null; refreshScreens();
+  toast(r === "saved" ? "נשלח לכל המכשירים שלך" : "ממתין לחיבור. כדאי להשאיר את האפליקציה פתוחה");
+}
+
+/* Bodies are fetched only when needed, and kept in a small memory cache.
+   Keys are paths relative to the user root, e.g. clipsBody/<id> or versionsBody/<item>/<version>. */
+const bodyCache = new Map(), inflight = new Map();
+const clipKey = (id) => `clipsBody/${id}`;
+function cacheSet(rel, t) { bodyCache.delete(rel); bodyCache.set(rel, t); while (bodyCache.size > 8) bodyCache.delete(bodyCache.keys().next().value); }
+function fetchRel(rel) {
+  if (bodyCache.has(rel)) return Promise.resolve(bodyCache.get(rel));
+  if (inflight.has(rel)) return inflight.get(rel);
+  const root = userRoot();
+  if (!root) return Promise.reject(new Error("signed out"));
+  const p = get(ref(db, `${root}/${rel}`))
+    .then(snap => { const t = snap.val() ?? ""; cacheSet(rel, t); inflight.delete(rel); return t; })
+    .catch(e => { inflight.delete(rel); throw e; });
+  inflight.set(rel, p);
+  return p;
+}
+const fetchBody = (id) => fetchRel(clipKey(id));
+async function writeClipboard(text) {
+  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.setAttribute("readonly", "");
+  ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+  document.body.appendChild(ta); ta.select();
+  const ok = document.execCommand("copy"); ta.remove();
+  if (!ok) throw new Error("copy failed");
+}
+const askedDelete = new Set();
+// Copies a stored body. Must be called directly from a tap so Safari allows the clipboard write.
+async function copyRel(rel, btn) {
+  const cached = bodyCache.get(rel);
+  try {
+    if (cached != null) await writeClipboard(cached);
+    else if (window.ClipboardItem && navigator.clipboard?.write) {
+      await navigator.clipboard.write([new ClipboardItem({ "text/plain": fetchRel(rel).then(t => new Blob([t], { type: "text/plain" })) })]);
+    } else await writeClipboard(await fetchRel(rel));
+  } catch (e) {
+    try { await fetchRel(rel); } catch {}
+    toast("התוכן נטען. לחיצה נוספת על העתקה");
+    return false;
+  }
+  if (btn) {
+    const label = $("span", btn), orig = label ? label.textContent : "";
+    btn.classList.add("done"); if (label) label.textContent = "הועתק";
+    setTimeout(() => { btn.classList.remove("done"); if (label && label.isConnected) label.textContent = orig; }, 1800);
+  }
+  toast("הועתק, מוכן להדבקה");
+  return true;
+}
+async function copyClip(c, btn) {
+  const ok = await copyRel(clipKey(c.id), btn);
+  if (!ok) return;
+  if (c.chars >= BIG_CLIP && c.from !== DEVICE_ID && !askedDelete.has(c.id)) {
+    askedDelete.add(c.id);
+    setTimeout(() => openSheet({
+      title: "למחוק מהשרת אחרי ההעתקה?",
+      message: `זה פריט גדול, ${nf.format(c.chars)} תווים. מחיקה אחרי השימוש שומרת על מקום פנוי בתוכנית החינמית.`,
+      actions: [{ label: "מחיקה", style: "danger", onClick: () => deleteClip(c) }],
+      cancel: "השארה"
+    }), 700);
+  }
+}
+async function deleteClip(c) {
+  const r = await dbWrite(update(ref(db, userRoot()), { [`clipsMeta/${c.id}`]: null, [`clipsBody/${c.id}`]: null }));
+  bodyCache.delete(clipKey(c.id));
+  toast(r === "saved" ? "נמחק" : "יימחק כשהחיבור יחזור");
+}
+function confirmDelete(c) {
+  openSheet({ title: "למחוק את הפריט?", message: "הפריט יימחק מכל המכשירים שלך.", actions: [{ label: "מחיקה", style: "danger", onClick: () => deleteClip(c) }] });
+}
+function confirmClearAll() {
+  const n = state.clips.length;
+  if (!n) return;
+  openSheet({
+    title: n === 1 ? "למחוק את הפריט?" : `למחוק את כל ${n} הפריטים?`,
+    message: "הפריטים יימחקו מכל המכשירים שלך. אי אפשר לשחזר.",
+    actions: [{ label: "מחיקת הכל", style: "danger", onClick: async () => {
+      const patch = {};
+      state.clips.forEach(c => { patch[`clipsMeta/${c.id}`] = null; patch[`clipsBody/${c.id}`] = null; });
+      const r = await dbWrite(update(ref(db, userRoot()), patch));
+      state.clips.forEach(c => bodyCache.delete(clipKey(c.id)));
+      toast(r === "saved" ? "הכל נמחק" : "יימחק כשהחיבור יחזור");
+    } }]
+  });
+}
+function fileNameFor(c) {
+  if (c.name) return c.name;
+  const d = new Date(c.createdAt || Date.now()), p = (n) => String(n).padStart(2, "0");
+  return `gesher_${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.${c.ext || "txt"}`;
+}
+function downloadText(text, name) {
+  const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+// Download needs the text ready inside the tap, so the first tap prepares and the second downloads
+function downloadAction(rel, name) {
+  return { label: bodyCache.has(rel) ? "הורדה כקובץ" : "הכנת הורדה כקובץ", keepOpen: true, onClick: async () => {
+    const btn = [...sheetEl.querySelectorAll(".sheet-action")].find(b => /הורדה/.test(b.textContent));
+    if (bodyCache.has(rel)) { downloadText(bodyCache.get(rel), name); closeSheet(); return; }
+    if (btn) { btn.disabled = true; btn.textContent = "מכין"; }
+    try { await fetchRel(rel); if (btn) { btn.disabled = false; btn.textContent = "הורדה מוכנה, לחיצה להורדה"; } }
+    catch { if (btn) { btn.disabled = false; btn.textContent = "נסיון נוסף"; } }
+  } };
+}
+function clipActions(c) {
+  openSheet({
+    title: c.name || c.type,
+    message: `${c.from === DEVICE_ID ? "נשלח מהמכשיר הזה" : `התקבל מהמכשיר ${c.fromName || ""}`}, ${ago(c.createdAt)}`,
+    body: `<dl class="details"><dt>סוג</dt><dd>${esc(c.type)}</dd><dt>תווים</dt><dd>${nf.format(c.chars || 0)}</dd><dt>שורות</dt><dd>${nf.format(c.lines || 0)}</dd><dt>גודל</dt><dd dir="ltr" style="text-align:right">${fmtBytes(c.bytes)}</dd></dl>`,
+    actions: [
+      downloadAction(clipKey(c.id), fileNameFor(c)),
+      { label: "מחיקה", style: "danger", onClick: () => confirmDelete(c) }
+    ]
+  });
+}
+function openWrite() {
+  const MAX = 20000;
+  openSheet({
+    title: "כתיבה ידנית",
+    message: "לטקסט קצר. לקוד ארוך עדיף הדבקה מהלוח.",
+    body: `<textarea class="textarea" dir="auto" maxlength="${MAX}" placeholder="הטקסט שלך" aria-label="טקסט לשליחה"></textarea>
+           <div class="input-hint"><span data-err></span><span data-count>0/${nf.format(MAX)}</span></div>`,
+    actions: [{ label: "המשך לשליחה", keepOpen: true, onClick: () => submit() }]
+  });
+  const ta = $("textarea", sheetEl), btn = $('[data-i="0"]', sheetEl), cnt = $("[data-count]", sheetEl), err = $("[data-err]", sheetEl);
+  const paint = () => { cnt.textContent = `${nf.format(ta.value.length)}/${nf.format(MAX)}`; btn.disabled = !ta.value.trim(); err.textContent = ""; };
+  ta.addEventListener("input", paint); paint();
+  async function submit() {
+    if (!ta.value.trim()) { err.textContent = "אין מה לשלוח"; return; }
+    const t = ta.value;
+    await closeSheet();
+    stage(t);
+  }
+}
+
+/* Paste anywhere on desktop, and drop files on the window */
+const homeOnTop = () => !stackEl.hidden && stack[stack.length - 1]?.name === "home" && !sheetOpen;
+document.addEventListener("paste", (e) => {
+  if (!homeOnTop()) return;
+  const t = e.target;
+  if (t.closest && t.closest("input, textarea:not(.paste-zone), [contenteditable]")) return;
+  const files = e.clipboardData?.files;
+  e.preventDefault();
+  if (files && files.length) { readFiles(files); return; }
+  stage(e.clipboardData?.getData("text/plain") || "");
+});
+const hasFiles = (e) => [...(e.dataTransfer?.types || [])].includes("Files");
+document.addEventListener("dragover", (e) => { if (homeOnTop() && hasFiles(e)) e.preventDefault(); });
+document.addEventListener("drop", (e) => { if (homeOnTop() && hasFiles(e)) { e.preventDefault(); readFiles(e.dataTransfer.files); } });
+
+/* ================= Files and versions (stage 3) ================= */
+const NAME_MIN = 3, NAME_MAX = 80, PROJECT_MAX = 40, NOTE_MAX = 120;
+function hashStr(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
+// A light content fingerprint: hashes of a spread of meaningful lines. Updated code keeps most of them.
+function fingerprint(text) {
+  const uniq = [...new Set(text.split("\n").map(l => l.trim()).filter(l => l.length >= 25))];
+  if (!uniq.length) return "";
+  const step = Math.max(1, Math.floor(uniq.length / 24)), out = [];
+  for (let i = 0; i < uniq.length && out.length < 24; i += step) out.push(hashStr(uniq[i]));
+  return out.join(",");
+}
+function lineHashSet(text) { const set = new Set(); for (const l of text.split("\n")) { const t = l.trim(); if (t.length >= 25) set.add(hashStr(t)); } return set; }
+const normKey = (v) => String(v || "").trim().replace(/\s+/g, " ").toLowerCase();
+const itemKey = (project, name) => `${normKey(project)}\u0001${normKey(name)}`;
+const findItem = (project, name) => state.items.find(it => itemKey(it.project, it.name) === itemKey(project, name));
+function suggestItem(a) {
+  if (!state.items.length) return null;
+  if (a.name) {
+    const byName = state.items.filter(it => normKey(it.name) === normKey(a.name));
+    if (byName.length === 1) return { item: byName[0], by: "name" };
+  }
+  const set = lineHashSet(a.text);
+  if (set.size < 3) return null;
+  let best = null, bestScore = 0;
+  for (const it of state.items) {
+    if (!it.fp) continue;
+    const fp = it.fp.split(",");
+    const score = fp.filter(h => set.has(h)).length / fp.length;
+    if (score > bestScore) { bestScore = score; best = it; }
+  }
+  return bestScore >= 0.34 ? { item: best, by: "content", score: bestScore } : null;
+}
+function lineDiff(oldText, newText) {
+  const count = new Map();
+  for (const l of oldText.split("\n")) count.set(l, (count.get(l) || 0) + 1);
+  let added = 0;
+  for (const l of newText.split("\n")) { const c = count.get(l); if (c) count.set(l, c - 1); else added++; }
+  let removed = 0; for (const v of count.values()) removed += v;
+  return { added, removed };
+}
+function validateField(kind, raw) {
+  const v = String(raw || "").trim();
+  const max = kind === "project" ? PROJECT_MAX : NAME_MAX;
+  if (v.length < NAME_MIN) return `לפחות ${NAME_MIN} תווים`;
+  if (v.length > max) return `עד ${max} תווים`;
+  if (!/[\p{L}\p{N}]/u.test(v)) return "חייב לכלול אותיות או ספרות";
+  if (/[\/\\#$\[\]]/.test(v)) return "בלי התווים / \\ # $ [ ]";
+  return "";
+}
+const projects = () => { const seen = new Map(); for (const it of state.items) if (!seen.has(normKey(it.project))) seen.set(normKey(it.project), it.project); return [...seen.values()]; };
+function versionFileName(item, n, isLatest) {
+  const m = item.name.match(/^(.*?)(\.[a-z0-9]+)?$/i);
+  const base = m[1] || item.name, ext = m[2] || `.${item.ext || "txt"}`;
+  return isLatest ? `${base}${ext}` : `${base}_v${n}${ext}`;
+}
+const itemIcon = (it) => esc((it.ext || "txt").toUpperCase().slice(0, 4));
+
+async function saveVersion({ item, project, name, note, a }) {
+  const root = userRoot();
+  if (!root) return { result: "error" };
+  const t = detectType(a.text, name);
+  const now = serverTimestamp();
+  const itemId = item ? item.id : dbPush(ref(db, `${root}/items`)).key;
+  const vid = dbPush(ref(db, `${root}/versionsMeta/${itemId}`)).key;
+  let diff = null;
+  if (item?.latest?.vid) {
+    try { diff = lineDiff(await fetchRel(`versionsBody/${item.id}/${item.latest.vid}`), a.text); } catch {}
+  }
+  const n = (item?.seq || 0) + 1;
+  const me = state.devices[DEVICE_ID];
+  const fromName = me?.customName || DEVICE.name;
+  const vmeta = {
+    n, chars: a.chars, lines: a.lines, bytes: a.bytes, from: DEVICE_ID, fromName, fromKind: DEVICE.kind, createdAt: now,
+    preview: makePreview(a.text, a.findings), flagged: a.findings.length,
+    ...(note ? { note: note.slice(0, NOTE_MAX) } : {}),
+    ...(diff ? { added: diff.added, removed: diff.removed } : {})
+  };
+  const latest = { vid, n, chars: a.chars, lines: a.lines, bytes: a.bytes, createdAt: now, from: DEVICE_ID, fromName };
+  const patch = { [`versionsBody/${itemId}/${vid}`]: a.text, [`versionsMeta/${itemId}/${vid}`]: vmeta };
+  if (item) {
+    Object.assign(patch, {
+      [`items/${itemId}/latest`]: latest, [`items/${itemId}/seq`]: n, [`items/${itemId}/count`]: (item.count || 0) + 1,
+      [`items/${itemId}/totalBytes`]: (item.totalBytes || 0) + a.bytes, [`items/${itemId}/updatedAt`]: now,
+      [`items/${itemId}/fp`]: fingerprint(a.text), [`items/${itemId}/type`]: t.label, [`items/${itemId}/ext`]: t.ext
+    });
+  } else {
+    patch[`items/${itemId}`] = {
+      name: name.trim(), project: project.trim(), type: t.label, ext: t.ext, createdAt: now, updatedAt: now,
+      seq: 1, count: 1, totalBytes: a.bytes, latest, fp: fingerprint(a.text)
+    };
+  }
+  cacheSet(`versionsBody/${itemId}/${vid}`, a.text);
+  const result = await Promise.race([
+    update(ref(db, root), patch).then(() => "saved"),
+    wait(30000).then(() => "queued")
+  ]).catch((e) => { onDbError(e); return "error"; });
+  if (result !== "error") store.set("cb.lastProject", project.trim());
+  return { result, itemId, n, isNew: !item };
+}
+function savedToast(r) {
+  if (r.result === "error") return toast("השמירה נכשלה, אפשר לנסות שוב");
+  if (r.result === "queued") return toast("ממתין לחיבור. כדאי להשאיר את האפליקציה פתוחה");
+  toast(r.isNew ? "הקובץ נשמר" : `נשמר כגרסה ${r.n}`);
+}
+
+/* Save form: project and file name are required. Matching an existing file turns the save into a new version. */
+function openSaveForm(a, prefill = {}) {
+  const projList = projects();
+  const project0 = prefill.project ?? store.get("cb.lastProject") ?? "";
+  const name0 = prefill.name ?? a.name ?? "";
+  const placeholder = a.ext && a.ext !== "txt" ? `לדוגמה: index.${a.ext}` : "לדוגמה: notes.txt";
+  openSheet({
+    title: "שמירה כקובץ",
+    message: "פרויקט ושם קובץ הם חובה, כדי שתמיד יהיה ברור מה זה.",
+    body: `
+      <label class="field-l" for="f-project">פרויקט</label>
+      <input class="input" id="f-project" data-f="project" dir="auto" autocomplete="off" spellcheck="false" maxlength="${PROJECT_MAX + 10}" placeholder="לדוגמה: גשר קוד" value="${esc(project0)}">
+      ${projList.length ? `<div class="pick-row" data-ref="projects">${projList.map(p => `<button class="chip pick" type="button" data-pick-project="${esc(p)}">${esc(p)}</button>`).join("")}</div>` : ""}
+      <label class="field-l" for="f-name">שם הקובץ</label>
+      <input class="input" id="f-name" data-f="name" dir="auto" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="${NAME_MAX + 10}" placeholder="${esc(placeholder)}" value="${esc(name0)}">
+      <div class="pick-row" data-ref="files"></div>
+      <label class="field-l" for="f-note">מה השתנה <span style="color:var(--faint)">(לא חובה)</span></label>
+      <input class="input" id="f-note" data-f="note" dir="auto" autocomplete="off" maxlength="${NOTE_MAX}" placeholder="לדוגמה: תיקון התחברות">
+      <div class="match" data-ref="match" hidden></div>
+      <div class="input-hint"><span data-err></span></div>`,
+    actions: [{ label: "שמירה כקובץ חדש", keepOpen: true, onClick: () => submit() }]
+  });
+  const P = $('[data-f="project"]', sheetEl), N = $('[data-f="name"]', sheetEl), NOTE = $('[data-f="note"]', sheetEl);
+  const btn = $('[data-i="0"]', sheetEl), err = $("[data-err]", sheetEl), match = $('[data-ref="match"]', sheetEl), files = $('[data-ref="files"]', sheetEl);
+  let touched = false;
+  const paint = () => {
+    const pe = validateField("project", P.value), ne = validateField("name", N.value);
+    P.classList.toggle("invalid", touched && !!pe);
+    N.classList.toggle("invalid", touched && !!ne);
+    err.textContent = touched ? (pe ? `פרויקט: ${pe}` : ne ? `שם הקובץ: ${ne}` : "") : "";
+    const inProject = state.items.filter(it => normKey(it.project) === normKey(P.value));
+    files.innerHTML = inProject.slice(0, 12).map(it => `<button class="chip pick" type="button" data-pick-name="${esc(it.name)}" dir="auto">${esc(it.name)}</button>`).join("");
+    files.hidden = !inProject.length;
+    const existing = !pe && !ne ? findItem(P.value, N.value) : null;
+    match.hidden = !existing;
+    if (existing) {
+      match.innerHTML = `<svg class="ico"><use href="#i-layers"/></svg><span>קובץ בשם הזה כבר קיים, עם ${existing.count || 1} ${existing.count === 1 ? "גרסה" : "גרסאות"}. השמירה תוסיף אותו כגרסה ${(existing.seq || 0) + 1}, והקודמות יישמרו.</span>`;
+      btn.textContent = `שמירה כגרסה ${(existing.seq || 0) + 1}`;
+    } else btn.textContent = "שמירה כקובץ חדש";
+    btn.disabled = touched && !!(pe || ne);
+    return { pe, ne, existing };
+  };
+  P.addEventListener("input", paint); N.addEventListener("input", paint);
+  $(".sheet-card", sheetEl).addEventListener("click", (e) => {
+    const pp = e.target.closest("[data-pick-project]"); if (pp) { P.value = pp.dataset.pickProject; paint(); N.focus(); return; }
+    const pn = e.target.closest("[data-pick-name]"); if (pn) { N.value = pn.dataset.pickName; paint(); }
+  });
+  paint();
+  async function submit() {
+    touched = true;
+    const { pe, ne, existing } = paint();
+    if (pe || ne) { (pe ? P : N).focus(); return; }
+    const go = async () => {
+      btn.disabled = true; btn.innerHTML = `<span class="spin dark"></span> שומר`;
+      const r = await saveVersion({ item: existing, project: P.value, name: N.value, note: NOTE.value.trim(), a });
+      if (r.result === "error") { btn.disabled = false; paint(); err.textContent = "השמירה נכשלה, אפשר לנסות שוב"; return; }
+      await closeSheet();
+      if (staged === a) staged = null;
+      refreshScreens();
+      savedToast(r);
+    };
+    if (a.findings.length && !a.reviewed) {
+      a.reviewed = true;
+      const keep = { project: P.value, name: N.value };
+      await closeSheet();
+      reviewFindings(a.findings, () => openSaveForm(a, keep), "המשך לשמירה");
+      return;
+    }
+    go();
+  }
+}
+
+/* New version straight from a file screen */
+async function newVersionFor(item, text, fileName = "") {
+  if (typeof text !== "string" || !text.trim()) { toast("אין טקסט בלוח"); return; }
+  if (text.length > MAX_CHARS) { openSheet({ title: "התוכן גדול מדי", message: `המגבלה היא ${nf.format(MAX_CHARS)} תווים.`, cancel: "הבנתי" }); return; }
+  const a = analyze(text, item.name);
+  let diffTxt = "";
+  try {
+    const prev = await fetchRel(`versionsBody/${item.id}/${item.latest.vid}`);
+    if (prev === text) { openSheet({ title: "אין שינוי", message: "התוכן זהה לגרסה האחרונה, אין מה לשמור.", cancel: "הבנתי" }); return; }
+    const d = lineDiff(prev, text);
+    diffTxt = `<span class="chip add" dir="ltr">+${nf.format(d.added)}</span><span class="chip del" dir="ltr">−${nf.format(d.removed)}</span>`;
+  } catch {}
+  const n = (item.seq || 0) + 1;
+  const open = () => openSheet({
+    title: `גרסה ${n} של ${item.name}`,
+    message: fileName ? `מתוך הקובץ ${fileName}` : "מתוך הלוח. התוכן לא מוצג כדי לשמור על מהירות.",
+    body: `<div class="chips" style="margin-bottom:14px"><span class="chip">${nf.format(a.chars)} תווים</span><span class="chip">${nf.format(a.lines)} שורות</span>${diffTxt}
+             ${a.findings.length ? `<span class="chip warn"><svg class="ico"><use href="#i-alert"/></svg>${a.findings.length} פרטים רגישים</span>` : ""}</div>
+           <label class="field-l" for="v-note">מה השתנה <span style="color:var(--faint)">(לא חובה)</span></label>
+           <input class="input" id="v-note" dir="auto" maxlength="${NOTE_MAX}" placeholder="לדוגמה: תיקון התחברות" autocomplete="off">`,
+    actions: [{ label: `שמירה כגרסה ${n}`, keepOpen: true, onClick: async () => {
+      const b = $('[data-i="0"]', sheetEl), note = $("#v-note", sheetEl).value.trim();
+      b.disabled = true; b.innerHTML = `<span class="spin dark"></span> שומר`;
+      const r = await saveVersion({ item, project: item.project, name: item.name, note, a });
+      if (r.result === "error") { b.disabled = false; b.textContent = "נסיון נוסף"; return; }
+      await closeSheet(); savedToast(r);
+    } }]
+  });
+  if (a.findings.length) reviewFindings(a.findings, open, "המשך לשמירה"); else open();
+}
+
+async function deleteVersion(item, v, versions) {
+  const remaining = versions.filter(x => x.id !== v.id);
+  if (!remaining.length) return;
+  const patch = {
+    [`versionsMeta/${item.id}/${v.id}`]: null, [`versionsBody/${item.id}/${v.id}`]: null,
+    [`items/${item.id}/count`]: remaining.length,
+    [`items/${item.id}/totalBytes`]: Math.max(0, (item.totalBytes || 0) - (v.bytes || 0))
+  };
+  if (item.latest?.vid === v.id) {
+    const nv = remaining[0];
+    patch[`items/${item.id}/latest`] = { vid: nv.id, n: nv.n, chars: nv.chars, lines: nv.lines, bytes: nv.bytes, createdAt: nv.createdAt, from: nv.from, fromName: nv.fromName || "" };
+  }
+  const r = await dbWrite(update(ref(db, userRoot()), patch));
+  bodyCache.delete(`versionsBody/${item.id}/${v.id}`);
+  toast(r === "saved" ? `גרסה ${v.n} נמחקה` : "יימחק כשהחיבור יחזור");
+}
+async function pruneVersions(item, versions, keep = 3) {
+  const drop = versions.slice(keep);
+  if (!drop.length) return;
+  const patch = {};
+  let freed = 0;
+  drop.forEach(v => { patch[`versionsMeta/${item.id}/${v.id}`] = null; patch[`versionsBody/${item.id}/${v.id}`] = null; freed += v.bytes || 0; });
+  patch[`items/${item.id}/count`] = versions.length - drop.length;
+  patch[`items/${item.id}/totalBytes`] = Math.max(0, (item.totalBytes || 0) - freed);
+  const r = await dbWrite(update(ref(db, userRoot()), patch));
+  toast(r === "saved" ? `פונו ${fmtBytes(freed)}` : "יימחק כשהחיבור יחזור");
+}
+async function deleteItem(item) {
+  const r = await dbWrite(update(ref(db, userRoot()), { [`items/${item.id}`]: null, [`versionsMeta/${item.id}`]: null, [`versionsBody/${item.id}`]: null }));
+  toast(r === "saved" ? "הקובץ נמחק" : "יימחק כשהחיבור יחזור");
+}
+function renameItem(item) {
+  openSheet({
+    title: "שינוי שם או פרויקט",
+    body: `
+      <label class="field-l" for="r-project">פרויקט</label>
+      <input class="input" id="r-project" dir="auto" autocomplete="off" maxlength="${PROJECT_MAX + 10}" value="${esc(item.project)}">
+      <label class="field-l" for="r-name">שם הקובץ</label>
+      <input class="input" id="r-name" dir="auto" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="${NAME_MAX + 10}" value="${esc(item.name)}">
+      <div class="input-hint"><span data-err></span></div>`,
+    actions: [{ label: "שמירה", keepOpen: true, onClick: async () => {
+      const P = $("#r-project", sheetEl), N = $("#r-name", sheetEl), err = $("[data-err]", sheetEl);
+      const pe = validateField("project", P.value), ne = validateField("name", N.value);
+      P.classList.toggle("invalid", !!pe); N.classList.toggle("invalid", !!ne);
+      if (pe || ne) { err.textContent = pe ? `פרויקט: ${pe}` : `שם הקובץ: ${ne}`; return; }
+      const clash = findItem(P.value, N.value);
+      if (clash && clash.id !== item.id) { err.textContent = "כבר קיים קובץ בשם הזה בפרויקט הזה"; N.classList.add("invalid"); return; }
+      const r = await dbWrite(update(ref(db, `${userRoot()}/items/${item.id}`), { project: P.value.trim(), name: N.value.trim() }));
+      await closeSheet();
+      toast(r === "saved" ? "עודכן" : "יעודכן כשהחיבור יחזור");
+    } }]
+  });
+}
+function itemMenu(item, versions) {
+  const old = Math.max(0, versions.length - 3);
+  openSheet({
+    title: item.name, message: item.project,
+    actions: [
+      downloadAction(`versionsBody/${item.id}/${item.latest?.vid}`, versionFileName(item, item.latest?.n, true)),
+      { label: "שינוי שם או פרויקט", onClick: () => renameItem(item) },
+      ...(old ? [{ label: `מחיקת ${old} גרסאות ישנות`, style: "danger", onClick: () => openSheet({
+        title: `למחוק ${old} גרסאות ישנות?`, message: "3 הגרסאות האחרונות יישארו. אי אפשר לשחזר.",
+        actions: [{ label: "מחיקה", style: "danger", onClick: () => pruneVersions(item, versions, 3) }] }) }] : []),
+      { label: "מחיקת הקובץ", style: "danger", onClick: () => openSheet({
+        title: `למחוק את ${item.name}?`, message: `הקובץ וכל ${item.count || 1} הגרסאות שלו יימחקו מכל המכשירים. אי אפשר לשחזר.`,
+        actions: [{ label: "מחיקת הקובץ", style: "danger", onClick: async () => { await deleteItem(item); if (stack.at(-1)?.params?.id === item.id) history.back(); } }] }) }
+    ]
+  });
+}
+function versionSheet(item, v, versions) {
+  const isLatest = item.latest?.vid === v.id;
+  const rel = `versionsBody/${item.id}/${v.id}`;
+  fetchRel(rel).catch(() => {});
+  openSheet({
+    title: `גרסה ${v.n}${isLatest ? ", האחרונה" : ""}`,
+    message: `${v.from === DEVICE_ID ? "נשמרה מהמכשיר הזה" : `נשמרה מהמכשיר ${v.fromName || ""}`}, ${ago(v.createdAt)}${v.note ? `. ${v.note}` : ""}`,
+    body: `<dl class="details"><dt>תווים</dt><dd>${nf.format(v.chars || 0)}</dd><dt>שורות</dt><dd>${nf.format(v.lines || 0)}</dd><dt>גודל</dt><dd dir="ltr" style="text-align:right">${fmtBytes(v.bytes)}</dd>
+           ${v.added != null ? `<dt>שינוי</dt><dd><span class="diff-add" dir="ltr">+${nf.format(v.added)}</span> <span class="diff-del" dir="ltr">−${nf.format(v.removed)}</span> שורות</dd>` : ""}</dl>`,
+    actions: [
+      { label: "העתקה", keepOpen: true, onClick: async () => { const ok = await copyRel(rel); if (ok) closeSheet(); } },
+      downloadAction(rel, versionFileName(item, v.n, isLatest)),
+      ...(isLatest ? [] : [{ label: "שחזור כגרסה אחרונה", onClick: async () => {
+        try {
+          const text = await fetchRel(rel);
+          const a = analyze(text, item.name);
+          const r = await saveVersion({ item, project: item.project, name: item.name, note: `שוחזר מגרסה ${v.n}`, a });
+          savedToast(r);
+        } catch { toast("השחזור נכשל"); }
+      } }]),
+      { label: "מחיקת הגרסה", style: "danger", disabled: versions.length < 2, onClick: () => openSheet({
+        title: `למחוק את גרסה ${v.n}?`, message: "אי אפשר לשחזר.",
+        actions: [{ label: "מחיקה", style: "danger", onClick: () => deleteVersion(item, v, versions) }] }) }
+    ]
+  });
+}
+
+function itemRow(it) {
+  return `<button class="row" type="button" data-item="${esc(it.id)}">
+    <div class="row-ico ext">${itemIcon(it)}</div>
+    <div class="row-main">
+      <div class="row-title"><span dir="auto">${esc(it.name)}</span></div>
+      <div class="row-sub">גרסה ${it.latest?.n || it.seq || 1}, ${esc(ago(it.updatedAt))}</div>
+    </div>
+    <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+  </button>`;
+}
+
+function buildFiles(s) {
+  s.content.innerHTML = `
+    <input class="input search" type="search" dir="auto" placeholder="חיפוש לפי שם קובץ או פרויקט" aria-label="חיפוש קבצים" data-ref="q" autocomplete="off" spellcheck="false">
+    <div data-ref="list" style="display:grid;gap:22px"></div>`;
+  const q = $('[data-ref="q"]', s.content);
+  q.addEventListener("input", () => s.update());
+  s.content.addEventListener("click", (e) => { const r = e.target.closest("[data-item]"); if (r) push("item", { id: r.dataset.item }); });
+  s.update = () => {
+    const term = normKey(q.value);
+    const items = state.items.filter(it => !term || normKey(it.name).includes(term) || normKey(it.project).includes(term));
+    const box = $('[data-ref="list"]', s.content);
+    if (!state.items.length) { box.innerHTML = `<div class="empty-card">עדיין אין קבצים. מדביקים בדף הבית ובוחרים "שמירה כקובץ".</div>`; return; }
+    if (!items.length) { box.innerHTML = `<div class="empty-card">לא נמצא קובץ שמתאים לחיפוש.</div>`; return; }
+    const groups = new Map();
+    for (const it of items) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
+    box.innerHTML = [...groups.values()].map(g => `<section>
+        <div class="group-title">${esc(g.name)} <span style="color:var(--faint)">(${g.list.length})</span></div>
+        <div class="group with-ico">${g.list.map(itemRow).join("")}</div>
+      </section>`).join("");
+  };
+}
+
+function buildItem(s, params) {
+  const id = params.id;
+  let versions = [], loaded = false;
+  s.end.innerHTML = `<button class="nav-btn" type="button" data-act="menu" aria-label="אפשרויות"><svg class="ico"><use href="#i-more"/></svg></button>`;
+  s.content.innerHTML = `
+    <section class="item-head" data-ref="head"></section>
+    <section class="item-actions">
+      <button class="btn-primary big" type="button" data-act="copy-latest"><svg class="ico"><use href="#i-copy"/></svg><span>העתקת הגרסה האחרונה</span></button>
+      <div class="btn-row">
+        <button class="btn-sec" type="button" data-act="paste-version"><svg class="ico"><use href="#i-clipboard"/></svg>הדבקת גרסה חדשה</button>
+        <button class="btn-sec" type="button" data-act="file-version"><svg class="ico"><use href="#i-file"/></svg>גרסה מקובץ</button>
+      </div>
+      <input type="file" data-ref="file" hidden>
+    </section>
+    <section>
+      <div class="section-head"><h2>גרסאות</h2><span class="muted" data-ref="total"></span></div>
+      <div class="group with-ico" data-ref="versions"></div>
+    </section>`;
+  const fileInput = $('[data-ref="file"]', s.content);
+  const item = () => state.items.find(it => it.id === id);
+  const unsub = onValue(query(ref(db, `${userRoot()}/versionsMeta/${id}`), orderByKey(), limitToLast(100)), (snap) => {
+    versions = Object.entries(snap.val() || {}).map(([vid, v]) => ({ id: vid, ...v })).sort((a, b) => (a.id < b.id ? 1 : -1));
+    loaded = true; s.update();
+  }, onDbError);
+  s.destroy = () => { try { unsub(); } catch {} };
+  const it0 = item();
+  if (it0?.latest?.vid && (it0.latest.chars || 0) <= 500000) fetchRel(`versionsBody/${id}/${it0.latest.vid}`).catch(() => {});
+
+  s.end.addEventListener("click", () => { const it = item(); if (it) itemMenu(it, versions); });
+  s.content.addEventListener("pointerdown", (e) => {
+    const it = item();
+    if (it?.latest?.vid && e.target.closest('[data-act="copy-latest"]')) fetchRel(`versionsBody/${id}/${it.latest.vid}`).catch(() => {});
+  });
+  s.content.addEventListener("click", async (e) => {
+    const it = item(); if (!it) return;
+    const act = e.target.closest("[data-act]")?.dataset.act;
+    if (act === "copy-latest") return copyRel(`versionsBody/${id}/${it.latest.vid}`, e.target.closest("[data-act]"));
+    if (act === "paste-version") {
+      if (!navigator.clipboard?.readText) { toast("הדפדפן לא מאפשר קריאה מהלוח, אפשר להשתמש בגרסה מקובץ"); return; }
+      try { newVersionFor(it, await navigator.clipboard.readText()); } catch { toast("אין הרשאה ללוח"); }
+      return;
+    }
+    if (act === "file-version") return fileInput.click();
+    const row = e.target.closest("[data-version]");
+    if (row) { const v = versions.find(x => x.id === row.dataset.version); if (v) versionSheet(it, v, versions); }
+  });
+  fileInput.addEventListener("change", async () => {
+    const f = fileInput.files?.[0]; fileInput.value = "";
+    const it = item(); if (!f || !it) return;
+    if (f.size > MAX_FILE_BYTES) { toast("הקובץ גדול מדי"); return; }
+    const text = await f.text();
+    if (/\u0000/.test(text.slice(0, 8000))) { toast("קובץ בינארי לא נתמך"); return; }
+    newVersionFor(it, text, f.name);
+  });
+
+  s.update = () => {
+    const it = item();
+    if (!it) {
+      $('[data-ref="head"]', s.content).innerHTML = `<div class="empty-card">הקובץ נמחק.</div>`;
+      $(".item-actions", s.content).hidden = true;
+      $('[data-ref="versions"]', s.content).innerHTML = "";
+      return;
+    }
+    s.setTitle(it.name);
+    const L = it.latest || {};
+    $('[data-ref="head"]', s.content).innerHTML = `
+      <div class="staged-head">
+        <div class="type-ico">${itemIcon(it)}</div>
+        <div class="row-main">
+          <div class="row-title" style="font-size:18px;font-weight:700"><span dir="auto">${esc(it.name)}</span></div>
+          <div class="row-sub">${esc(it.project)}</div>
+        </div>
+      </div>
+      <div class="chips">
+        <span class="chip type">${esc(it.type || "טקסט")}</span>
+        <span class="chip">גרסה ${L.n || 1}</span>
+        <span class="chip">${nf.format(L.chars || 0)} תווים</span>
+        <span class="chip">${nf.format(L.lines || 0)} שורות</span>
+        <span class="chip" dir="ltr">${fmtBytes(L.bytes)}</span>
+      </div>
+      <div class="row-sub">עודכן ${esc(ago(it.updatedAt))}, ${L.from === DEVICE_ID ? "מהמכשיר הזה" : `מהמכשיר ${esc(L.fromName || "")}`}</div>`;
+    $('[data-ref="total"]', s.content).textContent = `${fmtBytes(it.totalBytes)} בסך הכל`;
+    $('[data-ref="versions"]', s.content).innerHTML = !loaded
+      ? `<div class="row"><div class="row-main"><div class="row-sub">טוען גרסאות</div></div></div>`
+      : versions.map(v => `<button class="row" type="button" data-version="${esc(v.id)}">
+          <div class="row-ico ${v.id === L.vid ? "phone" : ""}"><span class="vnum">${v.n}</span></div>
+          <div class="row-main">
+            <div class="row-title"><span>גרסה ${v.n}</span>${v.id === L.vid ? `<span class="tag">אחרונה</span>` : ""}</div>
+            <div class="row-sub">${esc(v.note ? v.note : `${ago(v.createdAt)}, ${v.from === DEVICE_ID ? "מהמכשיר הזה" : v.fromName || ""}`)}</div>
+          </div>
+          <div class="row-end">${v.added != null ? `<span class="diff-add" dir="ltr">+${nf.format(v.added)}</span><span class="diff-del" dir="ltr">−${nf.format(v.removed)}</span>` : `<span>${nf.format(v.lines || 0)} שורות</span>`}<svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+        </button>`).join("");
+  };
+}
 /* ================= Screens ================= */
 const SCREENS = {
   home:     { title: "גשר קוד", build: buildHome },
   settings: { title: "הגדרות", build: buildSettings },
-  devices:  { title: "מכשירים", build: buildDevices }
+  devices:  { title: "מכשירים", build: buildDevices },
+  files:    { title: "קבצים", build: buildFiles },
+  item:     { title: (p) => state.items.find(it => it.id === p.id)?.name || "קובץ", build: buildItem }
 };
 
 function deviceRow(d, asButton) {
@@ -678,9 +1545,34 @@ function deviceRow(d, asButton) {
   </${tag}>`;
 }
 
+function clipCard(c) {
+  const mine = c.from === DEVICE_ID;
+  const icon = c.fromKind === "desktop" ? "i-desktop" : c.fromKind === "tablet" ? "i-tablet" : "i-phone";
+  return `<article class="clip ${freshClips.has(c.id) ? "fresh" : ""}" data-clip="${esc(c.id)}" ${IS_DESKTOP ? 'draggable="true"' : ""}>
+    <div class="clip-top">
+      <span class="clip-from"><svg class="ico"><use href="#${icon}"/></svg>${mine ? "נשלח מהמכשיר הזה" : esc(c.fromName || "מכשיר אחר")}</span>
+      <span>${esc(ago(c.createdAt))}</span>
+    </div>
+    ${c.name ? `<div class="clip-name">${esc(c.name)}</div>` : ""}
+    <div class="chips">
+      <span class="chip type">${esc(c.type || "טקסט")}</span>
+      <span class="chip">${nf.format(c.chars || 0)} תווים</span>
+      <span class="chip">${nf.format(c.lines || 0)} שורות</span>
+      <span class="chip" dir="ltr">${fmtBytes(c.bytes)}</span>
+      ${c.flagged ? `<span class="chip warn"><svg class="ico"><use href="#i-alert"/></svg>מכיל פרט רגיש</span>` : ""}
+    </div>
+    ${c.preview ? `<pre class="clip-preview">${esc(c.preview)}</pre>` : ""}
+    <div class="clip-actions">
+      <button class="btn-copy" type="button" data-copy><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
+      <button class="btn-more" type="button" data-more aria-label="אפשרויות נוספות"><svg class="ico"><use href="#i-more"/></svg></button>
+    </div>
+  </article>`;
+}
+
 function buildHome(s) {
   s.start.innerHTML = `<svg class="nav-logo" aria-hidden="true"><use href="#logo"/></svg>`;
   s.end.innerHTML = `<button class="nav-btn" type="button" data-go="settings"><svg class="ico"><use href="#i-gear"/></svg><span>הגדרות</span></button>`;
+  const zoneHint = IS_DESKTOP ? "או Ctrl+V בכל מקום בעמוד, או גרירת קובץ לכאן" : "או לחיצה ארוכה כאן ובחירה בהדבקה";
   s.content.innerHTML = `
     <section class="bridge" data-ref="bridge" aria-live="polite">
       <svg class="bridge-art" viewBox="0 0 520 140" aria-hidden="true">
@@ -706,16 +1598,103 @@ function buildHome(s) {
     </section>
 
     <section>
+      <div class="section-head"><h2>שליחה</h2></div>
+      <div class="composer" data-ref="composer">
+        <button class="btn-hero" type="button" data-act="paste">
+          <span class="hi"><svg class="ico"><use href="#i-clipboard"/></svg></span>
+          <span><span class="ht">הדבקה מהלוח</span><span class="hs">התוכן לא מוצג על המסך, כך שגם קוד ענק לא יתקע את הטלפון</span></span>
+        </button>
+        <div class="btn-row">
+          <button class="btn-sec" type="button" data-act="file"><svg class="ico"><use href="#i-file"/></svg>בחירת קובץ</button>
+          <button class="btn-sec" type="button" data-act="write"><svg class="ico"><use href="#i-edit"/></svg>כתיבה ידנית</button>
+        </div>
+        <textarea class="paste-zone" data-ref="zone" rows="1" placeholder="${esc(zoneHint)}" aria-label="אזור הדבקה" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+        <input type="file" data-ref="file" hidden>
+      </div>
+      <div class="staged" data-ref="staged" hidden></div>
+    </section>
+
+    <section>
+      <div class="group-title">קבצים</div>
+      <div class="group with-ico" data-ref="files"></div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>התקבלו לאחרונה</h2><button class="link-btn danger" type="button" data-act="clear" data-ref="clear" hidden>מחיקת הכל</button></div>
+      <div class="clips" data-ref="clips"></div>
+    </section>
+
+    <section>
       <div class="group-title">המכשירים שלך</div>
       <div class="group with-ico" data-ref="devs"></div>
     </section>
 
-    <p class="footnote">שלב 1 מתוך 8: תשתית, התחברות וזמן אמת</p>`;
+    <p class="footnote">שלב 3 מתוך 8: קבצים וגרסאות</p>`;
+
+  const zone = $('[data-ref="zone"]', s.content);
+  const fileInput = $('[data-ref="file"]', s.content);
 
   $('[data-go="settings"]', s.end).addEventListener("click", () => push("settings"));
-  $('[data-act="install"]', s.content).addEventListener("click", doInstall);
-  $('[data-act="dismiss"]', s.content).addEventListener("click", () => { store.set("cb.installDismissed", "1"); s.update(); });
-  s.content.addEventListener("click", (e) => { if (e.target.closest('[data-go="devices"]')) push("devices"); });
+  zone.addEventListener("paste", (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const files = e.clipboardData?.files;
+    zone.value = ""; zone.blur();
+    if (files && files.length) { readFiles(files); return; }
+    stage(e.clipboardData?.getData("text/plain") || "");
+  });
+  zone.addEventListener("input", () => { const t = zone.value; zone.value = ""; if (t.trim()) { zone.blur(); stage(t); } });
+  zone.addEventListener("dragover", (e) => { if (hasFiles(e)) { e.preventDefault(); zone.classList.add("over"); } });
+  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+  zone.addEventListener("drop", (e) => { zone.classList.remove("over"); if (hasFiles(e)) { e.preventDefault(); e.stopPropagation(); readFiles(e.dataTransfer.files); } });
+  fileInput.addEventListener("change", () => { readFiles(fileInput.files); fileInput.value = ""; });
+
+  s.content.addEventListener("pointerdown", (e) => {
+    const card = e.target.closest("[data-clip]");
+    if (card && e.target.closest("[data-copy]")) fetchBody(card.dataset.clip).catch(() => {});
+  });
+  if (IS_DESKTOP) {
+    s.content.addEventListener("mouseover", (e) => { const card = e.target.closest("[data-clip]"); if (card) fetchBody(card.dataset.clip).catch(() => {}); });
+    s.content.addEventListener("dragstart", (e) => {
+      const card = e.target.closest("[data-clip]");
+      if (!card) return;
+      const c = state.clips.find(x => x.id === card.dataset.clip);
+      const t = c && bodyCache.get(clipKey(c.id));
+      if (t == null) { e.preventDefault(); if (c) fetchBody(c.id).catch(() => {}); toast("התוכן נטען, אפשר לגרור שוב"); return; }
+      e.dataTransfer.effectAllowed = "copy";
+      e.dataTransfer.setData("text/plain", t);
+      try {
+        const url = URL.createObjectURL(new Blob([t], { type: "text/plain" }));
+        e.dataTransfer.setData("DownloadURL", `text/plain:${fileNameFor(c)}:${url}`);
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } catch {}
+    });
+  }
+
+  s.content.addEventListener("click", (e) => {
+    const act = e.target.closest("[data-act]")?.dataset.act;
+    if (act === "paste") return pasteFromClipboard();
+    if (act === "file") return fileInput.click();
+    if (act === "write") return openWrite();
+    if (act === "send") return sendStaged();
+    if (act === "discard") return discardStaged();
+    if (act === "save" && staged) return openSaveForm(staged);
+    if (act === "save-suggested" && staged?.suggest) return openSaveForm(staged, { project: staged.suggest.item.project, name: staged.suggest.item.name });
+    if (act === "not-this" && staged) { staged.suggest = null; return s.update(); }
+    if (e.target.closest('[data-go="files"]')) return push("files");
+    const itemRowEl = e.target.closest("[data-item]");
+    if (itemRowEl) return push("item", { id: itemRowEl.dataset.item });
+    if (act === "review") return reviewFindings(staged?.findings);
+    if (act === "clear") return confirmClearAll();
+    if (act === "install") return doInstall();
+    if (act === "dismiss") { store.set("cb.installDismissed", "1"); return s.update(); }
+    if (e.target.closest('[data-go="devices"]')) return push("devices");
+    const card = e.target.closest("[data-clip]");
+    if (!card) return;
+    const c = state.clips.find(x => x.id === card.dataset.clip);
+    if (!c) return;
+    if (e.target.closest("[data-copy]")) copyClip(c, e.target.closest("[data-copy]"));
+    else if (e.target.closest("[data-more]")) clipActions(c);
+  });
 
   s.update = () => {
     const list = deviceList();
@@ -727,15 +1706,69 @@ function buildHome(s) {
     br.classList.toggle("live", phoneOn && deskOn);
     let t, x;
     if (!state.connected && !phoneOn && !deskOn) { t = "מתחבר לשרת"; x = "רגע אחד."; }
-    else if (phoneOn && deskOn) { t = "הגשר פעיל"; x = "הטלפון והמחשב מחוברים, כל שינוי עובר מיד."; }
-    else if (phoneOn) { t = "ממתין למחשב"; x = "פתיחת גשר קוד במחשב תחבר את הצד השני."; }
-    else if (deskOn) { t = "ממתין לטלפון"; x = "פתיחת גשר קוד בטלפון תחבר את הצד השני."; }
-    else { t = "אין מכשירים מחוברים"; x = "החיבור לשרת פעיל, ממתין למכשירים."; }
+    else if (phoneOn && deskOn) { t = "הגשר פעיל"; x = "הטלפון והמחשב מחוברים, כל שליחה מגיעה מיד."; }
+    else if (phoneOn) { t = "ממתין למחשב"; x = "אפשר לשלוח כבר עכשיו, זה יחכה למחשב."; }
+    else if (deskOn) { t = "ממתין לטלפון"; x = "אפשר לשלוח כבר עכשיו, זה יחכה לטלפון."; }
+    else { t = "אין מכשירים מחוברים"; x = "החיבור לשרת פעיל."; }
     $('[data-ref="bt"]', s.content).textContent = t;
     $('[data-ref="bx"]', s.content).textContent = x;
 
     $('[data-ref="install"]', s.content).hidden = !(canInstall() && !store.get("cb.installDismissed"));
 
+    // Composer or staged item
+    const st = $('[data-ref="staged"]', s.content);
+    $('[data-ref="composer"]', s.content).hidden = !!staged;
+    st.hidden = !staged;
+    if (staged) {
+      const f = staged.findings.length;
+      const sug = staged.suggest;
+      st.innerHTML = `
+        <div class="staged-head">
+          <div class="type-ico">${esc((staged.ext || "txt").toUpperCase())}</div>
+          <div class="row-main">
+            <div class="row-title"><span ${staged.name ? 'dir="ltr"' : ""}>${esc(staged.name || staged.type)}</span></div>
+            <div class="row-sub">מוכן לשליחה. התוכן לא מוצג כדי לשמור על מהירות.</div>
+          </div>
+        </div>
+        <div class="chips">
+          <span class="chip type">${esc(staged.type)}</span>
+          <span class="chip">${nf.format(staged.chars)} תווים</span>
+          <span class="chip">${nf.format(staged.lines)} שורות</span>
+          <span class="chip" dir="ltr">${fmtBytes(staged.bytes)}</span>
+          ${f ? `<button class="chip warn" type="button" data-act="review"><svg class="ico"><use href="#i-alert"/></svg>${f === 1 ? "פרט רגיש אחד" : `${f} פרטים רגישים`}</button>` : ""}
+        </div>
+        ${sug ? `<div class="suggest"><svg class="ico"><use href="#i-layers"/></svg><div>
+            נראה כמו גרסה חדשה של <b dir="auto">${esc(sug.item.name)}</b>, בפרויקט <b>${esc(sug.item.project)}</b>.
+            <button class="link-btn" type="button" data-act="not-this">זה לא הקובץ הזה</button></div></div>` : ""}
+        <div class="actions-3">
+          <div class="pair">
+            ${sug
+              ? `<button class="btn-primary" type="button" data-act="save-suggested" ${sending ? "disabled" : ""}><svg class="ico"><use href="#i-layers"/></svg>שמירה כגרסה ${(sug.item.seq || 0) + 1}</button>
+                 <button class="btn-secondary" type="button" data-act="send" ${sending ? "disabled" : ""}>${sending ? `<span class="spin dark"></span>שולח` : `<svg class="ico"><use href="#i-send"/></svg>שליחה מהירה`}</button>`
+              : `<button class="btn-primary" type="button" data-act="send" ${sending ? "disabled" : ""}>${sending ? `<span class="spin"></span>שולח` : `<svg class="ico"><use href="#i-send"/></svg>שליחה מהירה`}</button>
+                 <button class="btn-secondary" type="button" data-act="save" ${sending ? "disabled" : ""}><svg class="ico"><use href="#i-layers"/></svg>שמירה כקובץ</button>`}
+          </div>
+          <button class="btn-text" type="button" data-act="discard" ${sending ? "disabled" : ""}>ביטול</button>
+        </div>`;
+    }
+
+    // Received list
+    const clips = state.clips;
+    $('[data-ref="clear"]', s.content).hidden = clips.length === 0;
+    $('[data-ref="clips"]', s.content).innerHTML = clips.length
+      ? clips.map(clipCard).join("")
+      : `<div class="empty-card">${state.connected ? "עדיין לא נשלח כלום. מה שתשלח מכל מכשיר יופיע כאן, בכל המכשירים, בלי רענון." : "טוען"}</div>`;
+
+    // Files preview
+    const recent = state.items.slice(0, 3).map(itemRow).join("");
+    $('[data-ref="files"]', s.content).innerHTML = (recent || `<div class="row"><div class="row-main"><div class="row-sub">עדיין אין קבצים. אחרי הדבקה בוחרים "שמירה כקובץ".</div></div></div>`) + `
+      <button class="row accent" type="button" data-go="files">
+        <div class="row-ico"><svg class="ico"><use href="#i-folder"/></svg></div>
+        <div class="row-main"><div class="row-title"><span>כל הקבצים</span></div></div>
+        <div class="row-end">${state.items.length || ""}<svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+      </button>`;
+
+    // Devices preview
     const preview = list.slice(0, 3).map(d => deviceRow(d, false)).join("");
     const empty = `<div class="row"><div class="row-main"><div class="row-sub">${state.connected ? "עדיין אין מכשירים" : "טוען מכשירים"}</div></div></div>`;
     $('[data-ref="devs"]', s.content).innerHTML = (preview || empty) + `
@@ -764,6 +1797,11 @@ function buildSettings(s) {
           <div class="row-main"><div class="row-title"><span>בדיקת עדכונים</span></div></div>
           <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
         </button>
+        <div class="row">
+          <div class="row-ico"><svg class="ico"><use href="#i-layers"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>נפח בשימוש</span></div><div class="row-sub">מתוך 1 GB בתוכנית החינמית</div></div>
+          <div class="row-end" dir="ltr" data-ref="usage"></div>
+        </div>
         <div class="row">
           <div class="row-ico"><svg class="ico"><use href="#i-info"/></svg></div>
           <div class="row-main"><div class="row-title"><span>גרסה</span></div></div>
@@ -813,6 +1851,8 @@ function buildSettings(s) {
     $('[data-ref="install-row"]', s.content).hidden = !canInstall();
     const n = Object.keys(state.devices).length;
     $('[data-ref="dev-count"]', s.content).textContent = n ? String(n) : "";
+    const used = state.items.reduce((t, it) => t + (it.totalBytes || 0), 0) + state.clips.reduce((t, c) => t + (c.bytes || 0), 0);
+    $('[data-ref="usage"]', s.content).textContent = fmtBytes(used);
   };
 }
 
@@ -961,11 +2001,14 @@ let unsubs = [], session = 0, netTimer = null;
 const isDenied = (e) => /permission[_ ]denied/i.test(`${e?.code || ""} ${e?.message || ""}`);
 function teardown() {
   session++;
+  stack.forEach(s => { try { s.destroy(); } catch {} });
   unsubs.forEach(u => { try { u(); } catch {} });
   unsubs = [];
   clearTimeout(netTimer);
   $("#net-banner").hidden = true;
-  state.devices = {}; state.connected = false;
+  state.devices = {}; state.clips = []; state.items = []; state.connected = false;
+  staged = null; sending = false;
+  bodyCache.clear(); freshClips.clear();
 }
 function onDbError(e) { if (isDenied(e)) enterDenied(); else console.error(e); }
 function setNet(on) {
@@ -988,6 +2031,46 @@ function startRealtime() {
   }));
   unsubs.push(onValue(ref(db, `${root}/presence`), (snap) => {
     state.devices = snap.val() || {};
+    refreshScreens();
+  }, onDbError));
+
+  let firstItems = true, lastSeen = new Map();
+  unsubs.push(onValue(ref(db, `${root}/items`), (snap) => {
+    if (mine !== session) return;
+    const list = Object.entries(snap.val() || {}).map(([id, it]) => ({ id, ...it }))
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    for (const it of list) {
+      const vid = it.latest?.vid;
+      if (!firstItems && vid && lastSeen.get(it.id) !== vid && it.latest.from !== DEVICE_ID) {
+        toast(`גרסה ${it.latest.n} של ${it.name} התקבלה מהמכשיר ${it.latest.fromName || ""}`.trim());
+        if ((it.latest.chars || 0) <= 500000) fetchRel(`versionsBody/${it.id}/${vid}`).catch(() => {});
+      }
+    }
+    firstItems = false;
+    lastSeen = new Map(list.map(it => [it.id, it.latest?.vid]));
+    state.items = list;
+    if (staged) staged.suggest = suggestItem(staged);
+    refreshScreens();
+  }, onDbError));
+
+  let firstClips = true, known = new Set();
+  unsubs.push(onValue(query(ref(db, `${root}/clipsMeta`), orderByKey(), limitToLast(50)), (snap) => {
+    if (mine !== session) return;
+    const val = snap.val() || {};
+    const list = Object.entries(val).map(([id, m]) => ({ id, ...m })).sort((a, b) => (a.id < b.id ? 1 : -1));
+    if (!firstClips) {
+      for (const c of list) {
+        if (known.has(c.id) || c.from === DEVICE_ID) continue;
+        freshClips.add(c.id);
+        setTimeout(() => { freshClips.delete(c.id); refreshScreens(); }, 6000);
+        toast(`התקבל ${c.type || "טקסט"} מהמכשיר ${c.fromName || ""}`.trim());
+      }
+    }
+    firstClips = false;
+    known = new Set(list.map(c => c.id));
+    state.clips = list;
+    const newest = list.find(c => c.from !== DEVICE_ID);
+    if (newest && (newest.chars || 0) <= 500000) fetchBody(newest.id).catch(() => {});
     refreshScreens();
   }, onDbError));
 }
