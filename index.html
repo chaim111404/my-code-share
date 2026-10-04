@@ -311,7 +311,7 @@ button.row:active{background:var(--deep-2)}
 /* ================= Desktop (wide screen + mouse). Mobile is untouched. ================= */
 .col-a,.col-b{display:contents}
 .home-grid [data-area="bridge"]{order:1} .home-grid [data-area="install"]{order:2} .home-grid [data-area="send"]{order:3}
-.home-grid [data-area="files"]{order:4} .home-grid [data-area="received"]{order:5} .home-grid [data-area="devices"]{order:6} .home-grid [data-area="foot"]{order:7}
+.home-grid [data-area="files"]{order:4}
 .desk-only{display:none}
 kbd{font-family:var(--mono);font-size:11.5px;line-height:1;padding:3px 6px;border-radius:6px;border:1px solid var(--rule-2);border-bottom-width:2px;background:var(--deep-2);color:var(--mist);direction:ltr;unicode-bidi:isolate}
 .kbd-hint{font-size:13px;color:var(--faint);display:inline-flex;align-items:center;gap:4px}
@@ -437,6 +437,40 @@ kbd{font-family:var(--mono);font-size:11.5px;line-height:1;padding:3px 6px;borde
 .desk ::-webkit-scrollbar-thumb:hover{background:var(--faint);background-clip:content-box}
 .desk ::-webkit-scrollbar-track{background:transparent}
 .desk *{scrollbar-width:thin;scrollbar-color:var(--rule-2) transparent}
+
+/* Stage 4: script library */
+.home-grid [data-area="scripts"]{order:5} .home-grid [data-area="received"]{order:6} .home-grid [data-area="devices"]{order:7} .home-grid [data-area="foot"]{order:8}
+.scripts{display:grid;gap:10px}
+.desk .scripts{grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}
+.script{border-radius:16px;border:1px solid var(--rule);background:var(--deep);padding:14px;display:grid;gap:10px;cursor:pointer}
+.script-top{display:flex;align-items:flex-start;gap:10px}
+.script-name{font-weight:600;font-size:16px;line-height:1.35}
+.pin{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--faint);flex:none;margin-top:-4px}
+.pin .ico{width:19px;height:19px}
+.pin.on{color:var(--desk)} .pin.on .ico{fill:currentColor}
+.pin:active{background:var(--deep-2)}
+.chip.tagc{color:var(--desk);background:rgba(242,182,90,.1)}
+.chip.pick.active{background:rgba(94,225,217,.14);border-color:rgba(94,225,217,.45);color:var(--phone)}
+.chip.pick em{font-style:normal;color:var(--faint);font-size:12px}
+.tag-filter{padding-top:0}
+.tag-box{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:50px;padding:7px 10px;border-radius:12px;border:1px solid var(--rule-2);background:var(--ink)}
+.tag-box:focus-within{border-color:var(--phone)}
+.tag-box.invalid{border-color:var(--alert)}
+.tag-box > span{display:contents}
+.tag-input{flex:1;min-width:120px;min-height:34px;background:none;border:0;outline:none;color:var(--paper);font:inherit;font-size:16px}
+.chip.tag-chip{color:var(--desk);background:rgba(242,182,90,.12);padding:3px 4px 3px 10px;padding-inline-start:10px;padding-inline-end:4px}
+.chip.tag-chip button{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;color:inherit}
+.chip.tag-chip button .ico{width:12px;height:12px}
+.quick-scripts{display:grid;gap:8px}
+.qs{display:flex;align-items:center;gap:12px;padding:10px 12px 10px 10px;border-radius:14px;border:1px solid var(--rule);background:var(--deep)}
+.qs .row-main{cursor:pointer}
+.qs .btn-copy{min-height:40px;padding:0 14px}
+.sb-qs{display:flex;align-items:center;gap:8px;width:100%;min-height:30px;padding:0 8px;border-radius:8px;color:var(--mist);font-size:13.5px;text-align:right}
+.sb-qs:hover{background:var(--deep);color:var(--phone)}
+.sb-qs .ico{width:14px;height:14px;color:var(--desk);fill:currentColor}
+.sb-qs span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-qs kbd{opacity:0;transition:opacity .15s} .sb-qs:hover kbd{opacity:1}
+@media (hover:hover){ .script:hover{border-color:var(--rule-2)} .qs:hover{border-color:var(--rule-2)} }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -489,6 +523,11 @@ kbd{font-family:var(--mono);font-size:11.5px;line-height:1;padding:3px 6px;borde
   <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><line x1="7.5" y1="7.5" x2="7.51" y2="7.5"/></symbol>
   <symbol id="i-rotate" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></symbol>
   <symbol id="i-chev-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
 </svg>
 
@@ -530,7 +569,7 @@ kbd{font-family:var(--mono);font-size:11.5px;line-height:1;padding:3px 6px;borde
   <div class="palette-box" role="dialog" aria-modal="true" aria-label="חיפוש ופקודות">
     <div class="palette-in"><svg class="ico"><use href="#i-search"/></svg><input class="palette-input" id="palette-input" type="text" autocomplete="off" spellcheck="false" placeholder="חיפוש קובץ או פעולה" aria-label="חיפוש קובץ או פעולה"><kbd>Esc</kbd></div>
     <div class="palette-list" id="palette-list" role="listbox"></div>
-    <div class="pal-foot"><span><kbd>Enter</kbd> ביצוע</span><span><kbd>Ctrl</kbd><kbd>Enter</kbd> העתקת קובץ</span><span><kbd>↑</kbd><kbd>↓</kbd> מעבר</span></div>
+    <div class="pal-foot"><span><kbd>Enter</kbd> ביצוע</span><span><kbd>Ctrl</kbd><kbd>Enter</kbd> העתקת קובץ או פתיחת סקריפט</span><span><kbd>↑</kbd><kbd>↓</kbd> מעבר</span></div>
   </div>
 </div>
 
@@ -552,10 +591,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import {
   getDatabase, ref, update, onValue, onDisconnect, serverTimestamp,
-  push as dbPush, get, query, orderByKey, limitToLast
+  push as dbPush, get, query, orderByKey, limitToLast, increment
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-const APP_VERSION = "1.4.0";
+const APP_VERSION = "1.5.0";
 
 /* ================= Firebase ================= */
 const app = initializeApp({
@@ -1292,7 +1331,7 @@ function validateField(kind, raw) {
   if (/[\/\\#$\[\]]/.test(v)) return "בלי התווים / \\ # $ [ ]";
   return "";
 }
-const projects = () => { const seen = new Map(); for (const it of state.items) if (!seen.has(normKey(it.project))) seen.set(normKey(it.project), it.project); return [...seen.values()]; };
+const projects = () => { const seen = new Map(); for (const it of fileItems()) if (!seen.has(normKey(it.project))) seen.set(normKey(it.project), it.project); return [...seen.values()]; };
 function versionFileName(item, n, isLatest) {
   const m = item.name.match(/^(.*?)(\.[a-z0-9]+)?$/i);
   const base = m[1] || item.name, ext = m[2] || `.${item.ext || "txt"}`;
@@ -1300,7 +1339,7 @@ function versionFileName(item, n, isLatest) {
 }
 const itemIcon = (it) => esc((it.ext || "txt").toUpperCase().slice(0, 4));
 
-async function saveVersion({ item, project, name, note, a }) {
+async function saveVersion({ item, project, name, note, a, details = null }) {
   const root = userRoot();
   if (!root) return { result: "error" };
   const t = detectType(a.text, name);
@@ -1328,10 +1367,12 @@ async function saveVersion({ item, project, name, note, a }) {
       [`items/${itemId}/totalBytes`]: (item.totalBytes || 0) + a.bytes, [`items/${itemId}/updatedAt`]: now,
       [`items/${itemId}/fp`]: fingerprint(a.text), [`items/${itemId}/type`]: t.label, [`items/${itemId}/ext`]: t.ext
     });
+    if (details) for (const k of ["tags", "description", "domain"]) if (details[k] !== undefined) patch[`items/${itemId}/${k}`] = details[k];
   } else {
     patch[`items/${itemId}`] = {
       name: name.trim(), project: project.trim(), type: t.label, ext: t.ext, createdAt: now, updatedAt: now,
-      seq: 1, count: 1, totalBytes: a.bytes, latest, fp: fingerprint(a.text)
+      seq: 1, count: 1, totalBytes: a.bytes, latest, fp: fingerprint(a.text),
+      ...(details || {})
     };
   }
   cacheSet(`versionsBody/${itemId}/${vid}`, a.text);
@@ -1339,7 +1380,7 @@ async function saveVersion({ item, project, name, note, a }) {
     update(ref(db, root), patch).then(() => "saved"),
     wait(30000).then(() => "queued")
   ]).catch((e) => { onDbError(e); return "error"; });
-  if (result !== "error") store.set("cb.lastProject", project.trim());
+  if (result !== "error" && project.trim() !== SCRIPT_PROJECT) store.set("cb.lastProject", project.trim());
   return { result, itemId, n, isNew: !item };
 }
 function savedToast(r) {
@@ -1421,7 +1462,7 @@ function openSaveForm(a, prefill = {}) {
 }
 
 /* New version straight from a file screen */
-async function newVersionFor(item, text, fileName = "") {
+async function newVersionFor(item, text, fileName = "", onSaved = null) {
   if (typeof text !== "string" || !text.trim()) { toast("אין טקסט בלוח"); return; }
   if (text.length > MAX_CHARS) { openSheet({ title: "התוכן גדול מדי", message: `המגבלה היא ${nf.format(MAX_CHARS)} תווים.`, cancel: "הבנתי" }); return; }
   const a = analyze(text, item.name);
@@ -1445,7 +1486,7 @@ async function newVersionFor(item, text, fileName = "") {
       b.disabled = true; b.innerHTML = `<span class="spin dark"></span> שומר`;
       const r = await saveVersion({ item, project: item.project, name: item.name, note, a });
       if (r.result === "error") { b.disabled = false; b.textContent = "נסיון נוסף"; return; }
-      await closeSheet(); savedToast(r);
+      await closeSheet(); savedToast(r); onSaved?.();
     } }]
   });
   if (a.findings.length) reviewFindings(a.findings, open, "המשך לשמירה"); else open();
@@ -1480,7 +1521,7 @@ async function pruneVersions(item, versions, keep = 3) {
 }
 async function deleteItem(item) {
   const r = await dbWrite(update(ref(db, userRoot()), { [`items/${item.id}`]: null, [`versionsMeta/${item.id}`]: null, [`versionsBody/${item.id}`]: null }));
-  toast(r === "saved" ? "הקובץ נמחק" : "יימחק כשהחיבור יחזור");
+  toast(r === "saved" ? (isScript(item) ? "הסקריפט נמחק" : "הקובץ נמחק") : "יימחק כשהחיבור יחזור");
 }
 function renameItem(item) {
   openSheet({
@@ -1506,15 +1547,19 @@ function renameItem(item) {
 }
 function itemMenu(item, versions) {
   const old = Math.max(0, versions.length - 3);
+  const sc = isScript(item);
   openSheet({
-    title: item.name, message: item.project,
+    title: item.name, message: sc ? tagsOf(item).join(", ") : item.project,
     actions: [
       downloadAction(`versionsBody/${item.id}/${item.latest?.vid}`, versionFileName(item, item.latest?.n, true)),
-      { label: "שינוי שם או פרויקט", onClick: () => renameItem(item) },
+      ...(sc ? [
+        { label: item.pinned ? "ביטול הצמדה" : "הצמדה לגישה מהירה", onClick: () => togglePin(item) },
+        { label: "עריכת פרטים ותגיות", onClick: () => openScriptForm(null, { edit: item }) }
+      ] : [{ label: "שינוי שם או פרויקט", onClick: () => renameItem(item) }]),
       ...(old ? [{ label: `מחיקת ${old} גרסאות ישנות`, style: "danger", onClick: () => openSheet({
         title: `למחוק ${old} גרסאות ישנות?`, message: "3 הגרסאות האחרונות יישארו. אי אפשר לשחזר.",
         actions: [{ label: "מחיקה", style: "danger", onClick: () => pruneVersions(item, versions, 3) }] }) }] : []),
-      { label: "מחיקת הקובץ", style: "danger", onClick: () => confirmDeleteItem(item) }
+      { label: sc ? "מחיקת הסקריפט" : "מחיקת הקובץ", style: "danger", onClick: () => confirmDeleteItem(item) }
     ]
   });
 }
@@ -1565,9 +1610,9 @@ function buildFiles(s) {
   s.content.addEventListener("click", (e) => { const r = e.target.closest("[data-item]"); if (r) openItem(r.dataset.item); });
   s.update = () => {
     const term = normKey(q.value);
-    const items = state.items.filter(it => !term || normKey(it.name).includes(term) || normKey(it.project).includes(term));
+    const items = fileItems().filter(it => !term || normKey(it.name).includes(term) || normKey(it.project).includes(term));
     const box = $('[data-ref="list"]', s.content);
-    if (!state.items.length) { box.innerHTML = `<div class="empty-card">עדיין אין קבצים. מדביקים בדף הבית ובוחרים "שמירה כקובץ".</div>`; return; }
+    if (!fileItems().length) { box.innerHTML = `<div class="empty-card">עדיין אין קבצים. מדביקים בדף הבית ובוחרים "שמירה כקובץ".</div>`; return; }
     if (!items.length) { box.innerHTML = `<div class="empty-card">לא נמצא קובץ שמתאים לחיפוש.</div>`; return; }
     const groups = new Map();
     for (const it of items) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
@@ -1589,6 +1634,10 @@ function buildItem(s, params) {
     <section class="item-head" data-ref="head"></section>
     <section class="item-actions">
       <button class="btn-primary big" type="button" data-act="copy-latest"><svg class="ico"><use href="#i-copy"/></svg><span>העתקת הגרסה האחרונה</span></button>
+      <div class="btn-row" data-ref="script-actions" hidden>
+        <button class="btn-sec" type="button" data-act="copy-safe"><svg class="ico"><use href="#i-repeat"/></svg>להרצה חוזרת</button>
+        <button class="btn-sec" type="button" data-act="copy-bookmark"><svg class="ico"><use href="#i-bookmark"/></svg>כסימנייה</button>
+      </div>
       <div class="btn-row">
         <button class="btn-sec" type="button" data-act="paste-version"><svg class="ico"><use href="#i-clipboard"/></svg>הדבקת גרסה חדשה</button>
         <button class="btn-sec" type="button" data-act="file-version"><svg class="ico"><use href="#i-file"/></svg>גרסה מקובץ</button>
@@ -1615,12 +1664,14 @@ function buildItem(s, params) {
   s.end.addEventListener("click", () => { const it = item(); if (it) itemMenu(it, versions); });
   s.content.addEventListener("pointerdown", (e) => {
     const it = item();
-    if (it?.latest?.vid && e.target.closest('[data-act="copy-latest"]')) fetchRel(`versionsBody/${id}/${it.latest.vid}`).catch(() => {});
+    if (it?.latest?.vid && e.target.closest('[data-act^="copy-"]')) fetchRel(`versionsBody/${id}/${it.latest.vid}`).catch(() => {});
   });
   s.content.addEventListener("click", async (e) => {
     const it = item(); if (!it) return;
     const act = e.target.closest("[data-act]")?.dataset.act;
-    if (act === "copy-latest") return copyRel(`versionsBody/${id}/${it.latest.vid}`, e.target.closest("[data-act]"));
+    if (act === "copy-latest") return isScript(it) ? copyScript(it, e.target.closest("[data-act]")) : copyRel(`versionsBody/${id}/${it.latest.vid}`, e.target.closest("[data-act]"));
+    if (act === "copy-safe") return copyScript(it, e.target.closest("[data-act]"), "safe");
+    if (act === "copy-bookmark") return copyScript(it, e.target.closest("[data-act]"), "bookmark");
     if (act === "paste-version") {
       if (!navigator.clipboard?.readText) { toast("הדפדפן לא מאפשר קריאה מהלוח, אפשר להשתמש בגרסה מקובץ"); return; }
       try { newVersionFor(it, await navigator.clipboard.readText()); } catch { toast("אין הרשאה ללוח"); }
@@ -1642,21 +1693,23 @@ function buildItem(s, params) {
   s.update = () => {
     const it = item();
     if (!it) {
-      $('[data-ref="head"]', s.content).innerHTML = `<div class="empty-card">הקובץ נמחק.</div>`;
+      $('[data-ref="head"]', s.content).innerHTML = `<div class="empty-card">הפריט נמחק.</div>`;
       $(".item-actions", s.content).hidden = true;
       $('[data-ref="versions"]', s.content).innerHTML = "";
       return;
     }
     s.setTitle(it.name);
+    $('[data-ref="script-actions"]', s.content).hidden = !isScript(it);
     const L = it.latest || {};
     $('[data-ref="head"]', s.content).innerHTML = `
       <div class="staged-head">
         <div class="type-ico">${itemIcon(it)}</div>
         <div class="row-main">
           <div class="row-title" style="font-size:18px;font-weight:700"><span dir="auto">${esc(it.name)}</span></div>
-          <div class="row-sub">${esc(it.project)}</div>
+          <div class="row-sub">${isScript(it) ? esc(it.description || "סקריפט") : esc(it.project)}</div>
         </div>
       </div>
+      ${isScript(it) ? `<div class="chips">${tagsOf(it).map(t => `<span class="chip tagc">${esc(t)}</span>`).join("")}${it.domain ? `<span class="chip" dir="ltr"><svg class="ico"><use href="#i-globe"/></svg>${esc(it.domain)}</span>` : ""}${it.pinned ? `<span class="chip warn"><svg class="ico"><use href="#i-star"/></svg>מוצמד</span>` : ""}${it.uses ? `<span class="chip">הועתק ${nf.format(it.uses)} פעמים</span>` : ""}</div>` : ""}
       <div class="chips">
         <span class="chip type">${esc(it.type || "טקסט")}</span>
         <span class="chip">גרסה ${L.n || 1}</span>
@@ -1678,12 +1731,248 @@ function buildItem(s, params) {
         </button>`).join("");
   };
 }
+/* ================= Script library (stage 4) ================= */
+const SCRIPT_PROJECT = "סקריפטים";
+const TAG_MAX = 24, TAGS_MAX = 8, DESC_MAX = 140, DOMAIN_MAX = 60;
+const isScript = (it) => it?.kind === "script";
+const fileItems = () => state.items.filter(it => !isScript(it));
+function scriptList() {
+  return state.items.filter(isScript).sort((a, b) =>
+    (!!b.pinned - !!a.pinned) || ((b.lastUsedAt || 0) - (a.lastUsedAt || 0)) || ((b.updatedAt || 0) - (a.updatedAt || 0)));
+}
+const tagsOf = (it) => Array.isArray(it?.tags) ? it.tags.filter(Boolean) : Object.values(it?.tags || {}).filter(Boolean);
+function allTags() {
+  const m = new Map();
+  for (const it of state.items.filter(isScript)) for (const t of tagsOf(it)) { const k = normKey(t); const e = m.get(k) || { name: t, n: 0 }; e.n++; m.set(k, e); }
+  return [...m.values()].sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, "he"));
+}
+const cleanTag = (t) => String(t || "").replace(/[,#$\[\]\/.]/g, " ").trim().replace(/\s+/g, " ").slice(0, TAG_MAX);
+// Looks like something you paste into a browser console rather than a project file
+const looksConsole = (a) => a.type === "JavaScript" && !/^\s*(import|export)\b/m.test(a.text.slice(0, 20000)) &&
+  /\b(document\.|window\.|console\.|querySelector|fetch\(|localStorage|navigator\.)/.test(a.text.slice(0, 20000));
+
+const asConsoleSafe = (t) => `(async () => {\n${t.replace(/\n$/, "")}\n})();`;
+const asBookmarklet = (t) => "javascript:" + encodeURIComponent(`(async()=>{\n${t.replace(/\n$/, "")}\n})();void 0`);
+function bumpUse(it) {
+  const root = userRoot();
+  if (!root || !isScript(it)) return;
+  update(ref(db, `${root}/items/${it.id}`), { uses: increment(1), lastUsedAt: serverTimestamp() }).catch(() => {});
+}
+async function copyScript(it, btn, mode = "plain") {
+  if (!it?.latest?.vid) return;
+  const rel = `versionsBody/${it.id}/${it.latest.vid}`;
+  const tf = mode === "safe" ? asConsoleSafe : mode === "bookmark" ? asBookmarklet : mode === "md" ? asMarkdown(it.ext || "js") : null;
+  const ok = await copyRel(rel, btn, tf);
+  if (!ok) return;
+  bumpUse(it);
+  if (mode === "safe") toast("הועתק להרצה חוזרת בקונסול");
+  if (mode === "bookmark") toast("הועתק כסימנייה. שומרים סימנייה חדשה ומדביקים בשדה הכתובת שלה");
+}
+function togglePin(it) {
+  dbWrite(update(ref(db, `${userRoot()}/items/${it.id}`), { pinned: !it.pinned }))
+    .then(r => toast(r === "saved" ? (it.pinned ? "ההצמדה בוטלה" : "הוצמד לגישה מהירה") : "יעודכן כשהחיבור יחזור"));
+}
+function prefetchScripts(list) { list.slice(0, 10).forEach(it => { if (it.latest?.vid && (it.latest.chars || 0) <= 200000) fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {}); }); }
+
+/* Create a script, add a version to one, or edit its details */
+function openScriptForm(a, opts = {}) {
+  const edit = opts.edit || null;
+  const base = edit || {};
+  let tags = edit ? tagsOf(edit) : (opts.tags || []);
+  const all = allTags();
+  openSheet({
+    title: edit ? "עריכת פרטי הסקריפט" : "שמירה כסקריפט",
+    message: edit ? "" : "שם ותגית אחת לפחות הם חובה, כדי שתמיד תמצא אותו.",
+    body: `
+      <label class="field-l" for="s-name">שם הסקריפט</label>
+      <input class="input" id="s-name" dir="auto" autocomplete="off" spellcheck="false" maxlength="${NAME_MAX + 10}" placeholder="לדוגמה: ניקוי עוגיות של האתר" value="${esc(base.name || opts.name || "")}">
+      <label class="field-l" for="s-desc">מה הוא עושה <span style="color:var(--faint)">(לא חובה)</span></label>
+      <input class="input" id="s-desc" dir="auto" autocomplete="off" maxlength="${DESC_MAX}" placeholder="משפט קצר" value="${esc(base.description || "")}">
+      <label class="field-l" for="s-tag">תגיות</label>
+      <div class="tag-box" data-ref="tagbox"><span data-ref="tagchips"></span><input id="s-tag" class="tag-input" dir="auto" autocomplete="off" spellcheck="false" placeholder="תגית ואז Enter" maxlength="${TAG_MAX + 4}"></div>
+      <div class="pick-row" data-ref="tagsugg"></div>
+      <label class="field-l" for="s-domain">אתר יעד <span style="color:var(--faint)">(לא חובה)</span></label>
+      <input class="input" id="s-domain" dir="ltr" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="${DOMAIN_MAX}" placeholder="example.com" value="${esc(base.domain || "")}">
+      <div class="match" data-ref="match" hidden></div>
+      <div class="input-hint"><span data-err></span></div>`,
+    actions: [{ label: edit ? "שמירה" : "שמירה כסקריפט", keepOpen: true, onClick: () => submit() }]
+  });
+  const card = $(".sheet-card", sheetEl);
+  const N = $("#s-name", card), D = $("#s-desc", card), T = $("#s-tag", card), DOM = $("#s-domain", card);
+  const chipsEl = $('[data-ref="tagchips"]', card), sugg = $('[data-ref="tagsugg"]', card), match = $('[data-ref="match"]', card);
+  const err = $("[data-err]", card), btn = $('[data-i="0"]', card);
+  let touched = false;
+  const addTag = (raw) => {
+    const t = cleanTag(raw);
+    if (!t) return;
+    if (tags.some(x => normKey(x) === normKey(t))) return;
+    if (tags.length >= TAGS_MAX) { err.textContent = `עד ${TAGS_MAX} תגיות`; return; }
+    tags.push(t); paint();
+  };
+  const paint = () => {
+    chipsEl.innerHTML = tags.map((t, i) => `<span class="chip tag-chip">${esc(t)}<button type="button" data-rm="${i}" aria-label="הסרת ${esc(t)}"><svg class="ico"><use href="#i-x"/></svg></button></span>`).join("");
+    const rest = all.filter(x => !tags.some(t => normKey(t) === normKey(x.name)));
+    sugg.innerHTML = rest.slice(0, 14).map(x => `<button class="chip pick" type="button" data-tag="${esc(x.name)}">${esc(x.name)}</button>`).join("");
+    sugg.hidden = !rest.length;
+    const ne = validateField("name", N.value);
+    const te = tags.length ? "" : "צריך לפחות תגית אחת";
+    const de = /\s/.test(DOM.value.trim()) ? "אתר יעד בלי רווחים" : "";
+    const existing = !ne ? findItem(SCRIPT_PROJECT, N.value) : null;
+    const clash = existing && (!edit || existing.id !== edit.id) ? existing : null;
+    match.hidden = !clash;
+    if (clash && !edit) {
+      match.innerHTML = `<svg class="ico"><use href="#i-layers"/></svg><span>סקריפט בשם הזה כבר קיים. השמירה תוסיף אותו כגרסה ${(clash.seq || 0) + 1}, והקודמות יישמרו.</span>`;
+      btn.textContent = `שמירה כגרסה ${(clash.seq || 0) + 1}`;
+    } else if (clash && edit) {
+      match.innerHTML = `<svg class="ico"><use href="#i-alert"/></svg><span>כבר יש סקריפט בשם הזה.</span>`;
+      btn.textContent = "שמירה";
+    } else btn.textContent = edit ? "שמירה" : "שמירה כסקריפט";
+    N.classList.toggle("invalid", touched && !!ne);
+    $('[data-ref="tagbox"]', card).classList.toggle("invalid", touched && !!te);
+    DOM.classList.toggle("invalid", touched && !!de);
+    if (touched) err.textContent = ne ? `שם: ${ne}` : te || de || (clash && edit ? "כבר יש סקריפט בשם הזה" : "");
+    return { ne, te, de, existing: clash };
+  };
+  T.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTag(T.value); T.value = ""; }
+    else if (e.key === "Backspace" && !T.value && tags.length) { tags.pop(); paint(); }
+  });
+  T.addEventListener("blur", () => { if (T.value.trim()) { addTag(T.value); T.value = ""; } });
+  card.addEventListener("click", (e) => {
+    const rm = e.target.closest("[data-rm]"); if (rm) { tags.splice(+rm.dataset.rm, 1); paint(); return; }
+    const tg = e.target.closest("[data-tag]"); if (tg) addTag(tg.dataset.tag);
+  });
+  [N, D, DOM].forEach(x => x.addEventListener("input", paint));
+  paint();
+  async function submit() {
+    if (T.value.trim()) { addTag(T.value); T.value = ""; }
+    touched = true;
+    const { ne, te, de, existing } = paint();
+    if (ne || te || de) { (ne ? N : te ? T : DOM).focus(); return; }
+    const details = { tags: tags.slice(0, TAGS_MAX), description: D.value.trim().slice(0, DESC_MAX), domain: DOM.value.trim().slice(0, DOMAIN_MAX) };
+    btn.disabled = true; btn.innerHTML = `<span class="spin dark"></span> שומר`;
+    if (edit) {
+      if (existing) { btn.disabled = false; paint(); return; }
+      const r = await dbWrite(update(ref(db, `${userRoot()}/items/${edit.id}`), { name: N.value.trim(), ...details }));
+      await closeSheet(); toast(r === "saved" ? "הפרטים עודכנו" : "יעודכן כשהחיבור יחזור");
+      return;
+    }
+    if (a.findings.length && !a.reviewed) {
+      a.reviewed = true;
+      await closeSheet();
+      reviewFindings(a.findings, () => openScriptForm(a, { name: N.value, tags }), "המשך לשמירה");
+      return;
+    }
+    const r = await saveVersion({ item: existing, project: SCRIPT_PROJECT, name: N.value, note: "", a, details: { kind: "script", pinned: false, uses: 0, ...details } });
+    if (r.result === "error") { btn.disabled = false; paint(); err.textContent = "השמירה נכשלה, אפשר לנסות שוב"; return; }
+    await closeSheet();
+    if (staged === a) staged = null;
+    refreshScreens();
+    if (r.result === "queued") toast("ממתין לחיבור. כדאי להשאיר את האפליקציה פתוחה");
+    else toast(r.isNew ? "הסקריפט נשמר במאגר" : `נשמר כגרסה ${r.n}`);
+  }
+}
+async function newScriptFromClipboard() {
+  const t = await readClipboardText();
+  if (t == null) return;
+  if (!t.trim()) { toast("אין טקסט בלוח"); return; }
+  if (t.length > MAX_CHARS) { toast("התוכן גדול מדי"); return; }
+  const a = analyze(t, "");
+  const sug = suggestItem(a);
+  if (sug && isScript(sug.item)) { newVersionFor(sug.item, t); return; }
+  openScriptForm(a);
+}
+
+function scriptCard(it) {
+  const tags = tagsOf(it);
+  return `<article class="script" data-item="${esc(it.id)}">
+    <div class="script-top">
+      <button class="pin ${it.pinned ? "on" : ""}" type="button" data-pin aria-pressed="${!!it.pinned}" aria-label="${it.pinned ? "ביטול הצמדה" : "הצמדה"}"><svg class="ico"><use href="#i-star"/></svg></button>
+      <div class="row-main">
+        <div class="script-name" dir="auto">${esc(it.name)}</div>
+        ${it.description ? `<div class="row-sub" dir="auto">${esc(it.description)}</div>` : ""}
+      </div>
+    </div>
+    <div class="chips">
+      ${tags.map(t => `<span class="chip tagc">${esc(t)}</span>`).join("")}
+      ${it.domain ? `<span class="chip" dir="ltr"><svg class="ico"><use href="#i-globe"/></svg>${esc(it.domain)}</span>` : ""}
+      <span class="chip">גרסה ${it.latest?.n || 1}</span>
+      ${it.uses ? `<span class="chip">הועתק ${nf.format(it.uses)} פעמים</span>` : ""}
+    </div>
+    <div class="clip-actions">
+      <button class="btn-copy" type="button" data-copy-script><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
+      <button class="btn-more" type="button" data-open-item aria-label="פתיחה"><svg class="ico"><use href="#i-chev-fwd"/></svg></button>
+    </div>
+  </article>`;
+}
+// Shared click handling for script cards on any screen
+function handleScriptClick(e) {
+  const card = e.target.closest(".script[data-item]");
+  if (!card) return false;
+  const it = state.items.find(x => x.id === card.dataset.item);
+  if (!it) return true;
+  if (e.target.closest("[data-copy-script]")) { copyScript(it, e.target.closest("[data-copy-script]")); return true; }
+  if (e.target.closest("[data-pin]")) { togglePin(it); return true; }
+  openItem(it.id);
+  return true;
+}
+function handleScriptPointer(e) {
+  const card = e.target.closest(".script[data-item]");
+  if (!card) return;
+  const it = state.items.find(x => x.id === card.dataset.item);
+  if (it?.latest?.vid) fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {});
+}
+
+function buildScripts(s) {
+  let tagFilter = "";
+  s.end.innerHTML = `<button class="nav-btn" type="button" data-act="new-script"><svg class="ico"><use href="#i-plus-square"/></svg><span>סקריפט חדש</span></button>`;
+  s.content.innerHTML = `
+    <p class="lead-text">הסקריפטים שלך לקונסול, זמינים בכל מכשיר. העתקה בלחיצה, וכל עדכון נשמר כגרסה.</p>
+    <input class="input search" type="search" dir="auto" placeholder="חיפוש לפי שם, תגית, תיאור או אתר" aria-label="חיפוש סקריפטים" data-ref="q" autocomplete="off" spellcheck="false">
+    <div class="pick-row tag-filter" data-ref="tags"></div>
+    <div class="scripts" data-ref="list"></div>`;
+  const q = $('[data-ref="q"]', s.content);
+  q.addEventListener("input", () => s.update());
+  $('[data-act="new-script"]', s.end).addEventListener("click", newScriptFromClipboard);
+  s.content.addEventListener("pointerdown", handleScriptPointer);
+  s.content.addEventListener("click", (e) => {
+    const tf = e.target.closest("[data-filter]");
+    if (tf) { tagFilter = tf.dataset.filter === tagFilter ? "" : tf.dataset.filter; s.update(); return; }
+    if (e.target.closest('[data-act="new-script"]')) { newScriptFromClipboard(); return; }
+    handleScriptClick(e);
+  });
+  prefetchScripts(scriptList());
+  s.update = () => {
+    const list = scriptList();
+    const tags = allTags();
+    if (tagFilter && !tags.some(t => normKey(t.name) === tagFilter)) tagFilter = "";
+    $('[data-ref="tags"]', s.content).innerHTML = tags.length
+      ? `<button class="chip pick ${!tagFilter ? "active" : ""}" type="button" data-filter="">הכל <em>${list.length}</em></button>` +
+        tags.map(t => `<button class="chip pick ${tagFilter === normKey(t.name) ? "active" : ""}" type="button" data-filter="${esc(normKey(t.name))}">${esc(t.name)} <em>${t.n}</em></button>`).join("")
+      : "";
+    const terms = normKey(q.value).split(" ").filter(Boolean);
+    const shown = list.filter(it => {
+      if (tagFilter && !tagsOf(it).some(t => normKey(t) === tagFilter)) return false;
+      const hay = normKey(`${it.name} ${it.description || ""} ${it.domain || ""} ${tagsOf(it).join(" ")}`);
+      return terms.every(t => hay.includes(t));
+    });
+    const box = $('[data-ref="list"]', s.content);
+    if (!list.length) {
+      box.innerHTML = `<div class="empty-card">עדיין אין סקריפטים. מעתיקים סקריפט, לוחצים "סקריפט חדש", ונותנים לו שם ותגית.
+        <div style="margin-top:14px"><button class="btn-secondary" type="button" data-act="new-script" style="display:inline-flex;padding:0 18px"><svg class="ico"><use href="#i-clipboard"/></svg>סקריפט חדש מהלוח</button></div></div>`;
+      return;
+    }
+    box.innerHTML = shown.length ? shown.map(scriptCard).join("") : `<div class="empty-card">לא נמצא סקריפט שמתאים.</div>`;
+  };
+}
+
 /* ================= Screens ================= */
 const SCREENS = {
   home:     { title: "גשר קוד", build: buildHome },
   settings: { title: "הגדרות", build: buildSettings },
   devices:  { title: "מכשירים", build: buildDevices },
   files:    { title: "קבצים", build: buildFiles },
+  scripts:  { title: "סקריפטים", build: buildScripts },
   item:     { title: (p) => state.items.find(it => it.id === p.id)?.name || "קובץ", build: buildItem }
 };
 
@@ -1778,6 +2067,11 @@ function buildHome(s) {
       <div class="group with-ico" data-ref="files"></div>
     </section>
 
+    <section data-area="scripts">
+      <div class="group-title">סקריפטים</div>
+      <div class="quick-scripts" data-ref="qscripts"></div>
+    </section>
+
     <section data-area="devices">
       <div class="group-title">המכשירים שלך</div>
       <div class="group with-ico" data-ref="devs"></div>
@@ -1791,7 +2085,7 @@ function buildHome(s) {
     </section>
     </div>
 
-    <p class="footnote" data-area="foot">שלב 3 מתוך 8: קבצים וגרסאות<span class="desk-only">קליק ימני לפעולות מהירות, Ctrl+K לחיפוש ופקודות, ? לקיצורי מקלדת</span></p>`;
+    <p class="footnote" data-area="foot">שלב 4 מתוך 8: מאגר סקריפטים<span class="desk-only">קליק ימני לפעולות מהירות, Ctrl+K לחיפוש ופקודות, ? לקיצורי מקלדת</span></p>`;
 
   const zone = $('[data-ref="zone"]', s.content);
   const fileInput = $('[data-ref="file"]', s.content);
@@ -1810,6 +2104,7 @@ function buildHome(s) {
   zone.addEventListener("drop", (e) => { zone.classList.remove("over"); if (hasFiles(e)) { e.preventDefault(); e.stopPropagation(); readFiles(e.dataTransfer.files); } });
   fileInput.addEventListener("change", () => { readFiles(fileInput.files); fileInput.value = ""; });
 
+  s.content.addEventListener("pointerdown", handleScriptPointer);
   s.content.addEventListener("pointerdown", (e) => {
     const card = e.target.closest("[data-clip]");
     if (card && e.target.closest("[data-copy]")) fetchBody(card.dataset.clip).catch(() => {});
@@ -1840,7 +2135,13 @@ function buildHome(s) {
     if (act === "send") return sendStaged();
     if (act === "discard") return discardStaged();
     if (act === "save" && staged) return openSaveForm(staged);
-    if (act === "save-suggested" && staged?.suggest) return openSaveForm(staged, { project: staged.suggest.item.project, name: staged.suggest.item.name });
+    if (act === "save-suggested" && staged?.suggest) {
+      if (isScript(staged.suggest.item)) return newVersionFor(staged.suggest.item, staged.text, "", () => { staged = null; refreshScreens(); });
+      return openSaveForm(staged, { project: staged.suggest.item.project, name: staged.suggest.item.name });
+    }
+    if (act === "save-script" && staged) return openScriptForm(staged);
+    if (e.target.closest('[data-go="scripts"]')) return push("scripts");
+    if (handleScriptClick(e)) return;
     if (act === "not-this" && staged) { staged.suggest = null; return s.update(); }
     if (e.target.closest('[data-go="files"]')) return push("files");
     const itemRowEl = e.target.closest("[data-item]");
@@ -1884,6 +2185,7 @@ function buildHome(s) {
     if (staged) {
       const f = staged.findings.length;
       const sug = staged.suggest;
+      const consoleLike = looksConsole(staged);
       st.innerHTML = `
         <div class="staged-head">
           <div class="type-ico">${esc((staged.ext || "txt").toUpperCase())}</div>
@@ -1900,17 +2202,24 @@ function buildHome(s) {
           ${f ? `<button class="chip warn" type="button" data-act="review"><svg class="ico"><use href="#i-alert"/></svg>${f === 1 ? "פרט רגיש אחד" : `${f} פרטים רגישים`}</button>` : ""}
         </div>
         ${sug ? `<div class="suggest"><svg class="ico"><use href="#i-layers"/></svg><div>
-            נראה כמו גרסה חדשה של <b dir="auto">${esc(sug.item.name)}</b>, בפרויקט <b>${esc(sug.item.project)}</b>.
+            נראה כמו גרסה חדשה של ${isScript(sug.item) ? "הסקריפט" : ""} <b dir="auto">${esc(sug.item.name)}</b>${isScript(sug.item) ? "" : `, בפרויקט <b>${esc(sug.item.project)}</b>`}.
             <button class="link-btn" type="button" data-act="not-this">זה לא הקובץ הזה</button></div></div>` : ""}
         <div class="actions-3">
           <div class="pair">
             ${sug
-              ? `<button class="btn-primary" type="button" data-act="save-suggested" ${sending ? "disabled" : ""}><svg class="ico"><use href="#i-layers"/></svg>שמירה כגרסה ${(sug.item.seq || 0) + 1}</button>
+              ? `<button class="btn-primary" type="button" data-act="save-suggested" ${sending ? "disabled" : ""}><svg class="ico"><use href="#${isScript(sug.item) ? "i-terminal" : "i-layers"}"/></svg>שמירה כגרסה ${(sug.item.seq || 0) + 1}</button>
                  <button class="btn-secondary" type="button" data-act="send" ${sending ? "disabled" : ""}>${sending ? `<span class="spin dark"></span>שולח` : `<svg class="ico"><use href="#i-send"/></svg>שליחה מהירה`}</button>`
               : `<button class="btn-primary" type="button" data-act="send" ${sending ? "disabled" : ""}>${sending ? `<span class="spin"></span>שולח` : `<svg class="ico"><use href="#i-send"/></svg>שליחה מהירה`}</button>
-                 <button class="btn-secondary" type="button" data-act="save" ${sending ? "disabled" : ""}><svg class="ico"><use href="#i-layers"/></svg>שמירה כקובץ</button>`}
+                 ${consoleLike
+                   ? `<button class="btn-secondary" type="button" data-act="save-script" ${sending ? "disabled" : ""}><svg class="ico"><use href="#i-terminal"/></svg>שמירה כסקריפט</button>`
+                   : `<button class="btn-secondary" type="button" data-act="save" ${sending ? "disabled" : ""}><svg class="ico"><use href="#i-layers"/></svg>שמירה כקובץ</button>`}`}
           </div>
-          <button class="btn-text" type="button" data-act="discard" ${sending ? "disabled" : ""}>ביטול</button>
+          <div class="pair">
+            ${sug ? "" : consoleLike
+              ? `<button class="btn-text" type="button" data-act="save" ${sending ? "disabled" : ""}>שמירה כקובץ</button>`
+              : `<button class="btn-text" type="button" data-act="save-script" ${sending ? "disabled" : ""}>שמירה כסקריפט</button>`}
+            <button class="btn-text" type="button" data-act="discard" ${sending ? "disabled" : ""}>ביטול</button>
+          </div>
         </div>`;
     }
 
@@ -1922,13 +2231,28 @@ function buildHome(s) {
       : `<div class="empty-card">${state.connected ? "עדיין לא נשלח כלום. מה שתשלח מכל מכשיר יופיע כאן, בכל המכשירים, בלי רענון." : "טוען"}</div>`;
 
     // Files preview
-    const recent = state.items.slice(0, 3).map(itemRow).join("");
+    const recent = fileItems().slice(0, 3).map(itemRow).join("");
     $('[data-ref="files"]', s.content).innerHTML = (recent || `<div class="row"><div class="row-main"><div class="row-sub">עדיין אין קבצים. אחרי הדבקה בוחרים "שמירה כקובץ".</div></div></div>`) + `
       <button class="row accent" type="button" data-go="files">
         <div class="row-ico"><svg class="ico"><use href="#i-folder"/></svg></div>
         <div class="row-main"><div class="row-title"><span>כל הקבצים</span></div></div>
-        <div class="row-end">${state.items.length || ""}<svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+        <div class="row-end">${fileItems().length || ""}<svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
       </button>`;
+
+    // Scripts quick access: pinned first, then most used
+    const sl = scriptList(), quick = sl.slice(0, 3);
+    $('[data-ref="qscripts"]', s.content).innerHTML = (quick.length ? quick.map(it => `
+      <div class="qs script" data-item="${esc(it.id)}">
+        <div class="row-ico" style="color:var(--desk)"><svg class="ico"><use href="#${it.pinned ? "i-star" : "i-terminal"}"/></svg></div>
+        <div class="row-main"><div class="row-title"><span dir="auto">${esc(it.name)}</span></div><div class="row-sub">${esc(tagsOf(it).join(", "))}</div></div>
+        <button class="btn-copy" type="button" data-copy-script><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
+      </div>`).join("") : `<div class="row" style="border:1px dashed var(--rule);border-radius:14px"><div class="row-main"><div class="row-sub">עדיין אין סקריפטים. אחרי הדבקה בוחרים "שמירה כסקריפט".</div></div></div>`) + `
+      <div class="group with-ico"><button class="row accent" type="button" data-go="scripts">
+        <div class="row-ico"><svg class="ico"><use href="#i-terminal"/></svg></div>
+        <div class="row-main"><div class="row-title"><span>כל הסקריפטים</span></div></div>
+        <div class="row-end">${sl.length || ""}<svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+      </button></div>`;
+    prefetchScripts(quick);
 
     // Devices preview
     const preview = list.slice(0, 3).map(d => deviceRow(d, false)).join("");
@@ -2276,7 +2600,8 @@ function renderSidebar() {
   const activeItem = top?.name === "item" ? top.params.id : null;
   const devs = deviceList(), online = devs.filter(d => d.online).length;
   const groups = new Map();
-  for (const it of state.items) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
+  for (const it of fileItems()) { const k = normKey(it.project); if (!groups.has(k)) groups.set(k, { name: it.project, list: [] }); groups.get(k).list.push(it); }
+  const pinned = scriptList().filter(it => it.pinned).slice(0, 8);
   const link = (name, icon, label, count) =>
     `<button class="sb-link ${root === name && !activeItem ? "active" : ""}" type="button" data-sb="${name}"><svg class="ico"><use href="#${icon}"/></svg><span>${label}</span>${count != null ? `<em>${count}</em>` : ""}</button>`;
   sidebarEl.innerHTML = `
@@ -2284,10 +2609,12 @@ function renderSidebar() {
     <button class="sb-cmd" type="button" data-sb="palette"><svg class="ico"><use href="#i-search"/></svg><span>חיפוש ופקודות</span><kbd>Ctrl K</kbd></button>
     <nav class="sb-nav">
       ${link("home", "i-home", "בית", state.clips.length || null)}
-      ${link("files", "i-folder", "קבצים", state.items.length || null)}
+      ${link("files", "i-folder", "קבצים", fileItems().length || null)}
+      ${link("scripts", "i-terminal", "סקריפטים", scriptList().length || null)}
       ${link("devices", "i-devices", "מכשירים", devs.length ? `${online}/${devs.length}` : null)}
       ${link("settings", "i-gear", "הגדרות", null)}
     </nav>
+    ${pinned.length ? `<div class="sb-sec"><span>העתקה מהירה</span></div><div style="padding:0 10px">${pinned.map(it => `<button class="sb-qs" type="button" data-qs="${esc(it.id)}" title="לחיצה מעתיקה"><svg class="ico"><use href="#i-star"/></svg><span dir="auto">${esc(it.name)}</span><kbd>העתקה</kbd></button>`).join("")}</div>` : ""}
     <div class="sb-sec"><span>פרויקטים</span></div>
     <div class="sb-tree">${groups.size ? [...groups.entries()].map(([k, g]) => {
       const closed = collapsed.has(k);
@@ -2304,9 +2631,12 @@ sidebarEl.addEventListener("click", (e) => {
   if (b) { if (b.dataset.sb === "palette") openPalette(); else navRoot(b.dataset.sb); return; }
   const pj = e.target.closest("[data-proj]");
   if (pj) { const k = pj.dataset.proj; collapsed.has(k) ? collapsed.delete(k) : collapsed.add(k); store.set("cb.collapsed", JSON.stringify([...collapsed])); renderSidebar(); return; }
+  const qs = e.target.closest("[data-qs]");
+  if (qs) { const it = state.items.find(x => x.id === qs.dataset.qs); if (it) copyScript(it); return; }
   const f = e.target.closest("[data-item]");
   if (f) openItem(f.dataset.item);
 });
+sidebarEl.addEventListener("pointerover", (e) => { const qs = e.target.closest("[data-qs]"); if (qs) { const it = state.items.find(x => x.id === qs.dataset.qs); if (it?.latest?.vid) fetchRel(`versionsBody/${it.id}/${it.latest.vid}`).catch(() => {}); } });
 
 /* ================= Quick actions shared by menus, palette and shortcuts ================= */
 const FENCE = { js:"javascript", mjs:"javascript", cjs:"javascript", jsx:"jsx", ts:"typescript", tsx:"tsx", html:"html", htm:"html", css:"css", scss:"scss",
@@ -2346,14 +2676,17 @@ async function clipToFile(c) {
     openSaveForm(a, a.suggest ? { project: a.suggest.item.project, name: a.suggest.item.name } : {});
   } catch { toast("הטעינה נכשלה"); }
 }
+async function clipToScript(c) {
+  try { openScriptForm(analyze(await fetchRel(clipKey(c.id)), "")); } catch { toast("הטעינה נכשלה"); }
+}
 async function pasteVersionInto(item) {
   const t = await readClipboardText();
   if (t != null) newVersionFor(item, t);
 }
 function confirmDeleteItem(item) {
   openSheet({
-    title: `למחוק את ${item.name}?`, message: `הקובץ וכל ${item.count || 1} הגרסאות שלו יימחקו מכל המכשירים. אי אפשר לשחזר.`,
-    actions: [{ label: "מחיקת הקובץ", style: "danger", onClick: async () => { await deleteItem(item); if (stack.at(-1)?.params?.id === item.id) history.back(); } }]
+    title: `למחוק את ${item.name}?`, message: `${isScript(item) ? "הסקריפט" : "הקובץ"} וכל ${item.count || 1} הגרסאות שלו יימחקו מכל המכשירים. אי אפשר לשחזר.`,
+    actions: [{ label: isScript(item) ? "מחיקת הסקריפט" : "מחיקת הקובץ", style: "danger", onClick: async () => { await deleteItem(item); if (stack.at(-1)?.params?.id === item.id) history.back(); } }]
   });
 }
 async function restoreVersion(item, v) {
@@ -2431,12 +2764,27 @@ document.addEventListener("scroll", closeMenu, true);
 function screenOf(el) { const sc = el.closest(".screen"); return stack.find(x => x.el === sc); }
 function menuFor(target) {
   // Item shown somewhere (home list, files list, sidebar)
-  const itEl = target.closest("[data-item]");
+  const itEl = target.closest("[data-item]") || (target.closest("[data-qs]") && { dataset: { item: target.closest("[data-qs]").dataset.qs } });
   if (itEl) {
     const it = state.items.find(x => x.id === itEl.dataset.item);
     if (!it) return null;
     const rel = `versionsBody/${it.id}/${it.latest?.vid}`;
     fetchRel(rel).catch(() => {});
+    if (isScript(it)) return { title: it.name, entries: [
+      { label: "העתקה", icon: "i-copy", run: () => copyScript(it) },
+      { label: "העתקה להרצה חוזרת בקונסול", icon: "i-repeat", run: () => copyScript(it, null, "safe") },
+      { label: "העתקה כסימנייה", icon: "i-bookmark", run: () => copyScript(it, null, "bookmark") },
+      { label: "העתקה כבלוק קוד", icon: "i-code", run: () => copyScript(it, null, "md") },
+      "sep",
+      { label: "פתיחה", icon: "i-terminal", run: () => openItem(it.id) },
+      { label: "הדבקת גרסה חדשה מהלוח", icon: "i-clipboard", run: () => pasteVersionInto(it) },
+      { label: it.pinned ? "ביטול הצמדה" : "הצמדה לגישה מהירה", icon: "i-star", run: () => togglePin(it) },
+      { label: "עריכת פרטים ותגיות", icon: "i-edit", run: () => openScriptForm(null, { edit: it }) },
+      "sep",
+      { label: "צפייה בחלון חדש", icon: "i-external", run: () => viewInWindow(rel) },
+      { label: "הורדה כקובץ", icon: "i-download", run: () => downloadRel(rel, versionFileName(it, it.latest?.n, true)) },
+      { label: "מחיקת הסקריפט", icon: "i-trash", danger: true, run: () => confirmDeleteItem(it) }
+    ] };
     return { title: `${it.project} / ${it.name}`, entries: [
       { label: "פתיחה", icon: "i-file", run: () => openItem(it.id) },
       { label: "העתקת הגרסה האחרונה", icon: "i-copy", run: () => copyRel(rel) },
@@ -2483,6 +2831,7 @@ function menuFor(target) {
       { label: "העתקה", icon: "i-copy", run: () => copyRel(rel) },
       { label: "העתקה כבלוק קוד", icon: "i-code", run: () => copyRel(rel, null, asMarkdown(c.ext)) },
       { label: "שמירה כקובץ עם גרסאות", icon: "i-layers", run: () => clipToFile(c) },
+      { label: "שמירה כסקריפט", icon: "i-terminal", run: () => clipToScript(c) },
       "sep",
       { label: "צפייה בחלון חדש", icon: "i-external", run: () => viewInWindow(rel) },
       { label: "הורדה כקובץ", icon: "i-download", run: () => downloadRel(rel, fileNameFor(c)) },
@@ -2506,8 +2855,9 @@ function menuFor(target) {
     const sug = staged.suggest;
     return { title: "מוכן לשליחה", entries: [
       { label: "שליחה מהירה", icon: "i-send", kbd: "Ctrl+Enter", run: () => sendStaged() },
-      sug ? { label: `שמירה כגרסה ${(sug.item.seq || 0) + 1} של ${sug.item.name}`, icon: "i-layers", kbd: "Ctrl+S", run: () => openSaveForm(staged, { project: sug.item.project, name: sug.item.name }) }
+      sug ? { label: `שמירה כגרסה ${(sug.item.seq || 0) + 1} של ${sug.item.name}`, icon: "i-layers", kbd: "Ctrl+S", run: () => isScript(sug.item) ? newVersionFor(sug.item, staged.text, "", () => { staged = null; refreshScreens(); }) : openSaveForm(staged, { project: sug.item.project, name: sug.item.name }) }
           : { label: "שמירה כקובץ", icon: "i-layers", kbd: "Ctrl+S", run: () => openSaveForm(staged) },
+      { label: "שמירה כסקריפט", icon: "i-terminal", run: () => openScriptForm(staged) },
       ...(staged.findings.length ? [{ label: "הצגת הפרטים הרגישים", icon: "i-alert", run: () => reviewFindings(staged.findings) }] : []),
       "sep",
       { label: "ביטול", icon: "i-x", kbd: "Esc", run: () => discardStaged() }
@@ -2523,6 +2873,7 @@ function menuFor(target) {
     { label: "העתקת הפריט האחרון שהתקבל", icon: "i-copy", disabled: !lastClip, run: () => lastClip && copyRel(clipKey(lastClip.id)) },
     { label: lastItem ? `העתקת ${lastItem.name}, גרסה אחרונה` : "העתקת הקובץ האחרון", icon: "i-file", disabled: !lastItem?.latest?.vid, run: () => lastItem && copyRel(`versionsBody/${lastItem.id}/${lastItem.latest.vid}`) },
     "sep",
+    { label: "סקריפט חדש מהלוח", icon: "i-terminal", run: () => newScriptFromClipboard() },
     { label: "בחירת קובץ לשליחה", icon: "i-file", run: async () => { await ensureHome(); $('[data-ref="file"]', stack[0].content)?.click(); } },
     { label: "כתיבה ידנית", icon: "i-edit", run: async () => { await ensureHome(); openWrite(); } },
     "sep",
@@ -2562,19 +2913,26 @@ function paletteCommands() {
     { group: "כללי", label: "קיצורי מקלדת", icon: "i-keyboard", kw: "shortcuts keyboard", run: () => showShortcuts() },
     { group: "כללי", label: "בדיקת עדכונים", icon: "i-refresh", kw: "update", run: () => checkUpdates() }
   ];
-  const files = state.items.map(it => ({
+  cmds.splice(5, 0, { group: "פעולות", label: "סקריפט חדש מהלוח", icon: "i-terminal", kw: "script new סקריפט", run: () => newScriptFromClipboard() });
+  cmds.splice(cmds.findIndex(c => c.label === "כל הקבצים") + 1, 0, { group: "ניווט", label: "סקריפטים", icon: "i-terminal", kw: "scripts console", run: () => navRoot("scripts") });
+  const scr = scriptList().map(it => ({
+    group: "סקריפטים", label: it.name, sub: `${tagsOf(it).join(", ")}. Enter מעתיק`, icon: it.pinned ? "i-star" : "i-terminal",
+    kw: `${tagsOf(it).join(" ")} ${it.description || ""} ${it.domain || ""}`,
+    run: () => copyScript(it), alt: () => openItem(it.id)
+  }));
+  const files = fileItems().map(it => ({
     group: "קבצים", label: it.name, sub: `${it.project}, גרסה ${it.latest?.n || 1}`, icon: "i-file", kw: `${it.project} ${it.type}`,
     run: () => openItem(it.id),
     alt: () => it.latest?.vid && copyRel(`versionsBody/${it.id}/${it.latest.vid}`)
   }));
-  return { cmds, files };
+  return { cmds, files, scr };
 }
 function renderPalette() {
   const q = normKey(palInput.value), terms = q.split(" ").filter(Boolean);
-  const { cmds, files } = paletteCommands();
+  const { cmds, files, scr } = paletteCommands();
   const match = (x) => { const hay = normKey(`${x.label} ${x.sub || ""} ${x.kw || ""}`); return terms.every(t => hay.includes(t)); };
   // With no query: actions first. With a query: files first, since that is usually what you look for.
-  const list = q ? [...files.filter(match), ...cmds.filter(match)] : [...cmds, ...files.slice(0, 8)];
+  const list = q ? [...scr.filter(match), ...files.filter(match), ...cmds.filter(match)] : [...scr.filter(x => x.icon === "i-star"), ...cmds, ...files.slice(0, 8)];
   palResults = list.slice(0, 60);
   palIndex = Math.min(palIndex, Math.max(0, palResults.length - 1));
   if (!palResults.length) { palList.innerHTML = `<div class="pal-empty">לא נמצא קובץ או פעולה</div>`; return; }
@@ -2630,7 +2988,10 @@ document.addEventListener("keydown", (e) => {
   if (mod && e.key === "Enter" && staged && homeOnTop()) { e.preventDefault(); sendStaged(); return; }
   if (mod && k === "s" && staged && homeOnTop()) {
     e.preventDefault();
-    openSaveForm(staged, staged.suggest ? { project: staged.suggest.item.project, name: staged.suggest.item.name } : {});
+    const sg = staged.suggest;
+    if (sg && isScript(sg.item)) newVersionFor(sg.item, staged.text, "", () => { staged = null; refreshScreens(); });
+    else if (!sg && looksConsole(staged)) openScriptForm(staged);
+    else openSaveForm(staged, sg ? { project: sg.item.project, name: sg.item.name } : {});
     return;
   }
   if (top?.name === "item" && mod && e.shiftKey) {
