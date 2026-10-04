@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0D1320">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -31,6 +31,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html{touch-action:manipulation}
 body{
   font-family:var(--sans); font-size:16px; line-height:1.55; color:var(--paper);
   background:var(--ink);
@@ -346,15 +347,9 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
     </section>
 
     <section class="panel" id="card-lock">
-      <h3><svg class="ico"><use href="#i-lock"/></svg>נעילת השרת לחשבון שלך</h3>
-      <p class="sub">המזהה הזה ייצרב בחוקי השרת. מרגע הפרסום, כל חשבון אחר נחסם ב Firebase עצמו, גם אם יתחבר בהצלחה.</p>
+      <h3><svg class="ico"><use href="#i-lock"/></svg>נעילת השרת</h3>
+      <p class="sub">כל משתמש כלוא למרחב שלו תחת המזהה שלו. אי אפשר לקרוא או לכתוב למרחב של אף אחד אחר, והאכיפה היא ב Firebase עצמו.</p>
       <span class="lock-state"><span class="dot"></span>ממתין לפרסום החוקים</span>
-
-      <label class="field-label" for="uid-val">מזהה החשבון (UID)</label>
-      <div class="copy-field">
-        <div class="val ltr" id="uid-val" tabindex="0"></div>
-        <button class="copy-btn" type="button" data-copy="uid"><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
-      </div>
 
       <span class="field-label">חוקי הנעילה, מוכנים להדבקה</span>
       <div class="code-block">
@@ -365,7 +360,7 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
       <ol class="steps">
         <li>Firebase Console, Realtime Database, לשונית Rules.</li>
         <li>מחיקת כל התוכן הקיים והדבקת החוקים.</li>
-        <li>לחיצה על Publish, ושליחת ה UID לקלוד לתיעוד.</li>
+        <li>לחיצה על Publish.</li>
       </ol>
     </section>
 
@@ -490,6 +485,13 @@ function detectDevice() {
 const DEVICE_ID = getDeviceId();
 const DEVICE = detectDevice();
 
+// Every path this user touches lives under users/<uid>. The server rules
+// forbid anyone from reading or writing outside their own subtree.
+function userRoot() {
+  const u = auth.currentUser;
+  return u ? `users/${u.uid}` : null;
+}
+
 /* ---------- Errors ---------- */
 function authErrorMessage(e) {
   const code = e?.code || "";
@@ -575,7 +577,7 @@ function setNet(connected) {
 
 function startRealtime() {
   const mySession = session;
-  const meRef = ref(db, `presence/${DEVICE_ID}`);
+  const meRef = ref(db, `${userRoot()}/presence/${DEVICE_ID}`);
 
   unsubs.push(onValue(ref(db, ".info/serverTimeOffset"), s => { serverOffset = s.val() || 0; }));
 
@@ -589,7 +591,7 @@ function startRealtime() {
     } catch (e) { onDbError(e); }
   }));
 
-  unsubs.push(onValue(ref(db, "presence"), (snap) => {
+  unsubs.push(onValue(ref(db, `${userRoot()}/presence`), (snap) => {
     devicesCache = snap.val() || {};
     renderDevices();
   }, onDbError));
@@ -653,10 +655,12 @@ function renderBridge(list) {
 }
 setInterval(() => { if (!$("#screen-app").hidden) renderDevices(); }, 30000);
 
-function rulesFor(uid) {
-  const cond = `auth != null && auth.uid === '${uid}'`;
-  return JSON.stringify({ rules: { ".read": cond, ".write": cond } }, null, 2);
-}
+const PERUSER_RULES = JSON.stringify({
+  rules: { users: { "$uid": {
+    ".read": "auth != null && auth.uid === $uid",
+    ".write": "auth != null && auth.uid === $uid"
+  } } }
+}, null, 2);
 
 function renderAccount(user) {
   const av = $("#avatar");
@@ -665,20 +669,17 @@ function renderAccount(user) {
   } else {
     av.textContent = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
   }
-  $("#uid-val").textContent = user.uid;
-  $("#rules-val").textContent = rulesFor(user.uid);
+  $("#rules-val").textContent = PERUSER_RULES;
 }
 
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest("[data-copy]");
   if (!btn || !auth.currentUser) return;
-  const what = btn.dataset.copy;
-  const text = what === "uid" ? auth.currentUser.uid : rulesFor(auth.currentUser.uid);
-  const ok = await copyText(text);
+  const ok = await copyText(PERUSER_RULES);
   if (!ok) { toast("ההעתקה נכשלה"); return; }
   const label = btn.querySelector("span");
   btn.classList.add("done"); label.textContent = "הועתק";
-  toast(what === "uid" ? "המזהה הועתק" : "החוקים הועתקו");
+  toast("החוקים הועתקו");
   setTimeout(() => { btn.classList.remove("done"); label.textContent = "העתקה"; }, 1600);
 });
 
@@ -698,7 +699,7 @@ $("#btn-switch").addEventListener("click", async () => {
 $("#btn-logout").addEventListener("click", async () => {
   try {
     await Promise.race([
-      update(ref(db, `presence/${DEVICE_ID}`), { online: false, lastSeen: serverTimestamp() }),
+      update(ref(db, `${userRoot()}/presence/${DEVICE_ID}`), { online: false, lastSeen: serverTimestamp() }),
       new Promise(r => setTimeout(r, 1500))
     ]);
   } catch {}
