@@ -390,18 +390,16 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
-  getRedirectResult, onAuthStateChanged, signOut
+  getRedirectResult, onAuthStateChanged, signOut,
+  setPersistence, browserLocalPersistence, indexedDBLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import {
   getDatabase, ref, update, onValue, onDisconnect, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 /* ---------- Config ---------- */
-const IS_LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
 const firebaseConfig = {
   apiKey: "AIzaSyAjCSGjHYVVAnxfECVTqTUPcp9Ld7OfZiE",
-  // Auth runs on our own domain through the Vercel proxy (vercel.json).
-  // This keeps sign in working on iOS and in installed PWAs, where cross site storage is blocked.
   authDomain: "my-code-shere.firebaseapp.com",
   databaseURL: "https://my-code-shere-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "my-code-shere",
@@ -414,6 +412,12 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
+
+// Keep the session across app restarts. IndexedDB survives iOS standalone restarts
+// more reliably than localStorage; fall back if it is unavailable.
+const persistenceReady = setPersistence(auth, indexedDBLocalPersistence)
+  .catch(() => setPersistence(auth, browserLocalPersistence))
+  .catch(() => {});
 
 /* ---------- Helpers ---------- */
 const $ = (s) => document.querySelector(s);
@@ -521,13 +525,13 @@ async function login() {
   $("#login-error").hidden = true;
   setLoginBusy(true);
   try {
-    if (isStandalone) {
-      await signInWithRedirect(auth, provider);
-      return;
-    }
+    await persistenceReady;
+    // Popup keeps the whole flow in one storage context, which is what an
+    // installed iOS PWA needs; redirect there loses the session on the way back.
     await signInWithPopup(auth, provider);
   } catch (e) {
-    if (["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(e?.code)) {
+    if (["auth/popup-blocked", "auth/popup-closed-by-user", "auth/cancelled-popup-request", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(e?.code)) {
+      if (["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(e?.code)) { setLoginBusy(false); return; }
       try { await signInWithRedirect(auth, provider); return; } catch (e2) { showLoginError(e2); }
     } else {
       showLoginError(e);
@@ -537,7 +541,10 @@ async function login() {
   }
 }
 $("#btn-login").addEventListener("click", login);
-getRedirectResult(auth).catch(showLoginError);
+persistenceReady.then(() => getRedirectResult(auth)).catch((e) => {
+  // A fresh load with no pending redirect is normal, not an error.
+  if (!["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(e?.code)) showLoginError(e);
+});
 
 /* ---------- Realtime session ---------- */
 let unsubs = [];

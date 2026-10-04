@@ -1,84 +1,777 @@
-/* Code Bridge service worker. Bump VERSION on every deploy that changes shell files. */
-const VERSION = "1.0.1";
-const SHELL = `shell-${VERSION}`;
-const RUNTIME = `runtime-${VERSION}`;
-const SHELL_FILES = [
-  "/",
-  "/index.html",
-  "/manifest.webmanifest"
-];
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D1320">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="גשר קוד">
+<meta name="application-name" content="גשר קוד">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="העברת קוד וטקסט בין הטלפון למחשב בזמן אמת">
+<title>גשר קוד</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"%3E%3Crect width="512" height="512" rx="116" fill="%2316203A"/%3E%3Cg fill="none" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M152 172 L84 256 L152 340" stroke="%23E7ECF4" stroke-width="40"/%3E%3Cpath d="M360 172 L428 256 L360 340" stroke="%23E7ECF4" stroke-width="40"/%3E%3Cpath d="M200 214 H312 M284 186 L312 214 L284 242" stroke="%235EE1D9" stroke-width="34"/%3E%3Cpath d="M312 298 H200 M228 270 L200 298 L228 326" stroke="%23F2B65A" stroke-width="34"/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/Zn0bcgrB/IMG-2243.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0D1320; --deep:#131B2B; --deep-2:#182235; --rule:#22304A; --rule-2:#2E3E5C;
+  --paper:#E7ECF4; --mist:#8796AD; --faint:#5C6B84;
+  --phone:#5EE1D9; --desk:#F2B65A; --alert:#FF7A6B; --ok:#6BE3A2;
+  --sans:"IBM Plex Sans Hebrew", -apple-system, "Segoe UI", Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --r-lg:20px; --r-md:14px; --r-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  font-family:var(--sans); font-size:16px; line-height:1.55; color:var(--paper);
+  background:var(--ink);
+  background-image:
+    radial-gradient(60rem 40rem at 110% -10%, rgba(94,225,217,.07), transparent 60%),
+    radial-gradient(50rem 40rem at -20% 110%, rgba(242,182,90,.06), transparent 60%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--phone);outline-offset:3px;border-radius:8px}
+[hidden]{display:none!important}
+.ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ltr{direction:ltr;text-align:left;unicode-bidi:isolate}
 
-self.addEventListener("install", (event) => {
-  // Each file is cached on its own, so one missing file never breaks the install
-  event.waitUntil(caches.open(SHELL).then((c) => Promise.allSettled(SHELL_FILES.map((f) => c.add(f)))));
-});
+/* Splash */
+#splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--ink);transition:opacity .45s ease, visibility .45s}
+#splash.out{opacity:0;visibility:hidden}
+.splash-inner{display:grid;justify-items:center;gap:18px}
+.splash-logo{display:block;width:96px;height:96px;border-radius:24px;animation:breathe 2.4s ease-in-out infinite}
+.splash-name{font-weight:700;font-size:22px;letter-spacing:.01em}
+.splash-bar{width:120px;height:3px;border-radius:3px;background:var(--rule);overflow:hidden;position:relative}
+.splash-bar::after{content:"";position:absolute;inset:0;width:40%;border-radius:3px;background:linear-gradient(90deg,var(--desk),var(--phone));animation:slide 1.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(94,225,217,0)}50%{box-shadow:0 0 0 10px rgba(94,225,217,.08)}}
+@keyframes slide{0%{transform:translateX(-120%)}100%{transform:translateX(320%)}}
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.filter((k) => k !== SHELL && k !== RUNTIME).map((k) => caches.delete(k)));
-    await self.clients.claim();
-  })());
-});
+/* Centered screens */
+.center-screen{min-height:100%;display:grid;place-items:center;padding:32px 20px}
+.gate{width:100%;max-width:400px;text-align:center}
+.gate-logo{width:76px;height:76px;border-radius:20px;margin:0 auto 22px;display:block}
+.gate h1{font-size:30px;font-weight:700;line-height:1.2}
+.gate p.lead{color:var(--mist);margin:10px auto 30px;max-width:30ch}
+.btn-google{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:12px;
+  min-height:54px;padding:0 20px;border-radius:var(--r-md);
+  background:#fff;color:#1F1F1F;font-weight:600;font-size:16px;
+  transition:transform .12s ease, opacity .2s;
+}
+.btn-google:active{transform:scale(.98)}
+.btn-google[disabled]{opacity:.6;pointer-events:none}
+.btn-google svg{width:20px;height:20px}
+.gate-note{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;color:var(--faint);font-size:13.5px}
+.gate-note .ico{width:16px;height:16px}
+.error-box{
+  margin-top:18px;padding:14px 16px;border-radius:var(--r-sm);text-align:right;
+  background:rgba(255,122,107,.08);border:1px solid rgba(255,122,107,.3);color:#FFC4BC;font-size:14.5px;
+}
+.error-box b{display:block;color:var(--alert);margin-bottom:2px}
+.error-box code{font-family:var(--mono);font-size:12.5px;color:var(--mist)}
+.denied-mark{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;background:rgba(255,122,107,.1);color:var(--alert)}
+.denied-mark .ico{width:30px;height:30px}
+.denied-email{margin:6px 0 28px;color:var(--mist)}
+.btn-line{
+  width:100%;min-height:50px;border-radius:var(--r-md);border:1px solid var(--rule-2);
+  display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;
+}
+.btn-line:active{background:var(--deep)}
 
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
-});
+/* App shell */
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:10;
+  background:rgba(13,19,32,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--rule);
+}
+.topbar-in{max-width:720px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.brand-logo{width:34px;height:34px;border-radius:9px;display:block}
+.spacer{flex:1}
+.who{display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--deep-2);display:grid;place-items:center;font-weight:700;color:var(--phone)}
+.icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--mist)}
+.icon-btn:hover,.icon-btn:active{background:var(--deep);color:var(--paper)}
 
-async function networkFirst(request) {
-  const cache = await caches.open(SHELL);
+main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
+
+/* Bridge hero: the one memorable element */
+.bridge{
+  border-radius:var(--r-lg);padding:26px 22px 22px;
+  background:linear-gradient(180deg,var(--deep-2),var(--deep));border:1px solid var(--rule);
+}
+.bridge-art{display:block;width:100%;height:auto;max-width:520px;margin:0 auto}
+.bridge-art .node{fill:var(--ink);stroke:var(--rule-2);stroke-width:2;transition:stroke .4s, fill .4s}
+.bridge-art .node-ico{fill:none;stroke:var(--faint);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s}
+.bridge-art .span{stroke:var(--rule-2);stroke-width:3;fill:none;stroke-linecap:round}
+.bridge-art .flow{stroke-width:3;fill:none;stroke-linecap:round;stroke-dasharray:6 14;opacity:0;transition:opacity .5s}
+.bridge.phone-on .n-phone{stroke:var(--phone);fill:rgba(94,225,217,.07)}
+.bridge.phone-on .i-phone{stroke:var(--phone)}
+.bridge.desk-on .n-desk{stroke:var(--desk);fill:rgba(242,182,90,.07)}
+.bridge.desk-on .i-desk{stroke:var(--desk)}
+.bridge.live .flow{opacity:1;animation:flow 1.4s linear infinite}
+.bridge.live .flow.back{animation-direction:reverse}
+@keyframes flow{to{stroke-dashoffset:-40}}
+.bridge-art .node-label{font-family:var(--sans);font-size:15px;font-weight:500;fill:var(--mist);text-anchor:middle}
+.bridge-status{text-align:center;margin-top:16px}
+.bridge-status h2{font-size:21px;font-weight:700;line-height:1.3}
+.bridge-status p{color:var(--mist);margin-top:4px;font-size:15px}
+
+/* Panels */
+.panel{border-radius:var(--r-md);background:var(--deep);border:1px solid var(--rule);padding:20px}
+.panel h3{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
+.panel h3 .ico{color:var(--mist)}
+.panel .sub{color:var(--mist);font-size:14.5px;margin-top:6px}
+
+/* Install */
+.install{border-color:rgba(94,225,217,.28);background:linear-gradient(180deg,rgba(94,225,217,.05),transparent 70%),var(--deep)}
+.install .row{display:flex;align-items:flex-start;gap:14px}
+.install-steps{list-style:none;margin-top:14px;display:grid;gap:10px;counter-reset:s}
+.install-steps li{display:flex;align-items:center;gap:12px;font-size:15px;counter-increment:s}
+.install-steps li::before{content:counter(s);width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--deep-2);border:1px solid var(--rule-2);color:var(--phone)}
+.install-steps .ico{width:18px;height:18px;color:var(--phone)}
+.btn-primary{
+  margin-top:16px;min-height:48px;padding:0 20px;border-radius:12px;
+  display:inline-flex;align-items:center;gap:10px;font-weight:600;
+  background:var(--phone);color:var(--ink);
+}
+.btn-primary:active{transform:scale(.98)}
+.dismiss{margin-inline-start:auto;color:var(--faint)}
+
+/* Lock panel */
+.lock-state{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 12px;border-radius:999px;font-size:13.5px;font-weight:600;background:rgba(242,182,90,.1);color:var(--desk)}
+.lock-state .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.field-label{display:block;font-size:14px;color:var(--mist);margin:18px 0 8px}
+.copy-field{display:flex;align-items:stretch;border:1px solid var(--rule-2);border-radius:var(--r-sm);background:var(--ink);overflow:hidden}
+.copy-field .val{flex:1;min-width:0;padding:12px 14px;font-family:var(--mono);font-size:14px;color:var(--paper);overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.copy-field .val::-webkit-scrollbar{display:none}
+.copy-btn{display:flex;align-items:center;gap:8px;padding:0 16px;border-inline-start:1px solid var(--rule-2);color:var(--phone);font-weight:600;font-size:14px;white-space:nowrap}
+.copy-btn:active{background:var(--deep-2)}
+.copy-btn.done{color:var(--ok)}
+.code-block{
+  position:relative;border:1px solid var(--rule-2);border-radius:var(--r-sm);background:var(--ink);
+}
+.code-block pre{font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:14px 16px;overflow-x:auto;color:#C9D3E3;white-space:pre}
+.code-block .copy-btn{position:absolute;top:8px;inset-inline-start:8px;border:1px solid var(--rule-2);border-radius:8px;padding:6px 12px;background:var(--deep)}
+.steps{list-style:none;margin-top:16px;display:grid;gap:8px;counter-reset:st}
+.steps li{display:flex;gap:12px;font-size:14.5px;color:#C9D3E3;counter-increment:st}
+.steps li::before{content:counter(st);flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--deep-2);color:var(--desk);margin-top:1px}
+
+/* Devices */
+.devices{list-style:none;margin-top:14px;display:grid}
+.device{display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid var(--rule)}
+.device:first-child{border-top:0}
+.device-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--deep-2);color:var(--mist)}
+.device.on.mobile .device-ico{color:var(--phone)}
+.device.on.desktop .device-ico{color:var(--desk)}
+.device-main{flex:1;min-width:0}
+.device-name{font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--deep-2);color:var(--mist)}
+.device-meta{font-size:13.5px;color:var(--faint)}
+.status{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--faint);white-space:nowrap}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.device.on .status{color:var(--ok)}
+.device.on .status .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(107,227,162,.14)}
+.empty{color:var(--faint);font-size:14.5px;padding:14px 0 4px}
+
+.footnote{text-align:center;color:var(--faint);font-size:13px;padding-top:6px}
+
+/* Toasts and banners */
+.toast{
+  position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:40;
+  transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;
+  background:var(--paper);color:var(--ink);font-weight:600;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,.4);
+  transition:opacity .2s, transform .2s;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .ico{width:18px;height:18px}
+.net-banner{
+  position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:50%;transform:translateX(-50%);z-index:30;
+  display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;
+  background:#2A1D1F;border:1px solid rgba(255,122,107,.35);color:#FFC4BC;font-size:14px;font-weight:500;white-space:nowrap;
+}
+.net-banner .ico{width:18px;height:18px;color:var(--alert)}
+.update-bar{
+  position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:41;
+  display:flex;align-items:center;gap:14px;padding:10px 10px 10px 16px;padding-inline-start:18px;border-radius:14px;
+  background:var(--deep-2);border:1px solid var(--rule-2);box-shadow:0 10px 30px rgba(0,0,0,.4);white-space:nowrap;font-size:15px;
+}
+.update-bar button{background:var(--phone);color:var(--ink);font-weight:600;padding:8px 14px;border-radius:10px;display:flex;align-items:center;gap:8px}
+.update-bar .ico{width:16px;height:16px}
+
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(0,0,0,.15);border-top-color:#1F1F1F;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+@media (min-width:760px){
+  main{padding-top:30px}
+  .bridge{padding:34px 30px 28px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="0 0 512 512">
+    <rect width="512" height="512" rx="116" fill="#16203A"/>
+    <rect x="3" y="3" width="506" height="506" rx="113" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="6"/>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M152 172 L84 256 L152 340" stroke="#E7ECF4" stroke-width="36"/>
+      <path d="M360 172 L428 256 L360 340" stroke="#E7ECF4" stroke-width="36"/>
+      <path d="M200 214 H312 M284 186 L312 214 L284 242" stroke="#5EE1D9" stroke-width="30"/>
+      <path d="M312 298 H200 M228 270 L200 298 L228 326" stroke="#F2B65A" stroke-width="30"/>
+    </g>
+  </symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M15 21h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-4"/><polyline points="8 17 3 12 8 7"/><line x1="3" y1="12" x2="15" y2="12"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></symbol>
+  <symbol id="i-desktop" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+  <symbol id="i-tablet" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></symbol>
+  <symbol id="i-plus-square" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-shield-x" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/><line x1="14.5" y1="9.5" x2="9.5" y2="14.5"/></symbol>
+  <symbol id="i-devices" viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="10" rx="1.5"/><line x1="5" y1="18" x2="13" y2="18"/><rect x="17" y="8" width="5" height="12" rx="1.2"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><line x1="2" y1="2" x2="22" y2="22"/><path d="M8.5 16.4a5 5 0 0 1 7 0"/><path d="M5 12.9a10 10 0 0 1 5.2-2.8"/><path d="M19 12.9a10 10 0 0 0-2.3-1.6"/><path d="M2 8.8a15 15 0 0 1 4.2-2.6"/><path d="M10.7 5a15 15 0 0 1 11.3 3.8"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+</svg>
+
+<!-- Splash -->
+<div id="splash" role="status" aria-label="טוען">
+  <div class="splash-inner">
+    <svg class="splash-logo" aria-hidden="true"><use href="#logo"/></svg>
+    <div class="splash-name">גשר קוד</div>
+    <div class="splash-bar"></div>
+  </div>
+</div>
+
+<!-- Login -->
+<section id="screen-login" class="center-screen" data-screen hidden>
+  <div class="gate">
+    <svg class="gate-logo" aria-hidden="true"><use href="#logo"/></svg>
+    <h1>גשר קוד</h1>
+    <p class="lead">העברת קוד וטקסט בין הטלפון למחשב, בזמן אמת.</p>
+    <button id="btn-login" class="btn-google" type="button">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span id="btn-login-label">התחברות עם Google</span>
+    </button>
+    <div id="login-error" class="error-box" hidden></div>
+    <p class="gate-note"><svg class="ico"><use href="#i-lock"/></svg>גישה לחשבון מורשה אחד בלבד, באכיפת שרת.</p>
+  </div>
+</section>
+
+<!-- Denied -->
+<section id="screen-denied" class="center-screen" data-screen hidden>
+  <div class="gate">
+    <div class="denied-mark"><svg class="ico"><use href="#i-shield-x"/></svg></div>
+    <h1>החשבון הזה לא מורשה</h1>
+    <p class="denied-email ltr" id="denied-email" style="text-align:center"></p>
+    <button id="btn-switch" class="btn-line" type="button"><svg class="ico"><use href="#i-logout"/></svg>התחברות עם חשבון אחר</button>
+  </div>
+</section>
+
+<!-- App -->
+<section id="screen-app" data-screen hidden>
+  <header class="topbar">
+    <div class="topbar-in">
+      <div class="brand"><svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg>גשר קוד</div>
+      <div class="spacer"></div>
+      <div class="who">
+        <div id="avatar" class="avatar" aria-hidden="true"></div>
+        <button id="btn-logout" class="icon-btn" type="button" aria-label="התנתקות" title="התנתקות"><svg class="ico"><use href="#i-logout"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="bridge" class="bridge" aria-live="polite">
+      <svg class="bridge-art" viewBox="0 0 520 140" aria-hidden="true">
+        <path class="span" d="M110 60 C 200 18, 320 18, 410 60"/>
+        <path class="span" d="M110 60 C 200 102, 320 102, 410 60"/>
+        <path class="flow" style="stroke:var(--phone)" d="M410 60 C 320 18, 200 18, 110 60"/>
+        <path class="flow back" style="stroke:var(--desk)" d="M410 60 C 320 102, 200 102, 110 60"/>
+        <g transform="translate(410 60)">
+          <circle class="node n-phone" r="46"/>
+          <g transform="translate(-14 -20)"><rect class="node-ico i-phone" x="2" y="0" width="24" height="40" rx="5"/><line class="node-ico i-phone" x1="11" y1="33" x2="17" y2="33"/></g>
+        </g>
+        <g transform="translate(110 60)">
+          <circle class="node n-desk" r="46"/>
+          <g transform="translate(-22 -18)"><rect class="node-ico i-desk" x="0" y="0" width="44" height="28" rx="4"/><line class="node-ico i-desk" x1="14" y1="38" x2="30" y2="38"/><line class="node-ico i-desk" x1="22" y1="28" x2="22" y2="38"/></g>
+        </g>
+        <text class="node-label" x="410" y="134">טלפון</text>
+        <text class="node-label" x="110" y="134">מחשב</text>
+      </svg>
+      <div class="bridge-status">
+        <h2 id="bridge-title">מתחבר לשרת</h2>
+        <p id="bridge-text">רגע אחד.</p>
+      </div>
+    </section>
+
+    <section id="card-install" class="panel install" hidden>
+      <div class="row">
+        <div style="flex:1">
+          <h3><svg class="ico"><use href="#i-download"/></svg>התקנה כאפליקציה</h3>
+          <p class="sub">אייקון במסך הבית, פתיחה במסך מלא, בלי שורת כתובת.</p>
+        </div>
+        <button id="btn-install-dismiss" class="icon-btn dismiss" type="button" aria-label="סגירה"><svg class="ico"><use href="#i-x"/></svg></button>
+      </div>
+      <div id="install-ios" hidden>
+        <ol class="install-steps">
+          <li>לחיצה על כפתור השיתוף <svg class="ico"><use href="#i-share"/></svg></li>
+          <li>בחירה ב"הוספה למסך הבית" <svg class="ico"><use href="#i-plus-square"/></svg></li>
+          <li>פתיחה מהאייקון והתחברות פעם אחת</li>
+        </ol>
+      </div>
+      <div id="install-prompt" hidden>
+        <button id="btn-install" class="btn-primary" type="button"><svg class="ico"><use href="#i-download"/></svg>התקנת האפליקציה</button>
+      </div>
+    </section>
+
+    <section class="panel" id="card-lock">
+      <h3><svg class="ico"><use href="#i-lock"/></svg>נעילת השרת לחשבון שלך</h3>
+      <p class="sub">המזהה הזה ייצרב בחוקי השרת. מרגע הפרסום, כל חשבון אחר נחסם ב Firebase עצמו, גם אם יתחבר בהצלחה.</p>
+      <span class="lock-state"><span class="dot"></span>ממתין לפרסום החוקים</span>
+
+      <label class="field-label" for="uid-val">מזהה החשבון (UID)</label>
+      <div class="copy-field">
+        <div class="val ltr" id="uid-val" tabindex="0"></div>
+        <button class="copy-btn" type="button" data-copy="uid"><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
+      </div>
+
+      <span class="field-label">חוקי הנעילה, מוכנים להדבקה</span>
+      <div class="code-block">
+        <button class="copy-btn" type="button" data-copy="rules"><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
+        <pre class="ltr" id="rules-val"></pre>
+      </div>
+
+      <ol class="steps">
+        <li>Firebase Console, Realtime Database, לשונית Rules.</li>
+        <li>מחיקת כל התוכן הקיים והדבקת החוקים.</li>
+        <li>לחיצה על Publish, ושליחת ה UID לקלוד לתיעוד.</li>
+      </ol>
+    </section>
+
+    <section class="panel">
+      <h3><svg class="ico"><use href="#i-devices"/></svg>המכשירים שלך</h3>
+      <p class="sub">פתיחת גשר קוד במכשיר נוסף מוסיפה אותו כאן מיד, בלי רענון.</p>
+      <ul class="devices" id="devices"></ul>
+    </section>
+
+    <p class="footnote">שלב 1 מתוך 8: תשתית, התחברות וזמן אמת</p>
+  </main>
+</section>
+
+<div id="net-banner" class="net-banner" hidden role="status"><svg class="ico"><use href="#i-wifi-off"/></svg>אין חיבור לשרת. מתחבר מחדש אוטומטית.</div>
+<div id="toast" class="toast" role="status"><svg class="ico"><use href="#i-check"/></svg><span id="toast-text"></span></div>
+<div id="update-bar" class="update-bar" hidden role="status">
+  <span>גרסה חדשה מוכנה</span>
+  <button id="btn-update" type="button"><svg class="ico"><use href="#i-refresh"/></svg>עדכון</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
+  getRedirectResult, onAuthStateChanged, signOut,
+  setPersistence, browserLocalPersistence, indexedDBLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+  getDatabase, ref, update, onValue, onDisconnect, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+/* ---------- Config ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyAjCSGjHYVVAnxfECVTqTUPcp9Ld7OfZiE",
+  authDomain: "my-code-shere.firebaseapp.com",
+  databaseURL: "https://my-code-shere-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "my-code-shere",
+  messagingSenderId: "356254570125",
+  appId: "1:356254570125:web:a9237baf9d748b1d4d74c4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+// Keep the session across app restarts. IndexedDB survives iOS standalone restarts
+// more reliably than localStorage; fall back if it is unavailable.
+const persistenceReady = setPersistence(auth, indexedDBLocalPersistence)
+  .catch(() => setPersistence(auth, browserLocalPersistence))
+  .catch(() => {});
+
+/* ---------- Helpers ---------- */
+const $ = (s) => document.querySelector(s);
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} }
+};
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const isStandalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const UA = navigator.userAgent;
+const IS_IOS = /iPhone|iPad|iPod/.test(UA) || (UA.includes("Macintosh") && navigator.maxTouchPoints > 1);
+
+function showScreen(id) {
+  document.querySelectorAll("[data-screen]").forEach(s => { s.hidden = s.id !== id; });
+}
+
+let splashGone = false;
+const splashStart = performance.now();
+function hideSplash() {
+  if (splashGone) return;
+  splashGone = true;
+  const wait = Math.max(0, 500 - (performance.now() - splashStart));
+  setTimeout(() => $("#splash").classList.add("out"), wait);
+}
+
+let toastTimer;
+function toast(text) {
+  $("#toast-text").textContent = text;
+  const t = $("#toast");
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+async function copyText(text) {
   try {
-    const res = await fetch(request);
-    if (res && res.ok) cache.put("/index.html", res.clone());
-    return res;
+    await navigator.clipboard.writeText(text);
+    return true;
   } catch {
-    return (await cache.match("/index.html")) || (await cache.match("/")) || Response.error();
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch {}
+    ta.remove();
+    return ok;
   }
 }
 
-async function cacheFirst(request, cacheName) {
-  const cache = await caches.open(cacheName);
-  const hit = await cache.match(request);
-  if (hit) return hit;
-  const res = await fetch(request);
-  if (res && (res.ok || res.type === "opaque")) cache.put(request, res.clone());
-  return res;
+/* ---------- Device identity ---------- */
+function getDeviceId() {
+  let id = store.get("cb.deviceId");
+  if (!id) {
+    id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/-/g, "");
+    store.set("cb.deviceId", id);
+  }
+  return id;
 }
-
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(RUNTIME);
-  const hit = await cache.match(request);
-  const net = fetch(request).then((res) => {
-    if (res && (res.ok || res.type === "opaque")) cache.put(request, res.clone());
-    return res;
-  }).catch(() => hit);
-  return hit || net;
+function detectDevice() {
+  let name = "מחשב", kind = "desktop";
+  if (/iPhone/.test(UA)) { name = "iPhone"; kind = "mobile"; }
+  else if (/iPad/.test(UA) || (UA.includes("Macintosh") && navigator.maxTouchPoints > 1)) { name = "iPad"; kind = "tablet"; }
+  else if (/Android/.test(UA)) { name = /Mobile/.test(UA) ? "Android" : "טאבלט Android"; kind = /Mobile/.test(UA) ? "mobile" : "tablet"; }
+  else if (/Windows/.test(UA)) name = "מחשב Windows";
+  else if (/Macintosh/.test(UA)) name = "Mac";
+  else if (/Linux/.test(UA)) name = "מחשב Linux";
+  return { name, kind, mode: isStandalone ? "app" : "browser" };
 }
+const DEVICE_ID = getDeviceId();
+const DEVICE = detectDevice();
 
-self.addEventListener("fetch", (event) => {
-  const req = event.request;
-  if (req.method !== "GET") return;
-  const url = new URL(req.url);
+/* ---------- Errors ---------- */
+function authErrorMessage(e) {
+  const code = e?.code || "";
+  const map = {
+    "auth/popup-closed-by-user": null,
+    "auth/cancelled-popup-request": null,
+    "auth/user-cancelled": null,
+    "auth/unauthorized-domain": ["הדומיין לא מאושר ב Firebase", `יש להוסיף את ${location.hostname} תחת Authentication, Settings, Authorized domains.`],
+    "auth/network-request-failed": ["אין חיבור לרשת", "בדיקת החיבור ונסיון נוסף."],
+    "auth/too-many-requests": ["יותר מדי נסיונות", "המתנה של כמה דקות ונסיון נוסף."],
+    "auth/operation-not-allowed": ["התחברות Google כבויה", "יש להפעיל את Google תחת Authentication, Sign in method."],
+    "auth/internal-error": ["שגיאה בתהליך ההתחברות", "לרוב נובע מכתובת הפניה חסרה בהגדרות ה OAuth ב Google Cloud."]
+  };
+  if (code in map) return map[code];
+  return ["ההתחברות נכשלה", "נסיון נוסף. אם זה חוזר, הקוד למטה יעזור לאתר את הסיבה."];
+}
+function showLoginError(e) {
+  const msg = authErrorMessage(e);
+  const box = $("#login-error");
+  if (!msg) { box.hidden = true; return; }
+  box.innerHTML = `<b>${esc(msg[0])}</b>${esc(msg[1])}${e?.code ? `<br><code>${esc(e.code)}</code>` : ""}`;
+  box.hidden = false;
+}
+const isDenied = (e) => /permission[_ ]denied/i.test(`${e?.code || ""} ${e?.message || ""}`);
 
-  // Never touch the auth proxy or Firebase reserved paths
-  if (url.origin === self.location.origin && url.pathname.startsWith("/__/")) return;
-
-  if (req.mode === "navigate" && url.origin === self.location.origin) {
-    event.respondWith(networkFirst(req));
-    return;
+/* ---------- Login ---------- */
+function setLoginBusy(b) {
+  const btn = $("#btn-login");
+  btn.disabled = b;
+  $("#btn-login-label").textContent = b ? "מתחבר" : "התחברות עם Google";
+}
+async function login() {
+  $("#login-error").hidden = true;
+  setLoginBusy(true);
+  try {
+    await persistenceReady;
+    // Popup keeps the whole flow in one storage context, which is what an
+    // installed iOS PWA needs; redirect there loses the session on the way back.
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    if (["auth/popup-blocked", "auth/popup-closed-by-user", "auth/cancelled-popup-request", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(e?.code)) {
+      if (["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(e?.code)) { setLoginBusy(false); return; }
+      try { await signInWithRedirect(auth, provider); return; } catch (e2) { showLoginError(e2); }
+    } else {
+      showLoginError(e);
+    }
+  } finally {
+    setLoginBusy(false);
   }
-  if (url.origin === self.location.origin) {
-    event.respondWith(cacheFirst(req, SHELL));
-    return;
-  }
-  // Versioned Firebase SDK files are immutable
-  if (url.hostname === "www.gstatic.com" && url.pathname.startsWith("/firebasejs/")) {
-    event.respondWith(cacheFirst(req, RUNTIME));
-    return;
-  }
-  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") {
-    event.respondWith(staleWhileRevalidate(req));
-    return;
-  }
-  // Everything else (Auth, Realtime Database, avatars) goes straight to the network
+}
+$("#btn-login").addEventListener("click", login);
+persistenceReady.then(() => getRedirectResult(auth)).catch((e) => {
+  // A fresh load with no pending redirect is normal, not an error.
+  if (!["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(e?.code)) showLoginError(e);
 });
+
+/* ---------- Realtime session ---------- */
+let unsubs = [];
+let serverOffset = 0;
+let devicesCache = {};
+let netTimer = null;
+let session = 0;
+
+function teardown() {
+  session++;
+  unsubs.forEach(u => { try { u(); } catch {} });
+  unsubs = [];
+  clearTimeout(netTimer);
+  $("#net-banner").hidden = true;
+  devicesCache = {};
+}
+
+function onDbError(e) {
+  if (isDenied(e)) enterDenied(auth.currentUser);
+  else console.error(e);
+}
+
+function setNet(connected) {
+  clearTimeout(netTimer);
+  if (connected) { $("#net-banner").hidden = true; return; }
+  netTimer = setTimeout(() => { $("#net-banner").hidden = false; }, 2500);
+}
+
+function startRealtime() {
+  const mySession = session;
+  const meRef = ref(db, `presence/${DEVICE_ID}`);
+
+  unsubs.push(onValue(ref(db, ".info/serverTimeOffset"), s => { serverOffset = s.val() || 0; }));
+
+  unsubs.push(onValue(ref(db, ".info/connected"), async (snap) => {
+    const on = snap.val() === true;
+    setNet(on);
+    if (!on || mySession !== session) return;
+    try {
+      await onDisconnect(meRef).update({ online: false, lastSeen: serverTimestamp() });
+      await update(meRef, { ...DEVICE, online: true, lastSeen: serverTimestamp() });
+    } catch (e) { onDbError(e); }
+  }));
+
+  unsubs.push(onValue(ref(db, "presence"), (snap) => {
+    devicesCache = snap.val() || {};
+    renderDevices();
+  }, onDbError));
+}
+
+/* ---------- Rendering ---------- */
+const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
+function ago(ts) {
+  if (!ts) return "";
+  const now = Date.now() + serverOffset;
+  const sec = Math.round((ts - now) / 1000);
+  const a = Math.abs(sec);
+  if (a < 60) return "לפני רגע";
+  if (a < 3600) return rtf.format(Math.round(sec / 60), "minute");
+  if (a < 86400) return rtf.format(Math.round(sec / 3600), "hour");
+  return rtf.format(Math.round(sec / 86400), "day");
+}
+
+function renderDevices() {
+  const list = Object.entries(devicesCache).map(([id, d]) => ({ id, ...d }));
+  list.sort((a, b) => (b.id === DEVICE_ID) - (a.id === DEVICE_ID) || (!!b.online - !!a.online) || ((b.lastSeen || 0) - (a.lastSeen || 0)));
+
+  const ul = $("#devices");
+  if (!list.length) {
+    ul.innerHTML = `<li class="empty">עדיין אין מכשירים רשומים.</li>`;
+  } else {
+    ul.innerHTML = list.map(d => {
+      const kind = d.kind === "desktop" ? "desktop" : "mobile";
+      const icon = d.kind === "desktop" ? "i-desktop" : d.kind === "tablet" ? "i-tablet" : "i-phone";
+      const mode = d.mode === "app" ? "אפליקציה מותקנת" : "דפדפן";
+      const me = d.id === DEVICE_ID ? `<span class="tag">המכשיר הזה</span>` : "";
+      const status = d.online ? "מחובר עכשיו" : ago(d.lastSeen);
+      return `<li class="device ${kind} ${d.online ? "on" : ""}">
+        <div class="device-ico"><svg class="ico"><use href="#${icon}"/></svg></div>
+        <div class="device-main">
+          <div class="device-name">${esc(d.name || "מכשיר")} ${me}</div>
+          <div class="device-meta">${mode}</div>
+        </div>
+        <div class="status"><span class="dot"></span>${esc(status)}</div>
+      </li>`;
+    }).join("");
+  }
+  renderBridge(list);
+}
+
+function renderBridge(list) {
+  const phoneOn = list.some(d => d.online && d.kind !== "desktop");
+  const deskOn = list.some(d => d.online && d.kind === "desktop");
+  const el = $("#bridge");
+  el.classList.toggle("phone-on", phoneOn);
+  el.classList.toggle("desk-on", deskOn);
+  el.classList.toggle("live", phoneOn && deskOn);
+
+  let title, text;
+  if (phoneOn && deskOn) { title = "הגשר פעיל"; text = "הטלפון והמחשב מחוברים יחד, כל שינוי עובר מיד."; }
+  else if (phoneOn) { title = "ממתין למחשב"; text = "פתיחת גשר קוד במחשב תחבר את הצד השני."; }
+  else if (deskOn) { title = "ממתין לטלפון"; text = "פתיחת גשר קוד בטלפון תחבר את הצד השני."; }
+  else { title = "מתחבר לשרת"; text = "רגע אחד."; }
+  $("#bridge-title").textContent = title;
+  $("#bridge-text").textContent = text;
+}
+setInterval(() => { if (!$("#screen-app").hidden) renderDevices(); }, 30000);
+
+function rulesFor(uid) {
+  const cond = `auth != null && auth.uid === '${uid}'`;
+  return JSON.stringify({ rules: { ".read": cond, ".write": cond } }, null, 2);
+}
+
+function renderAccount(user) {
+  const av = $("#avatar");
+  if (user.photoURL) {
+    av.innerHTML = `<img class="avatar" src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">`;
+  } else {
+    av.textContent = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
+  }
+  $("#uid-val").textContent = user.uid;
+  $("#rules-val").textContent = rulesFor(user.uid);
+}
+
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-copy]");
+  if (!btn || !auth.currentUser) return;
+  const what = btn.dataset.copy;
+  const text = what === "uid" ? auth.currentUser.uid : rulesFor(auth.currentUser.uid);
+  const ok = await copyText(text);
+  if (!ok) { toast("ההעתקה נכשלה"); return; }
+  const label = btn.querySelector("span");
+  btn.classList.add("done"); label.textContent = "הועתק";
+  toast(what === "uid" ? "המזהה הועתק" : "החוקים הועתקו");
+  setTimeout(() => { btn.classList.remove("done"); label.textContent = "העתקה"; }, 1600);
+});
+
+/* ---------- Access denied ---------- */
+async function enterDenied(user) {
+  teardown();
+  $("#denied-email").textContent = user?.email || "";
+  showScreen("screen-denied");
+  hideSplash();
+}
+$("#btn-switch").addEventListener("click", async () => {
+  await signOut(auth).catch(() => {});
+  showScreen("screen-login");
+});
+
+/* ---------- Logout ---------- */
+$("#btn-logout").addEventListener("click", async () => {
+  try {
+    await Promise.race([
+      update(ref(db, `presence/${DEVICE_ID}`), { online: false, lastSeen: serverTimestamp() }),
+      new Promise(r => setTimeout(r, 1500))
+    ]);
+  } catch {}
+  teardown();
+  await signOut(auth).catch(() => {});
+});
+
+/* ---------- Auth state ---------- */
+onAuthStateChanged(auth, (user) => {
+  teardown();
+  if (!user) {
+    showScreen("screen-login");
+    hideSplash();
+    return;
+  }
+  renderAccount(user);
+  renderBridge([]);
+  showScreen("screen-app");
+  renderInstall();
+  startRealtime();
+  hideSplash();
+});
+
+/* ---------- Install ---------- */
+let deferredPrompt = null;
+addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; renderInstall(); });
+addEventListener("appinstalled", () => { deferredPrompt = null; store.set("cb.installDismissed", "1"); renderInstall(); });
+
+function renderInstall() {
+  const card = $("#card-install");
+  if (isStandalone || store.get("cb.installDismissed")) { card.hidden = true; return; }
+  if (deferredPrompt) { $("#install-prompt").hidden = false; $("#install-ios").hidden = true; card.hidden = false; }
+  else if (IS_IOS) { $("#install-ios").hidden = false; $("#install-prompt").hidden = true; card.hidden = false; }
+  else card.hidden = true;
+}
+$("#btn-install").addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice.catch(() => {});
+  deferredPrompt = null;
+  renderInstall();
+});
+$("#btn-install-dismiss").addEventListener("click", () => { store.set("cb.installDismissed", "1"); renderInstall(); });
+
+/* ---------- Service worker and updates ---------- */
+if ("serviceWorker" in navigator) {
+  let waitingWorker = null;
+  const offerUpdate = (w) => { waitingWorker = w; $("#update-bar").hidden = false; };
+  $("#btn-update").addEventListener("click", () => waitingWorker?.postMessage({ type: "SKIP_WAITING" }));
+
+  let reloading = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (reloading) return;
+    reloading = true;
+    location.reload();
+  });
+
+  navigator.serviceWorker.register("/sw.js").then((reg) => {
+    if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
+    reg.addEventListener("updatefound", () => {
+      const nw = reg.installing;
+      nw?.addEventListener("statechange", () => {
+        if (nw.state === "installed" && navigator.serviceWorker.controller) offerUpdate(nw);
+      });
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") reg.update().catch(() => {});
+    });
+  }).catch(err => console.warn("SW registration failed", err));
+}
+
+/* Safety net: never leave the splash up forever */
+setTimeout(hideSplash, 6000);
+</script>
+</body>
+</html>
