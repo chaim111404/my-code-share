@@ -28,9 +28,11 @@
   --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --r-lg:20px; --r-md:14px; --r-sm:10px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{max-width:100%}
 html,body{height:100%}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{overflow-x:hidden;overscroll-behavior:none;max-width:100%}
 html{touch-action:manipulation}
 body{
   font-family:var(--sans); font-size:16px; line-height:1.55; color:var(--paper);
@@ -346,24 +348,6 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
       </div>
     </section>
 
-    <section class="panel" id="card-lock">
-      <h3><svg class="ico"><use href="#i-lock"/></svg>נעילת השרת</h3>
-      <p class="sub">כל משתמש כלוא למרחב שלו תחת המזהה שלו. אי אפשר לקרוא או לכתוב למרחב של אף אחד אחר, והאכיפה היא ב Firebase עצמו.</p>
-      <span class="lock-state"><span class="dot"></span>ממתין לפרסום החוקים</span>
-
-      <span class="field-label">חוקי הנעילה, מוכנים להדבקה</span>
-      <div class="code-block">
-        <button class="copy-btn" type="button" data-copy="rules"><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
-        <pre class="ltr" id="rules-val"></pre>
-      </div>
-
-      <ol class="steps">
-        <li>Firebase Console, Realtime Database, לשונית Rules.</li>
-        <li>מחיקת כל התוכן הקיים והדבקת החוקים.</li>
-        <li>לחיצה על Publish.</li>
-      </ol>
-    </section>
-
     <section class="panel">
       <h3><svg class="ico"><use href="#i-devices"/></svg>המכשירים שלך</h3>
       <p class="sub">פתיחת גשר קוד במכשיר נוסף מוסיפה אותו כאן מיד, בלי רענון.</p>
@@ -655,13 +639,6 @@ function renderBridge(list) {
 }
 setInterval(() => { if (!$("#screen-app").hidden) renderDevices(); }, 30000);
 
-const PERUSER_RULES = JSON.stringify({
-  rules: { users: { "$uid": {
-    ".read": "auth != null && auth.uid === $uid",
-    ".write": "auth != null && auth.uid === $uid"
-  } } }
-}, null, 2);
-
 function renderAccount(user) {
   const av = $("#avatar");
   if (user.photoURL) {
@@ -669,19 +646,7 @@ function renderAccount(user) {
   } else {
     av.textContent = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
   }
-  $("#rules-val").textContent = PERUSER_RULES;
 }
-
-document.addEventListener("click", async (e) => {
-  const btn = e.target.closest("[data-copy]");
-  if (!btn || !auth.currentUser) return;
-  const ok = await copyText(PERUSER_RULES);
-  if (!ok) { toast("ההעתקה נכשלה"); return; }
-  const label = btn.querySelector("span");
-  btn.classList.add("done"); label.textContent = "הועתק";
-  toast("החוקים הועתקו");
-  setTimeout(() => { btn.classList.remove("done"); label.textContent = "העתקה"; }, 1600);
-});
 
 /* ---------- Access denied ---------- */
 async function enterDenied(user) {
@@ -770,6 +735,18 @@ if ("serviceWorker" in navigator) {
     });
   }).catch(err => console.warn("SW registration failed", err));
 }
+
+/* iOS ignores user-scalable, so block pinch and double tap zoom directly */
+document.addEventListener("gesturestart", (e) => e.preventDefault(), { passive: false });
+document.addEventListener("gesturechange", (e) => e.preventDefault(), { passive: false });
+let lastTouch = 0;
+document.addEventListener("touchend", (e) => {
+  const now = Date.now();
+  if (now - lastTouch <= 300 && !e.target.closest("button, a, input, textarea, select, [tabindex]")) {
+    e.preventDefault();
+  }
+  lastTouch = now;
+}, { passive: false });
 
 /* Safety net: never leave the splash up forever */
 setTimeout(hideSplash, 6000);
