@@ -526,6 +526,36 @@ a.row{text-decoration:none}
 .proj-open .ico{width:15px;height:15px}
 .desk .item-actions .desk-only{display:flex}
 .sb-proj.active-proj{background:rgba(94,225,217,.1);color:var(--phone)}
+
+/* Stage 6: character limits */
+.limits{display:grid;gap:7px}
+.lim{display:grid;grid-template-columns:16px auto minmax(40px,1fr) auto;align-items:center;gap:9px;font-size:13.5px;--c:var(--ok)}
+.lim.near{--c:var(--desk)} .lim.over{--c:var(--alert)}
+.lim .ico{width:15px;height:15px;color:var(--c)}
+.lim-name{color:var(--paper);white-space:nowrap}
+.lim-name em{font-style:normal;font-size:11.5px;color:var(--faint)}
+.lim-bar{height:6px;border-radius:999px;background:var(--ink);overflow:hidden}
+.lim-bar i{display:block;height:100%;border-radius:999px;background:var(--c)}
+.lim-val{color:var(--c);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.chips.lims .chip .ico{width:12px;height:12px}
+.chip.lim-ok{color:var(--ok);background:rgba(107,227,162,.08)}
+.chip.lim-near{color:var(--desk);background:rgba(242,182,90,.12)}
+.chip.lim-over{color:var(--alert);background:rgba(255,122,107,.12)}
+.adv-hint{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--desk);min-height:34px}
+.adv-hint .ico{width:16px;height:16px}
+.adv{display:grid;gap:2px;border:1px solid var(--rule);border-radius:12px;padding:6px 12px;background:var(--ink)}
+.adv-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:14.5px;border-top:1px solid var(--rule)}
+.adv-row:first-child{border-top:0}
+.adv-row b{font-family:var(--mono);font-weight:500;color:var(--desk)}
+.adv-note{font-size:13px;color:var(--faint);margin-top:10px;text-align:right}
+.lim-row{padding:0;gap:0}
+.lim-edit{display:flex;align-items:center;gap:14px;flex:1;min-width:0;padding:10px 16px;text-align:right;min-height:58px}
+.lim-edit:active{background:var(--deep-2)}
+.lim-row .switch{margin-inline-end:16px}
+.switch{width:50px;height:30px;border-radius:999px;background:var(--rule-2);position:relative;flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;background:var(--paper);transition:transform .2s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch[aria-pressed="true"]{background:var(--ok)}
+.switch[aria-pressed="true"]::after{transform:translateX(-20px)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -649,7 +679,7 @@ import {
   push as dbPush, get, query, orderByKey, limitToLast, increment
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-const APP_VERSION = "1.6.0";
+const APP_VERSION = "1.7.0";
 
 /* ================= Firebase ================= */
 const app = initializeApp({
@@ -730,7 +760,7 @@ const DEVICE = detectDevice();
 const userRoot = () => auth.currentUser ? `users/${auth.currentUser.uid}` : null;
 
 /* ================= App state ================= */
-const state = { devices: {}, clips: [], items: [], connected: false, serverOffset: 0 };
+const state = { devices: {}, clips: [], items: [], settings: {}, connected: false, serverOffset: 0 };
 const freshClips = new Set();
 const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
 function ago(ts) {
@@ -1115,7 +1145,9 @@ function stage(text, fileName = "") {
   }
   staged = analyze(text, fileName);
   staged.suggest = suggestItem(staged);
+  staged.advice = limitAdvice(staged.text, staged.ext, staged.chars);
   refreshScreens();
+  if (staged.advice) { const adv = staged.advice; setTimeout(() => { if (staged?.advice === adv && !sheetOpen) showAdvice(adv); }, 350); }
 }
 function discardStaged() { staged = null; refreshScreens(); }
 
@@ -1522,10 +1554,10 @@ function openSaveForm(a, prefill = {}) {
       btn.disabled = true; btn.innerHTML = `<span class="spin dark"></span> שומר`;
       const r = await saveVersion({ item: existing, project: P.value, name: N.value, note: NOTE.value.trim(), a });
       if (r.result === "error") { btn.disabled = false; paint(); err.textContent = "השמירה נכשלה, אפשר לנסות שוב"; return; }
-      await closeSheet();
       if (staged === a) staged = null;
       refreshScreens();
       savedToast(r);
+      await closeSheet();
     };
     if (a.findings.length && !a.reviewed) {
       a.reviewed = true;
@@ -1563,7 +1595,7 @@ async function newVersionFor(item, text, fileName = "", onSaved = null) {
       b.disabled = true; b.innerHTML = `<span class="spin dark"></span> שומר`;
       const r = await saveVersion({ item, project: item.project, name: item.name, note, a });
       if (r.result === "error") { b.disabled = false; b.textContent = "נסיון נוסף"; return; }
-      await closeSheet(); savedToast(r); onSaved?.();
+      onSaved?.(); savedToast(r); await closeSheet();
     } }]
   });
   if (a.findings.length) reviewFindings(a.findings, open, "המשך לשמירה"); else open();
@@ -1648,6 +1680,7 @@ function versionSheet(item, v, versions) {
     title: `גרסה ${v.n}${isLatest ? ", האחרונה" : ""}`,
     message: `${v.from === DEVICE_ID ? "נשמרה מהמכשיר הזה" : `נשמרה מהמכשיר ${v.fromName || ""}`}, ${ago(v.createdAt)}${v.note ? `. ${v.note}` : ""}`,
     body: `<dl class="details"><dt>תווים</dt><dd>${nf.format(v.chars || 0)}</dd><dt>שורות</dt><dd>${nf.format(v.lines || 0)}</dd><dt>גודל</dt><dd dir="ltr" style="text-align:right">${fmtBytes(v.bytes)}</dd>
+           ${activeLimits().length ? `<dt>מגבלות</dt><dd>${limitsCompact(v.chars || 0)}</dd>` : ""}
            ${v.added != null ? `<dt>שינוי</dt><dd><span class="diff-add" dir="ltr">+${nf.format(v.added)}</span> <span class="diff-del" dir="ltr">−${nf.format(v.removed)}</span> שורות</dd>` : ""}</dl>`,
     actions: [
       { label: "העתקה", keepOpen: true, onClick: async () => { const ok = await copyRel(rel); if (ok) closeSheet(); } },
@@ -1753,6 +1786,14 @@ function buildItem(s, params) {
     const act = e.target.closest("[data-act]")?.dataset.act;
     if (act === "copy-latest") return isScript(it) ? copyScript(it, e.target.closest("[data-act]")) : copyRel(`versionsBody/${id}/${it.latest.vid}`, e.target.closest("[data-act]"));
     if (act === "copy-safe") return copyScript(it, e.target.closest("[data-act]"), "safe");
+    if (act === "advice") {
+      try {
+        const text = await fetchRel(`versionsBody/${id}/${it.latest.vid}`);
+        const adv = limitAdvice(text, it.ext, text.length);
+        if (adv) showAdvice(adv); else toast("אין הרבה מה לצמצם בקובץ הזה");
+      } catch { toast("הטעינה נכשלה"); }
+      return;
+    }
     if (act === "copy-bookmark") return copyScript(it, e.target.closest("[data-act]"), "bookmark");
     if (act === "paste-version") {
       if (!navigator.clipboard?.readText) { toast("הדפדפן לא מאפשר קריאה מהלוח, אפשר להשתמש בגרסה מקובץ"); return; }
@@ -1799,7 +1840,9 @@ function buildItem(s, params) {
         <span class="chip">${nf.format(L.lines || 0)} שורות</span>
         <span class="chip" dir="ltr">${fmtBytes(L.bytes)}</span>
       </div>
-      <div class="row-sub">עודכן ${esc(ago(it.updatedAt))}, ${L.from === DEVICE_ID ? "מהמכשיר הזה" : `מהמכשיר ${esc(L.fromName || "")}`}</div>`;
+      <div class="row-sub">עודכן ${esc(ago(it.updatedAt))}, ${L.from === DEVICE_ID ? "מהמכשיר הזה" : `מהמכשיר ${esc(L.fromName || "")}`}</div>
+      ${limitsFull(L.chars || 0)}
+      ${customLimits().some(c => c.on !== false && (L.chars || 0) >= c.max * 0.97) ? `<button class="adv-hint" type="button" data-act="advice"><svg class="ico"><use href="#i-info"/></svg>קרוב למגבלה אישית, בדיקה כמה אפשר לצמצם</button>` : ""}`;
     $('[data-ref="total"]', s.content).textContent = `${fmtBytes(it.totalBytes)} בסך הכל`;
     $('[data-ref="versions"]', s.content).innerHTML = !loaded
       ? `<div class="row"><div class="row-main"><div class="row-sub">טוען גרסאות</div></div></div>`
@@ -1947,9 +1990,9 @@ function openScriptForm(a, opts = {}) {
     }
     const r = await saveVersion({ item: existing, project: SCRIPT_PROJECT, name: N.value, note: "", a, details: { kind: "script", pinned: false, uses: 0, ...details } });
     if (r.result === "error") { btn.disabled = false; paint(); err.textContent = "השמירה נכשלה, אפשר לנסות שוב"; return; }
-    await closeSheet();
     if (staged === a) staged = null;
     refreshScreens();
+    closeSheet();
     if (r.result === "queued") toast("ממתין לחיבור. כדאי להשאיר את האפליקציה פתוחה");
     else toast(r.isNew ? "הסקריפט נשמר במאגר" : `נשמר כגרסה ${r.n}`);
   }
@@ -2578,6 +2621,165 @@ function buildProject(s, params) {
     $('[data-ref="files"]', s.content).innerHTML = files.map(itemRow).join("");
   };
 }
+/* ================= Character limits (stage 6). Indication only: nothing is blocked or changed. ================= */
+const LIMIT_PRESETS = [
+  { id: "whatsapp", name: "WhatsApp", max: 65536, on: true },
+  { id: "site123", name: "site123", max: 50000, on: true },
+  { id: "github", name: "תגובה ב GitHub", max: 65536, on: false },
+  { id: "telegram", name: "Telegram", max: 4096, on: false },
+  { id: "discord", name: "Discord", max: 2000, on: false }
+];
+const limSettings = () => state.settings?.limits || {};
+function presetState(p) { const o = limSettings().presets?.[p.id] || {}; return { ...p, on: o.on ?? p.on, max: o.max || p.max }; }
+function customLimits() { return Object.entries(limSettings().custom || {}).map(([id, c]) => ({ id, ...c, custom: true })).filter(c => c.name && c.max).sort((a, b) => a.max - b.max); }
+function activeLimits() {
+  return [...LIMIT_PRESETS.map(presetState).filter(p => p.on), ...customLimits().filter(c => c.on !== false)];
+}
+function limitState(chars, max) { const r = chars / max; return { r, cls: r > 1 ? "over" : r >= 0.9 ? "near" : "ok", over: chars - max, left: max - chars }; }
+const pctOf = (r) => `${Math.min(999, Math.round(r * 100))}%`;
+function limitsFull(chars) {
+  const list = activeLimits();
+  if (!list.length || !chars) return "";
+  return `<div class="limits" aria-label="מגבלות תווים">${list.map(l => {
+    const s = limitState(chars, l.max);
+    const icon = s.cls === "over" ? "i-x" : s.cls === "near" ? "i-alert" : "i-check";
+    const val = s.cls === "over" ? `חורג ב ${nf.format(s.over)}` : `נכנס, ${pctOf(s.r)}`;
+    return `<div class="lim ${s.cls}" title="${esc(l.name)}: ${nf.format(chars)} מתוך ${nf.format(l.max)}">
+      <svg class="ico"><use href="#${icon}"/></svg><span class="lim-name">${esc(l.name)}${l.custom ? ` <em>אישית</em>` : ""}</span>
+      <span class="lim-bar"><i style="width:${Math.min(100, s.r * 100)}%"></i></span><span class="lim-val">${val}</span></div>`;
+  }).join("")}</div>`;
+}
+function limitsCompact(chars) {
+  const list = activeLimits();
+  if (!list.length || !chars) return "";
+  return `<div class="chips lims">${list.map(l => {
+    const s = limitState(chars, l.max);
+    return `<span class="chip lim-${s.cls}" title="${esc(l.name)}: ${nf.format(chars)} מתוך ${nf.format(l.max)}"><svg class="ico"><use href="#${s.cls === "over" ? "i-x" : s.cls === "near" ? "i-alert" : "i-check"}"/></svg>${esc(l.name)} ${s.cls === "over" ? `חורג ב ${nf.format(s.over)}` : pctOf(s.r)}</span>`;
+  }).join("")}</div>`;
+}
+
+// Rough estimate of characters that could be trimmed. Read only.
+function reducible(text, ext = "txt") {
+  const code = !/^(txt|md)$/.test(ext);
+  const hash = /^(py|sh|yml|yaml|rb)$/.test(ext);
+  const cBlock = /^(js|mjs|cjs|jsx|ts|tsx|css|scss|java|kt|swift|go|cs|c|cpp|php|vue|html|htm|json)$/.test(ext);
+  const r = { comments: 0, indent: 0, trailing: 0, blank: 0, spaces: 0, total: 0 };
+  let body = text;
+  if (code && cBlock) body = body.replace(/\/\*[\s\S]*?\*\//g, (m) => { r.comments += m.length; return ""; });
+  if (/^(html|htm|svg|xml|vue|md)$/.test(ext)) body = body.replace(/<!--[\s\S]*?-->/g, (m) => { r.comments += m.length; return ""; });
+  for (const line of body.split("\n")) {
+    const t = line.trim();
+    if (!t) { r.blank += line.length + 1; continue; }
+    if (code && ((!hash && t.startsWith("//")) || (hash && t.startsWith("#") && !t.startsWith("#!")))) { r.comments += line.length + 1; continue; }
+    let l = line;
+    if (code && !hash) { const i = l.search(/\s\/\/\s/); if (i > 0) { r.comments += l.length - i; l = l.slice(0, i); } }
+    const lead = l.length - l.trimStart().length;
+    if (code) r.indent += lead;
+    r.trailing += l.length - l.trimEnd().length;
+    if (code) { const m = l.trim().match(/ {2,}/g); if (m) r.spaces += m.reduce((tt, x) => tt + x.length - 1, 0); }
+  }
+  r.total = r.comments + r.indent + r.trailing + r.blank + r.spaces;
+  return r;
+}
+function limitAdvice(text, ext, chars) {
+  for (const l of customLimits().filter(c => c.on !== false)) {
+    if (chars < l.max * 0.97) continue;
+    const red = reducible(text, ext);
+    const need = Math.max(0, chars - l.max);
+    if (red.total < Math.max(need, chars * 0.03)) continue;
+    return { l, red, need, chars };
+  }
+  return null;
+}
+function showAdvice(adv) {
+  const { l, red, need, chars } = adv;
+  const left = Math.max(0, l.max - chars);
+  const row = (label, n) => n ? `<div class="adv-row"><span>${label}</span><b dir="ltr">${nf.format(n)}</b></div>` : "";
+  openSheet({
+    title: need ? `חורג מ ${l.name} ב ${nf.format(need)} תווים` : `קרוב למגבלה של ${l.name}`,
+    message: need
+      ? `אפשר להכניס אותו למגבלה: יש בו בערך ${nf.format(red.total)} תווים שאפשר לצמצם.`
+      : `נשארו ${nf.format(left)} תווים. יש בו בערך ${nf.format(red.total)} תווים שאפשר לצמצם אם תצטרך מקום.`,
+    body: `<div class="adv">${row("הערות בקוד", red.comments)}${row("הזחות בתחילת שורות", red.indent)}${row("שורות ריקות", red.blank)}${row("רווחים בסוף שורות", red.trailing)}${row("רווחים כפולים", red.spaces)}</div>
+      <p class="adv-note">זו הערכה בלבד. שום דבר לא נחסם והקובץ לא משתנה.</p>`,
+    cancel: "הבנתי"
+  });
+}
+
+/* Settings: limits are synced across devices under users/<uid>/settings/limits */
+async function saveLimitSetting(path, value) {
+  const r = await dbWrite(update(ref(db, `${userRoot()}/settings/limits`), { [path]: value }));
+  if (r !== "saved") toast("יישמר כשהחיבור יחזור");
+  return r;
+}
+function parseCount(v) { const n = Number(String(v || "").replace(/[,\s]/g, "")); return Number.isInteger(n) ? n : NaN; }
+function editLimit({ id = null, name = "", max = "", preset = false }) {
+  openSheet({
+    title: preset ? `מגבלה של ${name}` : id ? "עריכת מגבלה אישית" : "מגבלה אישית חדשה",
+    message: preset ? "אפשר לעדכן אם הפלטפורמה שינתה את המספר." : "למשל המגבלה שבדקת מול עורך של לקוח.",
+    body: `${preset ? "" : `<label class="field-l" for="l-name">שם</label><input class="input" id="l-name" dir="auto" maxlength="30" autocomplete="off" placeholder="לדוגמה: עורך הלקוח" value="${esc(name)}">`}
+      <label class="field-l" for="l-max">מספר תווים מקסימלי</label>
+      <input class="input" id="l-max" dir="ltr" inputmode="numeric" autocomplete="off" placeholder="200,000" value="${max ? nf.format(max) : ""}">
+      <div class="input-hint"><span data-err></span></div>`,
+    actions: [
+      { label: "שמירה", keepOpen: true, onClick: async () => {
+        const N = $("#l-name", sheetEl), M = $("#l-max", sheetEl), err = $("[data-err]", sheetEl);
+        const n = N ? N.value.trim() : name, m = parseCount(M.value);
+        if (!preset && (n.length < 2 || !/[\p{L}\p{N}]/u.test(n))) { err.textContent = "שם של לפחות 2 תווים"; N.classList.add("invalid"); return; }
+        if (!(m >= 1 && m <= 100000000)) { err.textContent = "מספר שלם בין 1 ל 100,000,000"; M.classList.add("invalid"); return; }
+        if (preset) await saveLimitSetting(`presets/${id}/max`, m);
+        else {
+          const key = id || dbPush(ref(db, `${userRoot()}/settings/limits/custom`)).key;
+          await saveLimitSetting(`custom/${key}`, { name: n, max: m, on: true });
+        }
+        await closeSheet(); toast("המגבלה נשמרה");
+      } },
+      ...(id && !preset ? [{ label: "מחיקת המגבלה", style: "danger", onClick: async () => { await saveLimitSetting(`custom/${id}`, null); toast("המגבלה נמחקה"); } }] : [])
+    ]
+  });
+}
+function buildLimits(s) {
+  s.content.innerHTML = `
+    <p class="lead-text">חיווי בלבד: מוצג מתחת לכל תוכן, ושום דבר לא נחסם או משתנה בקבצים.</p>
+    <section><div class="group-title">מגבלות נפוצות</div><div class="group with-ico" data-ref="presets"></div>
+      <p class="group-foot">המספרים ניתנים לעריכה, כי פלטפורמות משנות אותם מדי פעם.</p></section>
+    <section><div class="group-title">מגבלות אישיות</div><div class="group with-ico" data-ref="custom"></div>
+      <p class="group-foot">מגבלה אישית מפעילה גם התראה ידידותית כשהתוכן קרוב אליה ויש בו הערות ורווחים שאפשר לצמצם.</p></section>`;
+  s.content.addEventListener("click", (e) => {
+    const sw = e.target.closest("[data-toggle]");
+    if (sw) {
+      const [kind, id] = sw.dataset.toggle.split(":"), on = sw.getAttribute("aria-pressed") !== "true";
+      sw.setAttribute("aria-pressed", String(on));
+      saveLimitSetting(kind === "p" ? `presets/${id}/on` : `custom/${id}/on`, on);
+      return;
+    }
+    const ed = e.target.closest("[data-edit]");
+    if (ed) {
+      const [kind, id] = ed.dataset.edit.split(":");
+      if (kind === "p") { const p = presetState(LIMIT_PRESETS.find(x => x.id === id)); editLimit({ id, name: p.name, max: p.max, preset: true }); }
+      else { const c = customLimits().find(x => x.id === id); if (c) editLimit({ id, name: c.name, max: c.max }); }
+      return;
+    }
+    if (e.target.closest('[data-act="add-limit"]')) editLimit({});
+  });
+  const row = (kind, l) => `<div class="row lim-row">
+      <button class="lim-edit" type="button" data-edit="${kind}:${esc(l.id)}">
+        <div class="row-ico ${l.on !== false ? "phone" : ""}"><svg class="ico"><use href="#${kind === "p" ? "i-send" : "i-tag"}"/></svg></div>
+        <div class="row-main"><div class="row-title"><span dir="auto">${esc(l.name)}</span></div><div class="row-sub"><span dir="ltr">${nf.format(l.max)}</span> תווים</div></div>
+      </button>
+      <button class="switch" type="button" data-toggle="${kind}:${esc(l.id)}" aria-pressed="${l.on !== false}" aria-label="הצגת ${esc(l.name)}"></button>
+    </div>`;
+  s.update = () => {
+    $('[data-ref="presets"]', s.content).innerHTML = LIMIT_PRESETS.map(presetState).map(p => row("p", p)).join("");
+    const cs = customLimits();
+    $('[data-ref="custom"]', s.content).innerHTML = cs.map(c => row("c", c)).join("") + `
+      <button class="row accent" type="button" data-act="add-limit">
+        <div class="row-ico"><svg class="ico"><use href="#i-plus-square"/></svg></div>
+        <div class="row-main"><div class="row-title"><span>הוספת מגבלה אישית</span></div></div>
+        <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+      </button>`;
+  };
+}
 /* ================= Screens ================= */
 const SCREENS = {
   home:     { title: "גשר קוד", build: buildHome },
@@ -2587,6 +2789,7 @@ const SCREENS = {
   scripts:  { title: "סקריפטים", build: buildScripts },
   storage:  { title: "נפח ופינוי מקום", build: buildStorage },
   project:  { title: (p) => projectName(p.id) || "פרויקט", build: buildProject },
+  limits:   { title: "מגבלות תווים", build: buildLimits },
   item:     { title: (p) => state.items.find(it => it.id === p.id)?.name || "קובץ", build: buildItem }
 };
 
@@ -2621,6 +2824,7 @@ function clipCard(c) {
       <span class="chip" dir="ltr">${fmtBytes(c.bytes)}</span>
       ${c.flagged ? `<span class="chip warn"><svg class="ico"><use href="#i-alert"/></svg>מכיל פרט רגיש</span>` : ""}
     </div>
+    ${limitsCompact(c.chars || 0)}
     ${c.preview ? `<pre class="clip-preview">${esc(c.preview)}</pre>` : ""}
     <div class="clip-actions">
       <button class="btn-copy" type="button" data-copy><svg class="ico"><use href="#i-copy"/></svg><span>העתקה</span></button>
@@ -2701,7 +2905,7 @@ function buildHome(s) {
     </section>
     </div>
 
-    <p class="footnote" data-area="foot">שלב 5 מתוך 8: פרויקטים<span class="desk-only">קליק ימני לפעולות מהירות, Ctrl+K לחיפוש ופקודות, ? לקיצורי מקלדת</span></p>`;
+    <p class="footnote" data-area="foot">שלב 6 מתוך 8: מגבלות תווים<span class="desk-only">קליק ימני לפעולות מהירות, Ctrl+K לחיפוש ופקודות, ? לקיצורי מקלדת</span></p>`;
 
   const zone = $('[data-ref="zone"]', s.content);
   const fileInput = $('[data-ref="file"]', s.content);
@@ -2764,6 +2968,7 @@ function buildHome(s) {
     const itemRowEl = e.target.closest("[data-item]");
     if (itemRowEl) return openItem(itemRowEl.dataset.item);
     if (act === "review") return reviewFindings(staged?.findings);
+    if (act === "advice" && staged?.advice) return showAdvice(staged.advice);
     if (act === "clear") return confirmClearAll();
     if (act === "more-clips") { showAllClips = true; return s.update(); }
     if (act === "install") return doInstall();
@@ -2825,6 +3030,8 @@ function buildHome(s) {
           <span class="chip" dir="ltr">${fmtBytes(staged.bytes)}</span>
           ${f ? `<button class="chip warn" type="button" data-act="review"><svg class="ico"><use href="#i-alert"/></svg>${f === 1 ? "פרט רגיש אחד" : `${f} פרטים רגישים`}</button>` : ""}
         </div>
+        ${limitsFull(staged.chars)}
+        ${staged.advice ? `<button class="adv-hint" type="button" data-act="advice"><svg class="ico"><use href="#i-info"/></svg>אפשר לצמצם בערך ${nf.format(staged.advice.red.total)} תווים, לפרטים</button>` : ""}
         ${sug ? `<div class="suggest"><svg class="ico"><use href="#i-layers"/></svg><div>
             נראה כמו גרסה חדשה של ${isScript(sug.item) ? "הסקריפט" : ""} <b dir="auto">${esc(sug.item.name)}</b>${isScript(sug.item) ? "" : `, בפרויקט <b>${esc(sug.item.project)}</b>`}.
             <button class="link-btn" type="button" data-act="not-this">זה לא הקובץ הזה</button></div></div>` : ""}
@@ -2922,6 +3129,17 @@ function buildSettings(s) {
     </section>
 
     <section>
+      <div class="group-title">כלים</div>
+      <div class="group with-ico">
+        <button class="row" type="button" data-act="limits">
+          <div class="row-ico"><svg class="ico"><use href="#i-tag"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>מגבלות תווים</span></div><div class="row-sub" data-ref="lim-sub"></div></div>
+          <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+        </button>
+      </div>
+    </section>
+
+    <section>
       <div class="group-title">מכשירים</div>
       <div class="group with-ico">
         <button class="row" type="button" data-act="devices">
@@ -2948,6 +3166,7 @@ function buildSettings(s) {
     else if (act === "update") checkUpdates();
     else if (act === "devices") push("devices");
     else if (act === "storage") push("storage");
+    else if (act === "limits") push("limits");
     else if (act === "logout") confirmLogout();
   });
 
@@ -2964,6 +3183,8 @@ function buildSettings(s) {
     const n = Object.keys(state.devices).length;
     $('[data-ref="dev-count"]', s.content).textContent = n ? String(n) : "";
     $('[data-ref="usage"]', s.content).innerHTML = usageCard(usage());
+    const al = activeLimits();
+    $('[data-ref="lim-sub"]', s.content).textContent = al.length ? `פעילות: ${al.map(l => l.name).join(", ")}` : "אין מגבלות פעילות";
   };
 }
 
@@ -3117,7 +3338,7 @@ function teardown() {
   unsubs = [];
   clearTimeout(netTimer);
   $("#net-banner").hidden = true;
-  state.devices = {}; state.clips = []; state.items = []; state.connected = false;
+  state.devices = {}; state.clips = []; state.items = []; state.settings = {}; state.connected = false;
   staged = null; sending = false;
   bodyCache.clear(); freshClips.clear();
 }
@@ -3142,6 +3363,12 @@ function startRealtime() {
   }));
   unsubs.push(onValue(ref(db, `${root}/presence`), (snap) => {
     state.devices = snap.val() || {};
+    refreshScreens();
+  }, onDbError));
+
+  unsubs.push(onValue(ref(db, `${root}/settings`), (snap) => {
+    if (mine !== session) return;
+    state.settings = snap.val() || {};
     refreshScreens();
   }, onDbError));
 
@@ -3548,6 +3775,7 @@ function paletteCommands() {
     { group: "ניווט", label: "כל הקבצים", icon: "i-folder", kw: "files קבצים", run: () => navRoot("files") },
     { group: "ניווט", label: "מכשירים", icon: "i-devices", kw: "devices", run: () => navRoot("devices") },
     { group: "ניווט", label: "הגדרות", icon: "i-gear", kw: "settings", run: () => navRoot("settings") },
+    { group: "כללי", label: "מגבלות תווים", icon: "i-tag", kw: "limits whatsapp site123 מגבלה תווים", run: () => { enqueue(async () => { resetTo("settings"); }); push("limits"); } },
     { group: "כללי", label: "נפח ופינוי מקום", icon: "i-layers", kw: "storage usage נפח אחסון", run: () => { enqueue(async () => { resetTo("settings"); }); push("storage"); } },
     { group: "כללי", label: "קיצורי מקלדת", icon: "i-keyboard", kw: "shortcuts keyboard", run: () => showShortcuts() },
     { group: "כללי", label: "בדיקת עדכונים", icon: "i-refresh", kw: "update", run: () => checkUpdates() }
