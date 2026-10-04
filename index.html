@@ -14,112 +14,108 @@
 <meta name="description" content="העברת קוד וטקסט בין הטלפון למחשב בזמן אמת">
 <title>גשר קוד</title>
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"%3E%3Crect width="512" height="512" rx="116" fill="%2316203A"/%3E%3Cg fill="none" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M152 172 L84 256 L152 340" stroke="%23E7ECF4" stroke-width="40"/%3E%3Cpath d="M360 172 L428 256 L360 340" stroke="%23E7ECF4" stroke-width="40"/%3E%3Cpath d="M200 214 H312 M284 186 L312 214 L284 242" stroke="%235EE1D9" stroke-width="34"/%3E%3Cpath d="M312 298 H200 M228 270 L200 298 L228 326" stroke="%23F2B65A" stroke-width="34"/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%2316203A'/%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M152 172 L84 256 L152 340' stroke='%23E7ECF4' stroke-width='40'/%3E%3Cpath d='M360 172 L428 256 L360 340' stroke='%23E7ECF4' stroke-width='40'/%3E%3Cpath d='M200 214 H312 M284 186 L312 214 L284 242' stroke='%235EE1D9' stroke-width='34'/%3E%3Cpath d='M312 298 H200 M228 270 L200 298 L228 326' stroke='%23F2B65A' stroke-width='34'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="https://i.postimg.cc/Zn0bcgrB/IMG-2243.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0D1320; --deep:#131B2B; --deep-2:#182235; --rule:#22304A; --rule-2:#2E3E5C;
+  --ink:#0D1320; --deep:#131B2B; --deep-2:#182235; --deep-3:#1E2A40; --rule:#22304A; --rule-2:#2E3E5C;
   --paper:#E7ECF4; --mist:#8796AD; --faint:#5C6B84;
   --phone:#5EE1D9; --desk:#F2B65A; --alert:#FF7A6B; --ok:#6BE3A2;
   --sans:"IBM Plex Sans Hebrew", -apple-system, "Segoe UI", Arial, sans-serif;
   --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --nav-h:52px;
+  --sa-t:env(safe-area-inset-top,0px); --sa-b:env(safe-area-inset-bottom,0px);
+  --sa-l:env(safe-area-inset-left,0px); --sa-r:env(safe-area-inset-right,0px);
+  --ease:cubic-bezier(.2,.8,.2,1);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-*{max-width:100%}
-html,body{height:100%}
-html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%}
-html,body{overflow-x:hidden;overscroll-behavior:none;max-width:100%}
-html{touch-action:manipulation}
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* The document never scrolls. Every screen scrolls inside itself.
+   This removes rubber banding, sideways drift and header jumps on iOS. */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:var(--ink)}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
 body{
-  font-family:var(--sans); font-size:16px; line-height:1.55; color:var(--paper);
-  background:var(--ink);
-  background-image:
-    radial-gradient(60rem 40rem at 110% -10%, rgba(94,225,217,.07), transparent 60%),
-    radial-gradient(50rem 40rem at -20% 110%, rgba(242,182,90,.06), transparent 60%);
-  background-attachment:fixed;
-  -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
-  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+  position:fixed;inset:0;
+  font-family:var(--sans);font-size:16px;line-height:1.55;color:var(--paper);
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
 }
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-:focus-visible{outline:2px solid var(--phone);outline-offset:3px;border-radius:8px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+button:disabled{cursor:default}
+:focus-visible{outline:2px solid var(--phone);outline-offset:2px;border-radius:10px}
 [hidden]{display:none!important}
 .ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ltr{direction:ltr;text-align:left;unicode-bidi:isolate}
 
 /* Splash */
-#splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--ink);transition:opacity .45s ease, visibility .45s}
+#splash{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:var(--ink);transition:opacity .45s ease,visibility .45s}
 #splash.out{opacity:0;visibility:hidden}
 .splash-inner{display:grid;justify-items:center;gap:18px}
 .splash-logo{display:block;width:96px;height:96px;border-radius:24px;animation:breathe 2.4s ease-in-out infinite}
-.splash-name{font-weight:700;font-size:22px;letter-spacing:.01em}
+.splash-name{font-weight:700;font-size:22px}
 .splash-bar{width:120px;height:3px;border-radius:3px;background:var(--rule);overflow:hidden;position:relative}
-.splash-bar::after{content:"";position:absolute;inset:0;width:40%;border-radius:3px;background:linear-gradient(90deg,var(--desk),var(--phone));animation:slide 1.2s ease-in-out infinite}
+.splash-bar::after{content:"";position:absolute;inset:0;width:40%;border-radius:3px;background:linear-gradient(90deg,var(--desk),var(--phone));animation:bar 1.2s ease-in-out infinite}
 @keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(94,225,217,0)}50%{box-shadow:0 0 0 10px rgba(94,225,217,.08)}}
-@keyframes slide{0%{transform:translateX(-120%)}100%{transform:translateX(320%)}}
+@keyframes bar{0%{transform:translateX(-120%)}100%{transform:translateX(320%)}}
 
-/* Centered screens */
-.center-screen{min-height:100%;display:grid;place-items:center;padding:32px 20px}
-.gate{width:100%;max-width:400px;text-align:center}
-.gate-logo{width:76px;height:76px;border-radius:20px;margin:0 auto 22px;display:block}
+/* Gates: login and denied */
+.gate{position:fixed;inset:0;overflow-y:auto;overscroll-behavior:contain;
+  padding:calc(var(--sa-t) + 32px) max(20px,var(--sa-r)) calc(var(--sa-b) + 32px) max(20px,var(--sa-l));
+  display:grid;place-items:center;
+  background:radial-gradient(50rem 30rem at 100% 0%,rgba(94,225,217,.07),transparent 60%),radial-gradient(40rem 30rem at 0% 100%,rgba(242,182,90,.06),transparent 60%),var(--ink)}
+.gate-box{width:100%;max-width:400px;text-align:center}
+.gate-logo{display:block;width:76px;height:76px;border-radius:20px;margin:0 auto 22px}
 .gate h1{font-size:30px;font-weight:700;line-height:1.2}
-.gate p.lead{color:var(--mist);margin:10px auto 30px;max-width:30ch}
-.btn-google{
-  width:100%;display:flex;align-items:center;justify-content:center;gap:12px;
-  min-height:54px;padding:0 20px;border-radius:var(--r-md);
-  background:#fff;color:#1F1F1F;font-weight:600;font-size:16px;
-  transition:transform .12s ease, opacity .2s;
-}
+.gate .lead{color:var(--mist);margin:10px auto 30px;max-width:30ch}
+.btn-google{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;min-height:54px;padding:0 20px;border-radius:14px;background:#fff;color:#1F1F1F;font-weight:600;font-size:16px;transition:transform .12s}
 .btn-google:active{transform:scale(.98)}
-.btn-google[disabled]{opacity:.6;pointer-events:none}
+.btn-google:disabled{opacity:.6}
 .btn-google svg{width:20px;height:20px}
 .gate-note{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;color:var(--faint);font-size:13.5px}
 .gate-note .ico{width:16px;height:16px}
-.error-box{
-  margin-top:18px;padding:14px 16px;border-radius:var(--r-sm);text-align:right;
-  background:rgba(255,122,107,.08);border:1px solid rgba(255,122,107,.3);color:#FFC4BC;font-size:14.5px;
-}
+.error-box{margin-top:18px;padding:14px 16px;border-radius:12px;text-align:right;background:rgba(255,122,107,.08);border:1px solid rgba(255,122,107,.3);color:#FFC4BC;font-size:14.5px}
 .error-box b{display:block;color:var(--alert);margin-bottom:2px}
-.error-box code{font-family:var(--mono);font-size:12.5px;color:var(--mist)}
+.error-box code{font-family:var(--mono);font-size:12.5px;color:var(--mist);direction:ltr;unicode-bidi:isolate}
 .denied-mark{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;background:rgba(255,122,107,.1);color:var(--alert)}
 .denied-mark .ico{width:30px;height:30px}
-.denied-email{margin:6px 0 28px;color:var(--mist)}
-.btn-line{
-  width:100%;min-height:50px;border-radius:var(--r-md);border:1px solid var(--rule-2);
-  display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;
-}
+.denied-email{margin:6px 0 28px;color:var(--mist);direction:ltr;unicode-bidi:isolate}
+.btn-line{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--rule-2);display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600}
 .btn-line:active{background:var(--deep)}
 
-/* App shell */
-.topbar{
-  position:sticky;top:env(safe-area-inset-top,0px);z-index:10;
-  background:rgba(13,19,32,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--rule);
-}
-.topbar-in{max-width:720px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.brand-logo{width:34px;height:34px;border-radius:9px;display:block}
-.spacer{flex:1}
-.who{display:flex;align-items:center;gap:10px}
-.avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--deep-2);display:grid;place-items:center;font-weight:700;color:var(--phone)}
-.icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--mist)}
-.icon-btn:hover,.icon-btn:active{background:var(--deep);color:var(--paper)}
+/* Navigation stack */
+#stack{position:fixed;inset:0;overflow:hidden;background:#070A11}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;
+  background:radial-gradient(50rem 30rem at 100% 0%,rgba(94,225,217,.06),transparent 60%),var(--ink);
+  will-change:transform}
+.screen.pushed{box-shadow:14px 0 34px rgba(0,0,0,.5)}
+.nav{flex:none;position:relative;z-index:2;padding-top:var(--sa-t);
+  padding-right:max(6px,var(--sa-r));padding-left:max(6px,var(--sa-l));
+  background:rgba(13,19,32,.88);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  border-bottom:1px solid transparent;transition:border-color .2s}
+.nav.scrolled{border-bottom-color:var(--rule)}
+.nav-in{height:var(--nav-h);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
+.nav-start{justify-self:start;display:flex;align-items:center;min-width:0}
+.nav-end{justify-self:end;display:flex;align-items:center;min-width:0}
+.nav-title{font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw;text-align:center}
+.nav-logo{display:block;width:32px;height:32px;border-radius:9px;margin:0 8px}
+.nav-btn{min-height:44px;min-width:44px;padding:0 10px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;color:var(--phone);font-size:16px;font-weight:500;white-space:nowrap}
+.nav-btn:active{opacity:.5}
+.nav-btn .ico{width:22px;height:22px}
+.nav-btn.back .ico{width:24px;height:24px;margin-inline-start:-4px}
+.scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y}
+.content{max-width:680px;margin:0 auto;display:grid;gap:26px;
+  padding:20px max(16px,var(--sa-r)) calc(var(--sa-b) + 40px) max(16px,var(--sa-l))}
+.lead-text{color:var(--mist);font-size:15px;padding:0 4px}
 
-main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
-
-/* Bridge hero: the one memorable element */
-.bridge{
-  border-radius:var(--r-lg);padding:26px 22px 22px;
-  background:linear-gradient(180deg,var(--deep-2),var(--deep));border:1px solid var(--rule);
-}
+/* Bridge hero */
+.bridge{border-radius:20px;padding:24px 18px 20px;background:linear-gradient(180deg,var(--deep-2),var(--deep));border:1px solid var(--rule)}
 .bridge-art{display:block;width:100%;height:auto;max-width:520px;margin:0 auto}
-.bridge-art .node{fill:var(--ink);stroke:var(--rule-2);stroke-width:2;transition:stroke .4s, fill .4s}
+.bridge-art .node{fill:var(--ink);stroke:var(--rule-2);stroke-width:2;transition:stroke .4s,fill .4s}
 .bridge-art .node-ico{fill:none;stroke:var(--faint);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transition:stroke .4s}
 .bridge-art .span{stroke:var(--rule-2);stroke-width:3;fill:none;stroke-linecap:round}
 .bridge-art .flow{stroke-width:3;fill:none;stroke-linecap:round;stroke-dasharray:6 14;opacity:0;transition:opacity .5s}
+.bridge-art .node-label{font-family:var(--sans);font-size:15px;font-weight:500;fill:var(--mist);text-anchor:middle}
 .bridge.phone-on .n-phone{stroke:var(--phone);fill:rgba(94,225,217,.07)}
 .bridge.phone-on .i-phone{stroke:var(--phone)}
 .bridge.desk-on .n-desk{stroke:var(--desk);fill:rgba(242,182,90,.07)}
@@ -127,104 +123,92 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
 .bridge.live .flow{opacity:1;animation:flow 1.4s linear infinite}
 .bridge.live .flow.back{animation-direction:reverse}
 @keyframes flow{to{stroke-dashoffset:-40}}
-.bridge-art .node-label{font-family:var(--sans);font-size:15px;font-weight:500;fill:var(--mist);text-anchor:middle}
-.bridge-status{text-align:center;margin-top:16px}
+.bridge-status{text-align:center;margin-top:14px}
 .bridge-status h2{font-size:21px;font-weight:700;line-height:1.3}
 .bridge-status p{color:var(--mist);margin-top:4px;font-size:15px}
 
-/* Panels */
-.panel{border-radius:var(--r-md);background:var(--deep);border:1px solid var(--rule);padding:20px}
-.panel h3{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
-.panel h3 .ico{color:var(--mist)}
-.panel .sub{color:var(--mist);font-size:14.5px;margin-top:6px}
+/* Install card */
+.install-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:1px solid rgba(94,225,217,.3);background:linear-gradient(180deg,rgba(94,225,217,.07),rgba(94,225,217,.02)),var(--deep)}
+.install-card .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(94,225,217,.12);color:var(--phone);flex:none}
+.install-card .txt{flex:1;min-width:0}
+.install-card .t{font-weight:600}
+.install-card .s{font-size:13.5px;color:var(--mist)}
+.btn-pill{min-height:40px;padding:0 16px;border-radius:999px;background:var(--phone);color:var(--ink);font-weight:600;font-size:15px;white-space:nowrap}
+.btn-pill:active{transform:scale(.97)}
+.icon-x{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--faint);flex:none}
+.icon-x:active{background:var(--deep-2)}
 
-/* Install */
-.install{border-color:rgba(94,225,217,.28);background:linear-gradient(180deg,rgba(94,225,217,.05),transparent 70%),var(--deep)}
-.install .row{display:flex;align-items:flex-start;gap:14px}
-.install-steps{list-style:none;margin-top:14px;display:grid;gap:10px;counter-reset:s}
-.install-steps li{display:flex;align-items:center;gap:12px;font-size:15px;counter-increment:s}
-.install-steps li::before{content:counter(s);width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--deep-2);border:1px solid var(--rule-2);color:var(--phone)}
-.install-steps .ico{width:18px;height:18px;color:var(--phone)}
-.btn-primary{
-  margin-top:16px;min-height:48px;padding:0 20px;border-radius:12px;
-  display:inline-flex;align-items:center;gap:10px;font-weight:600;
-  background:var(--phone);color:var(--ink);
-}
-.btn-primary:active{transform:scale(.98)}
-.dismiss{margin-inline-start:auto;color:var(--faint)}
-
-/* Lock panel */
-.lock-state{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 12px;border-radius:999px;font-size:13.5px;font-weight:600;background:rgba(242,182,90,.1);color:var(--desk)}
-.lock-state .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
-.field-label{display:block;font-size:14px;color:var(--mist);margin:18px 0 8px}
-.copy-field{display:flex;align-items:stretch;border:1px solid var(--rule-2);border-radius:var(--r-sm);background:var(--ink);overflow:hidden}
-.copy-field .val{flex:1;min-width:0;padding:12px 14px;font-family:var(--mono);font-size:14px;color:var(--paper);overflow-x:auto;white-space:nowrap;scrollbar-width:none}
-.copy-field .val::-webkit-scrollbar{display:none}
-.copy-btn{display:flex;align-items:center;gap:8px;padding:0 16px;border-inline-start:1px solid var(--rule-2);color:var(--phone);font-weight:600;font-size:14px;white-space:nowrap}
-.copy-btn:active{background:var(--deep-2)}
-.copy-btn.done{color:var(--ok)}
-.code-block{
-  position:relative;border:1px solid var(--rule-2);border-radius:var(--r-sm);background:var(--ink);
-}
-.code-block pre{font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:14px 16px;overflow-x:auto;color:#C9D3E3;white-space:pre}
-.code-block .copy-btn{position:absolute;top:8px;inset-inline-start:8px;border:1px solid var(--rule-2);border-radius:8px;padding:6px 12px;background:var(--deep)}
-.steps{list-style:none;margin-top:16px;display:grid;gap:8px;counter-reset:st}
-.steps li{display:flex;gap:12px;font-size:14.5px;color:#C9D3E3;counter-increment:st}
-.steps li::before{content:counter(st);flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--deep-2);color:var(--desk);margin-top:1px}
-
-/* Devices */
-.devices{list-style:none;margin-top:14px;display:grid}
-.device{display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid var(--rule)}
-.device:first-child{border-top:0}
-.device-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--deep-2);color:var(--mist)}
-.device.on.mobile .device-ico{color:var(--phone)}
-.device.on.desktop .device-ico{color:var(--desk)}
-.device-main{flex:1;min-width:0}
-.device-name{font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.tag{font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--deep-2);color:var(--mist)}
-.device-meta{font-size:13.5px;color:var(--faint)}
+/* Grouped lists, iOS inset style */
+.group-title{font-size:13.5px;color:var(--mist);font-weight:500;padding:0 14px 8px}
+.group-foot{font-size:13px;color:var(--faint);padding:8px 14px 0}
+.group{background:var(--deep);border:1px solid var(--rule);border-radius:16px;overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;width:100%;min-height:58px;padding:10px 16px;text-align:right;position:relative;color:inherit}
+.row + .row::before{content:"";position:absolute;top:0;right:16px;left:0;height:1px;background:var(--rule)}
+.group.with-ico .row + .row::before{right:64px}
+button.row:active{background:var(--deep-2)}
+.row-ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--deep-2);color:var(--mist)}
+.row-ico .ico{width:19px;height:19px}
+.row-ico.phone{color:var(--phone)} .row-ico.desk{color:var(--desk)} .row-ico.danger{color:var(--alert);background:rgba(255,122,107,.1)}
+.row-main{flex:1;min-width:0}
+.row-title{font-size:16px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px}
+.row-title span{overflow:hidden;text-overflow:ellipsis}
+.row-sub{font-size:13.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-end{display:flex;align-items:center;gap:6px;color:var(--faint);font-size:14.5px;flex:none}
+.row-end .chev{width:18px;height:18px}
+.row.danger .row-title{color:var(--alert)}
+.row.accent .row-title{color:var(--phone)}
+.tag{flex:none;font-size:12px;font-weight:600;padding:1px 8px;border-radius:6px;background:var(--deep-3);color:var(--mist)}
 .status{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--faint);white-space:nowrap}
 .status .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
-.device.on .status{color:var(--ok)}
-.device.on .status .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(107,227,162,.14)}
-.empty{color:var(--faint);font-size:14.5px;padding:14px 0 4px}
+.status.on{color:var(--ok)}
+.status.on .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(107,227,162,.14)}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;flex:none;background:var(--deep-3);display:grid;place-items:center;font-weight:700;font-size:20px;color:var(--phone)}
+.footnote{text-align:center;color:var(--faint);font-size:13px}
 
-.footnote{text-align:center;color:var(--faint);font-size:13px;padding-top:6px}
+/* Bottom sheet */
+.sheet-backdrop{position:fixed;inset:0;z-index:70;background:rgba(3,6,12,.55);opacity:0;transition:opacity .28s}
+.sheet-backdrop.open{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:71;margin:0 auto;max-width:560px;
+  padding:0 max(10px,var(--sa-r)) calc(10px + var(--sa-b)) max(10px,var(--sa-l));
+  transform:translateY(110%);transition:transform .32s var(--ease)}
+.sheet.open{transform:none}
+.sheet-card{background:var(--deep-2);border:1px solid var(--rule-2);border-radius:18px;overflow:hidden}
+.sheet-head{padding:18px 20px 14px;text-align:center}
+.sheet-title{font-weight:700;font-size:17px}
+.sheet-msg{color:var(--mist);font-size:14.5px;margin-top:4px}
+.sheet-body{padding:0 18px 16px}
+.sheet-action{display:block;width:100%;min-height:56px;padding:0 16px;font-size:17px;font-weight:500;color:var(--phone);border-top:1px solid var(--rule-2)}
+.sheet-action:active{background:var(--deep-3)}
+.sheet-action.danger{color:var(--alert)}
+.sheet-action:disabled{color:var(--faint)}
+.sheet-cancel{margin-top:8px;border:1px solid var(--rule-2);border-radius:18px;background:var(--deep-2);font-weight:600;color:var(--paper)}
+.input{width:100%;min-height:50px;padding:0 14px;border-radius:12px;border:1px solid var(--rule-2);background:var(--ink);color:var(--paper);font:inherit;font-size:16px;outline:none;-webkit-appearance:none;appearance:none}
+.input:focus{border-color:var(--phone)}
+.input.invalid{border-color:var(--alert)}
+.input-hint{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:13px;color:var(--faint);min-height:18px}
+.input-hint [data-err]{color:var(--alert)}
+.steps-list{list-style:none;display:grid;gap:12px;text-align:right}
+.steps-list li{display:flex;align-items:center;gap:12px;font-size:15.5px}
+.steps-list .num{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--deep-3);color:var(--phone)}
+.steps-list .ico{color:var(--phone)}
 
-/* Toasts and banners */
-.toast{
-  position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:40;
-  transform:translate(-50%,20px);opacity:0;pointer-events:none;
-  display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;
-  background:var(--paper);color:var(--ink);font-weight:600;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,.4);
-  transition:opacity .2s, transform .2s;
-}
+/* Toast, network, update */
+.toast{position:fixed;left:50%;bottom:calc(24px + var(--sa-b));z-index:80;transform:translate(-50%,16px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:14px;background:var(--paper);color:var(--ink);font-weight:600;font-size:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .2s,transform .2s;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .toast .ico{width:18px;height:18px}
-.net-banner{
-  position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:50%;transform:translateX(-50%);z-index:30;
-  display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;
-  background:#2A1D1F;border:1px solid rgba(255,122,107,.35);color:#FFC4BC;font-size:14px;font-weight:500;white-space:nowrap;
-}
+.net-banner{position:fixed;top:calc(var(--sa-t) + var(--nav-h) + 10px);left:50%;transform:translateX(-50%);z-index:60;
+  display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;background:#2A1D1F;border:1px solid rgba(255,122,107,.35);
+  color:#FFC4BC;font-size:14px;font-weight:500;white-space:nowrap}
 .net-banner .ico{width:18px;height:18px;color:var(--alert)}
-.update-bar{
-  position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:41;
-  display:flex;align-items:center;gap:14px;padding:10px 10px 10px 16px;padding-inline-start:18px;border-radius:14px;
-  background:var(--deep-2);border:1px solid var(--rule-2);box-shadow:0 10px 30px rgba(0,0,0,.4);white-space:nowrap;font-size:15px;
-}
-.update-bar button{background:var(--phone);color:var(--ink);font-weight:600;padding:8px 14px;border-radius:10px;display:flex;align-items:center;gap:8px}
+.update-bar{position:fixed;left:50%;bottom:calc(24px + var(--sa-b));transform:translateX(-50%);z-index:79;
+  display:flex;align-items:center;gap:14px;padding:8px 8px 8px 8px;padding-inline-start:18px;border-radius:16px;
+  background:var(--deep-2);border:1px solid var(--rule-2);box-shadow:0 10px 30px rgba(0,0,0,.45);white-space:nowrap;font-size:15px}
+.update-bar button{background:var(--phone);color:var(--ink);font-weight:600;min-height:40px;padding:0 14px;border-radius:12px;display:flex;align-items:center;gap:8px}
 .update-bar .ico{width:16px;height:16px}
 
-.spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(0,0,0,.15);border-top-color:#1F1F1F;animation:rot .7s linear infinite}
-@keyframes rot{to{transform:rotate(360deg)}}
-
-@media (min-width:760px){
-  main{padding-top:30px}
-  .bridge{padding:34px 30px 28px}
-}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -240,7 +224,6 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
       <path d="M312 298 H200 M228 270 L200 298 L228 326" stroke="#F2B65A" stroke-width="30"/>
     </g>
   </symbol>
-  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
   <symbol id="i-logout" viewBox="0 0 24 24"><path d="M15 21h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-4"/><polyline points="8 17 3 12 8 7"/><line x1="3" y1="12" x2="15" y2="12"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></symbol>
@@ -255,9 +238,13 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
   <symbol id="i-wifi-off" viewBox="0 0 24 24"><line x1="2" y1="2" x2="22" y2="22"/><path d="M8.5 16.4a5 5 0 0 1 7 0"/><path d="M5 12.9a10 10 0 0 1 5.2-2.8"/><path d="M19 12.9a10 10 0 0 0-2.3-1.6"/><path d="M2 8.8a15 15 0 0 1 4.2-2.6"/><path d="M10.7 5a15 15 0 0 1 11.3 3.8"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-chev-fwd" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-chev-back" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol>
 </svg>
 
-<!-- Splash -->
 <div id="splash" role="status" aria-label="טוען">
   <div class="splash-inner">
     <svg class="splash-logo" aria-hidden="true"><use href="#logo"/></svg>
@@ -266,9 +253,8 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
   </div>
 </div>
 
-<!-- Login -->
-<section id="screen-login" class="center-screen" data-screen hidden>
-  <div class="gate">
+<section id="gate-login" class="gate" hidden>
+  <div class="gate-box">
     <svg class="gate-logo" aria-hidden="true"><use href="#logo"/></svg>
     <h1>גשר קוד</h1>
     <p class="lead">העברת קוד וטקסט בין הטלפון למחשב, בזמן אמת.</p>
@@ -277,94 +263,30 @@ main{max-width:720px;margin:0 auto;padding:22px 18px 48px;display:grid;gap:18px}
       <span id="btn-login-label">התחברות עם Google</span>
     </button>
     <div id="login-error" class="error-box" hidden></div>
-    <p class="gate-note"><svg class="ico"><use href="#i-lock"/></svg>גישה לחשבון מורשה אחד בלבד, באכיפת שרת.</p>
+    <p class="gate-note"><svg class="ico"><use href="#i-lock"/></svg>כל חשבון מקבל מרחב פרטי, באכיפת שרת.</p>
   </div>
 </section>
 
-<!-- Denied -->
-<section id="screen-denied" class="center-screen" data-screen hidden>
-  <div class="gate">
+<section id="gate-denied" class="gate" hidden>
+  <div class="gate-box">
     <div class="denied-mark"><svg class="ico"><use href="#i-shield-x"/></svg></div>
-    <h1>החשבון הזה לא מורשה</h1>
-    <p class="denied-email ltr" id="denied-email" style="text-align:center"></p>
+    <h1>אין גישה לנתונים</h1>
+    <p class="denied-email" id="denied-email"></p>
     <button id="btn-switch" class="btn-line" type="button"><svg class="ico"><use href="#i-logout"/></svg>התחברות עם חשבון אחר</button>
   </div>
 </section>
 
-<!-- App -->
-<section id="screen-app" data-screen hidden>
-  <header class="topbar">
-    <div class="topbar-in">
-      <div class="brand"><svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg>גשר קוד</div>
-      <div class="spacer"></div>
-      <div class="who">
-        <div id="avatar" class="avatar" aria-hidden="true"></div>
-        <button id="btn-logout" class="icon-btn" type="button" aria-label="התנתקות" title="התנתקות"><svg class="ico"><use href="#i-logout"/></svg></button>
-      </div>
-    </div>
-  </header>
+<div id="stack" hidden></div>
 
-  <main>
-    <section id="bridge" class="bridge" aria-live="polite">
-      <svg class="bridge-art" viewBox="0 0 520 140" aria-hidden="true">
-        <path class="span" d="M110 60 C 200 18, 320 18, 410 60"/>
-        <path class="span" d="M110 60 C 200 102, 320 102, 410 60"/>
-        <path class="flow" style="stroke:var(--phone)" d="M410 60 C 320 18, 200 18, 110 60"/>
-        <path class="flow back" style="stroke:var(--desk)" d="M410 60 C 320 102, 200 102, 110 60"/>
-        <g transform="translate(410 60)">
-          <circle class="node n-phone" r="46"/>
-          <g transform="translate(-14 -20)"><rect class="node-ico i-phone" x="2" y="0" width="24" height="40" rx="5"/><line class="node-ico i-phone" x1="11" y1="33" x2="17" y2="33"/></g>
-        </g>
-        <g transform="translate(110 60)">
-          <circle class="node n-desk" r="46"/>
-          <g transform="translate(-22 -18)"><rect class="node-ico i-desk" x="0" y="0" width="44" height="28" rx="4"/><line class="node-ico i-desk" x1="14" y1="38" x2="30" y2="38"/><line class="node-ico i-desk" x1="22" y1="28" x2="22" y2="38"/></g>
-        </g>
-        <text class="node-label" x="410" y="134">טלפון</text>
-        <text class="node-label" x="110" y="134">מחשב</text>
-      </svg>
-      <div class="bridge-status">
-        <h2 id="bridge-title">מתחבר לשרת</h2>
-        <p id="bridge-text">רגע אחד.</p>
-      </div>
-    </section>
-
-    <section id="card-install" class="panel install" hidden>
-      <div class="row">
-        <div style="flex:1">
-          <h3><svg class="ico"><use href="#i-download"/></svg>התקנה כאפליקציה</h3>
-          <p class="sub">אייקון במסך הבית, פתיחה במסך מלא, בלי שורת כתובת.</p>
-        </div>
-        <button id="btn-install-dismiss" class="icon-btn dismiss" type="button" aria-label="סגירה"><svg class="ico"><use href="#i-x"/></svg></button>
-      </div>
-      <div id="install-ios" hidden>
-        <ol class="install-steps">
-          <li>לחיצה על כפתור השיתוף <svg class="ico"><use href="#i-share"/></svg></li>
-          <li>בחירה ב"הוספה למסך הבית" <svg class="ico"><use href="#i-plus-square"/></svg></li>
-          <li>פתיחה מהאייקון והתחברות פעם אחת</li>
-        </ol>
-      </div>
-      <div id="install-prompt" hidden>
-        <button id="btn-install" class="btn-primary" type="button"><svg class="ico"><use href="#i-download"/></svg>התקנת האפליקציה</button>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h3><svg class="ico"><use href="#i-devices"/></svg>המכשירים שלך</h3>
-      <p class="sub">פתיחת גשר קוד במכשיר נוסף מוסיפה אותו כאן מיד, בלי רענון.</p>
-      <ul class="devices" id="devices"></ul>
-    </section>
-
-    <p class="footnote">שלב 1 מתוך 8: תשתית, התחברות וזמן אמת</p>
-  </main>
-</section>
+<div id="sheet-backdrop" class="sheet-backdrop" hidden></div>
+<div id="sheet" class="sheet" hidden></div>
 
 <div id="net-banner" class="net-banner" hidden role="status"><svg class="ico"><use href="#i-wifi-off"/></svg>אין חיבור לשרת. מתחבר מחדש אוטומטית.</div>
-<div id="toast" class="toast" role="status"><svg class="ico"><use href="#i-check"/></svg><span id="toast-text"></span></div>
+<div id="toast" class="toast" role="status" aria-live="polite"><svg class="ico"><use href="#i-check"/></svg><span id="toast-text"></span></div>
 <div id="update-bar" class="update-bar" hidden role="status">
   <span>גרסה חדשה מוכנה</span>
   <button id="btn-update" type="button"><svg class="ico"><use href="#i-refresh"/></svg>עדכון</button>
 </div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
@@ -376,51 +298,37 @@ import {
   getDatabase, ref, update, onValue, onDisconnect, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-/* ---------- Config ---------- */
-const firebaseConfig = {
+const APP_VERSION = "1.1.0";
+
+/* ================= Firebase ================= */
+const app = initializeApp({
   apiKey: "AIzaSyAjCSGjHYVVAnxfECVTqTUPcp9Ld7OfZiE",
   authDomain: "my-code-shere.firebaseapp.com",
   databaseURL: "https://my-code-shere-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "my-code-shere",
   messagingSenderId: "356254570125",
   appId: "1:356254570125:web:a9237baf9d748b1d4d74c4"
-};
-
-const app = initializeApp(firebaseConfig);
+});
 const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
-
-// Keep the session across app restarts. IndexedDB survives iOS standalone restarts
-// more reliably than localStorage; fall back if it is unavailable.
 const persistenceReady = setPersistence(auth, indexedDBLocalPersistence)
   .catch(() => setPersistence(auth, browserLocalPersistence))
   .catch(() => {});
 
-/* ---------- Helpers ---------- */
-const $ = (s) => document.querySelector(s);
+/* ================= Helpers ================= */
+const $ = (s, root = document) => root.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch {} }
 };
-const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const isStandalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 const UA = navigator.userAgent;
 const IS_IOS = /iPhone|iPad|iPod/.test(UA) || (UA.includes("Macintosh") && navigator.maxTouchPoints > 1);
-
-function showScreen(id) {
-  document.querySelectorAll("[data-screen]").forEach(s => { s.hidden = s.id !== id; });
-}
-
-let splashGone = false;
-const splashStart = performance.now();
-function hideSplash() {
-  if (splashGone) return;
-  splashGone = true;
-  const wait = Math.max(0, 500 - (performance.now() - splashStart));
-  setTimeout(() => $("#splash").classList.add("out"), wait);
-}
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
 let toastTimer;
 function toast(text) {
@@ -428,26 +336,26 @@ function toast(text) {
   const t = $("#toast");
   t.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2000);
 }
 
-async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = text; ta.setAttribute("readonly", "");
-    ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
-    document.body.appendChild(ta); ta.select();
-    let ok = false;
-    try { ok = document.execCommand("copy"); } catch {}
-    ta.remove();
-    return ok;
-  }
+// RTDB queues writes while offline and the promise waits for the server.
+// Never let the UI hang on that: after a short wait, treat it as queued.
+async function dbWrite(promise) {
+  const result = await Promise.race([promise.then(() => "saved"), wait(5000).then(() => "queued")]);
+  return result;
 }
 
-/* ---------- Device identity ---------- */
+let splashGone = false;
+const splashStart = performance.now();
+function hideSplash() {
+  if (splashGone) return;
+  splashGone = true;
+  setTimeout(() => $("#splash").classList.add("out"), Math.max(0, 450 - (performance.now() - splashStart)));
+}
+setTimeout(hideSplash, 6000);
+
+/* ================= Device identity ================= */
 function getDeviceId() {
   let id = store.get("cb.deviceId");
   if (!id) {
@@ -460,7 +368,7 @@ function detectDevice() {
   let name = "מחשב", kind = "desktop";
   if (/iPhone/.test(UA)) { name = "iPhone"; kind = "mobile"; }
   else if (/iPad/.test(UA) || (UA.includes("Macintosh") && navigator.maxTouchPoints > 1)) { name = "iPad"; kind = "tablet"; }
-  else if (/Android/.test(UA)) { name = /Mobile/.test(UA) ? "Android" : "טאבלט Android"; kind = /Mobile/.test(UA) ? "mobile" : "tablet"; }
+  else if (/Android/.test(UA)) { const m = /Mobile/.test(UA); name = m ? "Android" : "טאבלט Android"; kind = m ? "mobile" : "tablet"; }
   else if (/Windows/.test(UA)) name = "מחשב Windows";
   else if (/Macintosh/.test(UA)) name = "Mac";
   else if (/Linux/.test(UA)) name = "מחשב Linux";
@@ -468,43 +376,564 @@ function detectDevice() {
 }
 const DEVICE_ID = getDeviceId();
 const DEVICE = detectDevice();
+const userRoot = () => auth.currentUser ? `users/${auth.currentUser.uid}` : null;
 
-// Every path this user touches lives under users/<uid>. The server rules
-// forbid anyone from reading or writing outside their own subtree.
-function userRoot() {
-  const u = auth.currentUser;
-  return u ? `users/${u.uid}` : null;
+/* ================= App state ================= */
+const state = { devices: {}, connected: false, serverOffset: 0 };
+const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
+function ago(ts) {
+  if (!ts) return "";
+  const sec = Math.round((ts - (Date.now() + state.serverOffset)) / 1000);
+  const a = Math.abs(sec);
+  if (a < 60) return "לפני רגע";
+  if (a < 3600) return rtf.format(Math.round(sec / 60), "minute");
+  if (a < 86400) return rtf.format(Math.round(sec / 3600), "hour");
+  return rtf.format(Math.round(sec / 86400), "day");
+}
+const displayName = (d) => d.customName || d.name || "מכשיר";
+function deviceList() {
+  return Object.entries(state.devices).map(([id, d]) => ({ id, ...d }))
+    .sort((a, b) => (b.id === DEVICE_ID) - (a.id === DEVICE_ID) || (!!b.online - !!a.online) || ((b.lastSeen || 0) - (a.lastSeen || 0)));
+}
+const deviceIcon = (d) => d.kind === "desktop" ? "i-desktop" : d.kind === "tablet" ? "i-tablet" : "i-phone";
+const deviceTone = (d) => d.kind === "desktop" ? "desk" : "phone";
+const statusText = (d) => d.online ? "מחובר" : ago(d.lastSeen);
+
+/* ================= Bottom sheet ================= */
+const sheetEl = $("#sheet"), backdrop = $("#sheet-backdrop");
+let sheetOpen = false;
+
+function openSheet({ title = "", message = "", body = "", actions = [], cancel = "ביטול" }) {
+  const head = (title || message)
+    ? `<div class="sheet-head">${title ? `<div class="sheet-title" id="sheet-title">${esc(title)}</div>` : ""}${message ? `<div class="sheet-msg">${esc(message)}</div>` : ""}</div>` : "";
+  sheetEl.innerHTML = `
+    <div class="sheet-card" role="dialog" aria-modal="true" ${title ? 'aria-labelledby="sheet-title"' : ""}>
+      ${head}
+      ${body ? `<div class="sheet-body">${body}</div>` : ""}
+      ${actions.map((a, i) => `<button class="sheet-action ${a.style || ""}" data-i="${i}" type="button" ${a.disabled ? "disabled" : ""}>${esc(a.label)}</button>`).join("")}
+    </div>
+    ${cancel ? `<button class="sheet-action sheet-cancel" data-cancel type="button">${esc(cancel)}</button>` : ""}`;
+  sheetEl.querySelectorAll("[data-i]").forEach(b => b.addEventListener("click", async () => {
+    const a = actions[+b.dataset.i];
+    if (a.keepOpen) { a.onClick?.(); return; }
+    await closeSheet();
+    a.onClick?.();
+  }));
+  sheetEl.querySelector("[data-cancel]")?.addEventListener("click", () => closeSheet());
+  sheetEl.hidden = false; backdrop.hidden = false;
+  sheetOpen = true;
+  requestAnimationFrame(() => requestAnimationFrame(() => { sheetEl.classList.add("open"); backdrop.classList.add("open"); }));
+}
+function closeSheet() {
+  if (!sheetOpen) return Promise.resolve();
+  sheetOpen = false;
+  document.activeElement?.blur?.();
+  sheetEl.classList.remove("open"); backdrop.classList.remove("open");
+  return wait(REDUCED ? 0 : 300).then(() => {
+    if (sheetOpen) return;
+    sheetEl.hidden = true; backdrop.hidden = true; sheetEl.innerHTML = ""; sheetEl.style.bottom = "";
+  });
+}
+backdrop.addEventListener("click", () => closeSheet());
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+// Keep the sheet above the iOS keyboard
+if (window.visualViewport) {
+  const vv = window.visualViewport;
+  const fit = () => { if (sheetOpen) sheetEl.style.bottom = Math.max(0, innerHeight - vv.height - vv.offsetTop) + "px"; };
+  vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit);
 }
 
-/* ---------- Errors ---------- */
+function openPrompt({ title, message = "", value = "", placeholder = "", min = 2, max = 24, saveLabel = "שמירה", onSave }) {
+  openSheet({
+    title, message,
+    body: `<input class="input" type="text" enterkeyhint="done" autocomplete="off" autocapitalize="off" spellcheck="false"
+             placeholder="${esc(placeholder)}" value="${esc(value)}" aria-label="${esc(title)}">
+           <div class="input-hint"><span data-err></span><span data-count></span></div>`,
+    actions: [{ label: saveLabel, keepOpen: true, onClick: () => submit() }]
+  });
+  const input = $("input", sheetEl), btn = $('[data-i="0"]', sheetEl), err = $("[data-err]", sheetEl), cnt = $("[data-count]", sheetEl);
+  const check = () => {
+    const v = input.value.trim();
+    let m = "";
+    if (v.length < min) m = `לפחות ${min} תווים`;
+    else if (v.length > max) m = `עד ${max} תווים`;
+    else if (!/[\p{L}\p{N}]/u.test(v)) m = "השם צריך לכלול אותיות או ספרות";
+    return { v, m };
+  };
+  const paint = (showErr) => {
+    const { v, m } = check();
+    cnt.textContent = `${v.length}/${max}`;
+    btn.disabled = !!m;
+    err.textContent = showErr ? m : "";
+    input.classList.toggle("invalid", showErr && !!m);
+  };
+  input.addEventListener("input", () => paint(true));
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } });
+  paint(false);
+  async function submit() {
+    const { v, m } = check();
+    if (m) { paint(true); input.focus(); return; }
+    btn.disabled = true;
+    try {
+      const r = await onSave(v);
+      await closeSheet();
+      if (r === "queued") toast("יישמר כשהחיבור יחזור");
+    } catch (e) {
+      err.textContent = "השמירה נכשלה. נסיון נוסף.";
+      btn.disabled = false;
+      console.error(e);
+    }
+  }
+}
+
+/* ================= Navigation stack (iOS style, RTL) =================
+   Forward screens enter from the left. Back slides them out to the left.
+   Swipe back starts at the right edge, like iOS in Hebrew. */
+const stackEl = $("#stack");
+const stack = [];
+let navBusy = false;
+let navQueue = Promise.resolve();
+let skipPop = 0;
+const enqueue = (fn) => (navQueue = navQueue.then(fn).catch(console.error));
+
+function slide(el, from, to, dur = 340) {
+  const f = `translateX(${from})`, t = `translateX(${to})`;
+  if (REDUCED || dur === 0) { el.style.transform = t; return Promise.resolve(); }
+  const a = el.animate([{ transform: f }, { transform: t }], { duration: dur, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" });
+  return a.finished.then(() => { el.style.transform = t; a.cancel(); }).catch(() => { el.style.transform = t; });
+}
+
+function createScreen(name, prev) {
+  const def = SCREENS[name];
+  const el = document.createElement("section");
+  el.className = "screen" + (prev ? " pushed" : "");
+  el.dataset.name = name;
+  el.innerHTML = `
+    <header class="nav"><div class="nav-in">
+      <div class="nav-start"></div>
+      <h1 class="nav-title">${esc(def.title)}</h1>
+      <div class="nav-end"></div>
+    </div></header>
+    <div class="scroll"><div class="content"></div></div>`;
+  const s = {
+    el, name, title: def.title,
+    nav: $(".nav", el), start: $(".nav-start", el), end: $(".nav-end", el),
+    scroll: $(".scroll", el), content: $(".content", el),
+    update() {}
+  };
+  s.scroll.addEventListener("scroll", () => s.nav.classList.toggle("scrolled", s.scroll.scrollTop > 2), { passive: true });
+  if (prev) {
+    s.start.innerHTML = `<button class="nav-btn back" type="button" aria-label="חזרה ל${esc(prev.title)}"><svg class="ico"><use href="#i-chev-back"/></svg><span>${esc(prev.title)}</span></button>`;
+    $("button", s.start).addEventListener("click", () => history.back());
+  }
+  def.build(s);
+  return s;
+}
+
+function push(name) {
+  enqueue(async () => {
+    const prev = stack[stack.length - 1];
+    if (prev?.name === name) return;
+    const s = createScreen(name, prev);
+    stack.push(s);
+    s.update();
+    s.el.style.transform = "translateX(-100%)";
+    stackEl.appendChild(s.el);
+    history.pushState({ depth: stack.length }, "");
+    navBusy = true;
+    if (prev) { prev.el.inert = true; }
+    await Promise.all([slide(s.el, "-100%", "0%"), prev ? slide(prev.el, "0%", "30%") : null]);
+    navBusy = false;
+  });
+}
+
+async function popVisual(fromTop = "0%", fromPrev = "30%", dur = 340) {
+  if (stack.length < 2) return;
+  const top = stack.pop(), prev = stack[stack.length - 1];
+  navBusy = true;
+  prev.el.inert = false;
+  await Promise.all([slide(top.el, fromTop, "-100%", dur), slide(prev.el, fromPrev, "0%", dur)]);
+  top.el.remove();
+  navBusy = false;
+}
+
+addEventListener("popstate", () => {
+  if (skipPop > 0) { skipPop--; return; }
+  if (sheetOpen) { closeSheet(); history.pushState({ depth: stack.length }, ""); return; }
+  enqueue(() => popVisual());
+});
+
+function resetTo(name) {
+  stack.splice(0).forEach(s => s.el.remove());
+  const s = createScreen(name, null);
+  stack.push(s);
+  s.el.style.transform = "translateX(0%)";
+  stackEl.appendChild(s.el);
+  history.replaceState({ depth: 1 }, "");
+  s.update();
+}
+
+function refreshScreens() { stack.forEach(s => { try { s.update(); } catch (e) { console.error(e); } }); }
+
+/* Swipe back from the right edge */
+let g = null;
+stackEl.addEventListener("touchstart", (e) => {
+  if (navBusy || sheetOpen || stack.length < 2 || e.touches.length !== 1) return;
+  const t = e.touches[0];
+  if (t.clientX < innerWidth - 30) return;
+  g = { x0: t.clientX, y0: t.clientY, t0: performance.now(), dir: null, d: 0, w: innerWidth,
+        top: stack[stack.length - 1], prev: stack[stack.length - 2] };
+}, { passive: true });
+stackEl.addEventListener("touchmove", (e) => {
+  if (!g) return;
+  const t = e.touches[0];
+  const dx = g.x0 - t.clientX, dy = t.clientY - g.y0;
+  if (!g.dir) {
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+    g.dir = (Math.abs(dx) > Math.abs(dy) && dx > 0) ? "h" : "v";
+    if (g.dir === "v") { g = null; return; }
+  }
+  e.preventDefault();
+  g.d = Math.max(0, Math.min(dx, g.w));
+  g.top.el.style.transform = `translateX(${-g.d}px)`;
+  g.prev.el.style.transform = `translateX(${30 * (1 - g.d / g.w)}%)`;
+}, { passive: false });
+const endSwipe = async () => {
+  if (!g) return;
+  const cur = g; g = null;
+  if (cur.dir !== "h") return;
+  const v = cur.d / Math.max(1, performance.now() - cur.t0);
+  const fromTop = `${-cur.d}px`, fromPrev = `${30 * (1 - cur.d / cur.w)}%`;
+  if (cur.d > cur.w * 0.35 || (v > 0.45 && cur.d > 40)) {
+    enqueue(async () => {
+      await popVisual(fromTop, fromPrev, 240);
+      skipPop++;
+      history.back();
+    });
+  } else {
+    navBusy = true;
+    await Promise.all([slide(cur.top.el, fromTop, "0%", 220), slide(cur.prev.el, fromPrev, "30%", 220)]);
+    navBusy = false;
+  }
+};
+stackEl.addEventListener("touchend", endSwipe);
+stackEl.addEventListener("touchcancel", endSwipe);
+
+/* ================= Install ================= */
+let deferredPrompt = null;
+addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; refreshScreens(); });
+addEventListener("appinstalled", () => { deferredPrompt = null; store.set("cb.installDismissed", "1"); refreshScreens(); });
+const canInstall = () => !isStandalone && (!!deferredPrompt || IS_IOS);
+async function doInstall() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice.catch(() => {});
+    deferredPrompt = null;
+    refreshScreens();
+    return;
+  }
+  openSheet({
+    title: "התקנה כאפליקציה",
+    body: `<ol class="steps-list">
+      <li><span class="num">1</span><span style="flex:1">לחיצה על כפתור השיתוף בספארי</span><svg class="ico"><use href="#i-share"/></svg></li>
+      <li><span class="num">2</span><span style="flex:1">בחירה ב"הוספה למסך הבית"</span><svg class="ico"><use href="#i-plus-square"/></svg></li>
+      <li><span class="num">3</span><span style="flex:1">פתיחה מהאייקון במסך הבית</span></li>
+    </ol>`,
+    cancel: "הבנתי"
+  });
+}
+
+/* ================= Updates ================= */
+let swReg = null, waitingWorker = null;
+function offerUpdate(w) { waitingWorker = w; $("#update-bar").hidden = false; }
+$("#btn-update").addEventListener("click", () => waitingWorker?.postMessage({ type: "SKIP_WAITING" }));
+async function checkUpdates() {
+  if (!swReg) { toast("עדכונים לא זמינים כאן"); return; }
+  try { await swReg.update(); } catch {}
+  await wait(1200);
+  if (swReg.waiting) offerUpdate(swReg.waiting);
+  else if (swReg.installing) toast("מוריד גרסה חדשה");
+  else toast("יש לך את הגרסה האחרונה");
+}
+
+/* ================= Screens ================= */
+const SCREENS = {
+  home:     { title: "גשר קוד", build: buildHome },
+  settings: { title: "הגדרות", build: buildSettings },
+  devices:  { title: "מכשירים", build: buildDevices }
+};
+
+function deviceRow(d, asButton) {
+  const tag = asButton ? "button" : "div";
+  const me = d.id === DEVICE_ID ? `<span class="tag">המכשיר הזה</span>` : "";
+  const mode = d.mode === "app" ? "אפליקציה מותקנת" : "דפדפן";
+  return `<${tag} class="row" ${asButton ? `type="button" data-device="${esc(d.id)}"` : ""}>
+    <div class="row-ico ${d.online ? deviceTone(d) : ""}"><svg class="ico"><use href="#${deviceIcon(d)}"/></svg></div>
+    <div class="row-main">
+      <div class="row-title"><span>${esc(displayName(d))}</span>${me}</div>
+      <div class="row-sub">${mode}</div>
+    </div>
+    <div class="row-end"><span class="status ${d.online ? "on" : ""}"><span class="dot"></span>${esc(statusText(d))}</span>
+      ${asButton ? `<svg class="ico chev"><use href="#i-chev-fwd"/></svg>` : ""}</div>
+  </${tag}>`;
+}
+
+function buildHome(s) {
+  s.start.innerHTML = `<svg class="nav-logo" aria-hidden="true"><use href="#logo"/></svg>`;
+  s.end.innerHTML = `<button class="nav-btn" type="button" data-go="settings"><svg class="ico"><use href="#i-gear"/></svg><span>הגדרות</span></button>`;
+  s.content.innerHTML = `
+    <section class="bridge" data-ref="bridge" aria-live="polite">
+      <svg class="bridge-art" viewBox="0 0 520 140" aria-hidden="true">
+        <path class="span" d="M110 60 C 200 18, 320 18, 410 60"/>
+        <path class="span" d="M110 60 C 200 102, 320 102, 410 60"/>
+        <path class="flow" style="stroke:var(--phone)" d="M410 60 C 320 18, 200 18, 110 60"/>
+        <path class="flow back" style="stroke:var(--desk)" d="M410 60 C 320 102, 200 102, 110 60"/>
+        <g transform="translate(410 60)"><circle class="node n-phone" r="46"/>
+          <g transform="translate(-14 -20)"><rect class="node-ico i-phone" x="2" y="0" width="24" height="40" rx="5"/><line class="node-ico i-phone" x1="11" y1="33" x2="17" y2="33"/></g></g>
+        <g transform="translate(110 60)"><circle class="node n-desk" r="46"/>
+          <g transform="translate(-22 -18)"><rect class="node-ico i-desk" x="0" y="0" width="44" height="28" rx="4"/><line class="node-ico i-desk" x1="14" y1="38" x2="30" y2="38"/><line class="node-ico i-desk" x1="22" y1="28" x2="22" y2="38"/></g></g>
+        <text class="node-label" x="410" y="134">טלפון</text>
+        <text class="node-label" x="110" y="134">מחשב</text>
+      </svg>
+      <div class="bridge-status"><h2 data-ref="bt"></h2><p data-ref="bx"></p></div>
+    </section>
+
+    <section class="install-card" data-ref="install" hidden>
+      <div class="ic"><svg class="ico"><use href="#i-download"/></svg></div>
+      <div class="txt"><div class="t">התקנה כאפליקציה</div><div class="s">מסך מלא ואייקון במסך הבית</div></div>
+      <button class="btn-pill" type="button" data-act="install">להתקנה</button>
+      <button class="icon-x" type="button" data-act="dismiss" aria-label="הסתרה"><svg class="ico"><use href="#i-x"/></svg></button>
+    </section>
+
+    <section>
+      <div class="group-title">המכשירים שלך</div>
+      <div class="group with-ico" data-ref="devs"></div>
+    </section>
+
+    <p class="footnote">שלב 1 מתוך 8: תשתית, התחברות וזמן אמת</p>`;
+
+  $('[data-go="settings"]', s.end).addEventListener("click", () => push("settings"));
+  $('[data-act="install"]', s.content).addEventListener("click", doInstall);
+  $('[data-act="dismiss"]', s.content).addEventListener("click", () => { store.set("cb.installDismissed", "1"); s.update(); });
+  s.content.addEventListener("click", (e) => { if (e.target.closest('[data-go="devices"]')) push("devices"); });
+
+  s.update = () => {
+    const list = deviceList();
+    const phoneOn = list.some(d => d.online && d.kind !== "desktop");
+    const deskOn = list.some(d => d.online && d.kind === "desktop");
+    const br = $('[data-ref="bridge"]', s.content);
+    br.classList.toggle("phone-on", phoneOn);
+    br.classList.toggle("desk-on", deskOn);
+    br.classList.toggle("live", phoneOn && deskOn);
+    let t, x;
+    if (!state.connected && !phoneOn && !deskOn) { t = "מתחבר לשרת"; x = "רגע אחד."; }
+    else if (phoneOn && deskOn) { t = "הגשר פעיל"; x = "הטלפון והמחשב מחוברים, כל שינוי עובר מיד."; }
+    else if (phoneOn) { t = "ממתין למחשב"; x = "פתיחת גשר קוד במחשב תחבר את הצד השני."; }
+    else if (deskOn) { t = "ממתין לטלפון"; x = "פתיחת גשר קוד בטלפון תחבר את הצד השני."; }
+    else { t = "אין מכשירים מחוברים"; x = "החיבור לשרת פעיל, ממתין למכשירים."; }
+    $('[data-ref="bt"]', s.content).textContent = t;
+    $('[data-ref="bx"]', s.content).textContent = x;
+
+    $('[data-ref="install"]', s.content).hidden = !(canInstall() && !store.get("cb.installDismissed"));
+
+    const preview = list.slice(0, 3).map(d => deviceRow(d, false)).join("");
+    const empty = `<div class="row"><div class="row-main"><div class="row-sub">${state.connected ? "עדיין אין מכשירים" : "טוען מכשירים"}</div></div></div>`;
+    $('[data-ref="devs"]', s.content).innerHTML = (preview || empty) + `
+      <button class="row accent" type="button" data-go="devices">
+        <div class="row-ico"><svg class="ico"><use href="#i-devices"/></svg></div>
+        <div class="row-main"><div class="row-title"><span>ניהול מכשירים</span></div></div>
+        <div class="row-end">${list.length || ""}<svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+      </button>`;
+  };
+}
+
+function buildSettings(s) {
+  s.content.innerHTML = `
+    <section><div class="group"><div class="row" style="min-height:76px" data-ref="account"></div></div></section>
+
+    <section>
+      <div class="group-title">אפליקציה</div>
+      <div class="group with-ico">
+        <button class="row" type="button" data-act="install" data-ref="install-row">
+          <div class="row-ico phone"><svg class="ico"><use href="#i-download"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>התקנה כאפליקציה</span></div></div>
+          <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+        </button>
+        <button class="row" type="button" data-act="update">
+          <div class="row-ico"><svg class="ico"><use href="#i-refresh"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>בדיקת עדכונים</span></div></div>
+          <div class="row-end"><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+        </button>
+        <div class="row">
+          <div class="row-ico"><svg class="ico"><use href="#i-info"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>גרסה</span></div></div>
+          <div class="row-end" dir="ltr">${APP_VERSION}</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="group-title">מכשירים</div>
+      <div class="group with-ico">
+        <button class="row" type="button" data-act="devices">
+          <div class="row-ico"><svg class="ico"><use href="#i-devices"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>ניהול מכשירים</span></div></div>
+          <div class="row-end"><span data-ref="dev-count"></span><svg class="ico chev"><use href="#i-chev-fwd"/></svg></div>
+        </button>
+      </div>
+    </section>
+
+    <section>
+      <div class="group with-ico">
+        <button class="row danger" type="button" data-act="logout">
+          <div class="row-ico danger"><svg class="ico"><use href="#i-logout"/></svg></div>
+          <div class="row-main"><div class="row-title"><span>התנתקות</span></div></div>
+        </button>
+      </div>
+      <p class="group-foot">הנתונים שלך נשמרים בשרת ויחכו לך בכניסה הבאה.</p>
+    </section>`;
+
+  s.content.addEventListener("click", (e) => {
+    const act = e.target.closest("[data-act]")?.dataset.act;
+    if (act === "install") doInstall();
+    else if (act === "update") checkUpdates();
+    else if (act === "devices") push("devices");
+    else if (act === "logout") confirmLogout();
+  });
+
+  s.update = () => {
+    const u = auth.currentUser;
+    if (u) {
+      const initial = esc((u.displayName || u.email || "?").trim().charAt(0).toUpperCase());
+      const av = u.photoURL ? `<img class="avatar" src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : `<div class="avatar">${initial}</div>`;
+      $('[data-ref="account"]', s.content).innerHTML = `${av}
+        <div class="row-main"><div class="row-title" style="font-size:17px;font-weight:600"><span>${esc(u.displayName || "החשבון שלי")}</span></div>
+        <div class="row-sub" dir="ltr" style="text-align:right">${esc(u.email || "")}</div></div>`;
+    }
+    $('[data-ref="install-row"]', s.content).hidden = !canInstall();
+    const n = Object.keys(state.devices).length;
+    $('[data-ref="dev-count"]', s.content).textContent = n ? String(n) : "";
+  };
+}
+
+function buildDevices(s) {
+  s.content.innerHTML = `
+    <p class="lead-text">כל מכשיר שמתחבר לחשבון שלך מופיע כאן. נגיעה במכשיר פותחת שינוי שם והסרה.</p>
+    <section><div class="group with-ico" data-ref="list"></div></section>
+    <section data-ref="clean-wrap" hidden>
+      <div class="group with-ico">
+        <button class="row danger" type="button" data-act="clean">
+          <div class="row-ico danger"><svg class="ico"><use href="#i-trash"/></svg></div>
+          <div class="row-main"><div class="row-title"><span data-ref="clean-label"></span></div></div>
+        </button>
+      </div>
+      <p class="group-foot">מכשיר שהוסר יחזור לרשימה אוטומטית בפעם הבאה שיתחבר.</p>
+    </section>`;
+
+  s.content.addEventListener("click", (e) => {
+    const row = e.target.closest("[data-device]");
+    if (row) { const d = deviceList().find(x => x.id === row.dataset.device); if (d) deviceActions(d); return; }
+    if (e.target.closest('[data-act="clean"]')) confirmCleanInactive();
+  });
+
+  s.update = () => {
+    const list = deviceList();
+    $('[data-ref="list"]', s.content).innerHTML = list.length
+      ? list.map(d => deviceRow(d, true)).join("")
+      : `<div class="row"><div class="row-main"><div class="row-sub">${state.connected ? "עדיין אין מכשירים" : "טוען מכשירים"}</div></div></div>`;
+    const inactive = list.filter(d => !d.online && d.id !== DEVICE_ID).length;
+    $('[data-ref="clean-wrap"]', s.content).hidden = inactive === 0;
+    $('[data-ref="clean-label"]', s.content).textContent = inactive === 1 ? "הסרת מכשיר לא פעיל" : `הסרת ${inactive} מכשירים לא פעילים`;
+  };
+}
+
+/* ================= Actions ================= */
+function deviceActions(d) {
+  const isMe = d.id === DEVICE_ID;
+  const canRemove = !isMe && !d.online;
+  let msg = d.online ? "מחובר עכשיו" : `נראה לאחרונה ${ago(d.lastSeen)}`;
+  if (!canRemove) msg += isMe ? ". אי אפשר להסיר את המכשיר הנוכחי." : ". אפשר להסיר רק מכשיר לא מחובר.";
+  openSheet({
+    title: displayName(d), message: msg,
+    actions: [
+      { label: "שינוי שם", onClick: () => renameDevice(d) },
+      { label: "הסרה מהרשימה", style: "danger", disabled: !canRemove, onClick: () => confirmRemove(d) }
+    ]
+  });
+}
+function renameDevice(d) {
+  openPrompt({
+    title: "שינוי שם המכשיר",
+    message: "השם יופיע בכל המכשירים שלך.",
+    value: displayName(d), placeholder: "לדוגמה: המחשב בעבודה", min: 2, max: 24,
+    onSave: async (v) => {
+      const r = await dbWrite(update(ref(db, `${userRoot()}/presence/${d.id}`), { customName: v }));
+      if (r === "saved") toast("השם עודכן");
+      return r;
+    }
+  });
+}
+function confirmRemove(d) {
+  openSheet({
+    title: `להסיר את ${displayName(d)}?`,
+    message: "המכשיר יחזור לרשימה אוטומטית בפעם הבאה שיתחבר.",
+    actions: [{ label: "הסרה", style: "danger", onClick: async () => {
+      const r = await dbWrite(update(ref(db, `${userRoot()}/presence`), { [d.id]: null }));
+      toast(r === "saved" ? "המכשיר הוסר" : "יוסר כשהחיבור יחזור");
+    } }]
+  });
+}
+function confirmCleanInactive() {
+  const ids = deviceList().filter(d => !d.online && d.id !== DEVICE_ID).map(d => d.id);
+  if (!ids.length) return;
+  openSheet({
+    title: ids.length === 1 ? "להסיר מכשיר לא פעיל?" : `להסיר ${ids.length} מכשירים לא פעילים?`,
+    message: "מכשירים מחוברים והמכשיר הנוכחי לא יוסרו.",
+    actions: [{ label: "הסרה", style: "danger", onClick: async () => {
+      const patch = Object.fromEntries(ids.map(id => [id, null]));
+      const r = await dbWrite(update(ref(db, `${userRoot()}/presence`), patch));
+      toast(r === "saved" ? "המכשירים הוסרו" : "יוסרו כשהחיבור יחזור");
+    } }]
+  });
+}
+function confirmLogout() {
+  openSheet({
+    title: "להתנתק מגשר קוד?",
+    message: "המכשיר הזה יוצג כלא מחובר עד הכניסה הבאה.",
+    actions: [{ label: "התנתקות", style: "danger", onClick: doLogout }]
+  });
+}
+async function doLogout() {
+  const root = userRoot();
+  if (root) {
+    try { await Promise.race([update(ref(db, `${root}/presence/${DEVICE_ID}`), { online: false, lastSeen: serverTimestamp() }), wait(1500)]); } catch {}
+  }
+  teardown();
+  await signOut(auth).catch(() => {});
+}
+
+/* ================= Login ================= */
 function authErrorMessage(e) {
   const code = e?.code || "";
   const map = {
-    "auth/popup-closed-by-user": null,
-    "auth/cancelled-popup-request": null,
-    "auth/user-cancelled": null,
+    "auth/popup-closed-by-user": null, "auth/cancelled-popup-request": null, "auth/user-cancelled": null,
     "auth/unauthorized-domain": ["הדומיין לא מאושר ב Firebase", `יש להוסיף את ${location.hostname} תחת Authentication, Settings, Authorized domains.`],
     "auth/network-request-failed": ["אין חיבור לרשת", "בדיקת החיבור ונסיון נוסף."],
     "auth/too-many-requests": ["יותר מדי נסיונות", "המתנה של כמה דקות ונסיון נוסף."],
     "auth/operation-not-allowed": ["התחברות Google כבויה", "יש להפעיל את Google תחת Authentication, Sign in method."],
-    "auth/internal-error": ["שגיאה בתהליך ההתחברות", "לרוב נובע מכתובת הפניה חסרה בהגדרות ה OAuth ב Google Cloud."]
+    "auth/internal-error": ["שגיאה בתהליך ההתחברות", "נסיון נוסף. אם זה חוזר, הקוד למטה יעזור לאתר את הסיבה."]
   };
   if (code in map) return map[code];
   return ["ההתחברות נכשלה", "נסיון נוסף. אם זה חוזר, הקוד למטה יעזור לאתר את הסיבה."];
 }
 function showLoginError(e) {
-  const msg = authErrorMessage(e);
-  const box = $("#login-error");
+  const msg = authErrorMessage(e), box = $("#login-error");
   if (!msg) { box.hidden = true; return; }
   box.innerHTML = `<b>${esc(msg[0])}</b>${esc(msg[1])}${e?.code ? `<br><code>${esc(e.code)}</code>` : ""}`;
   box.hidden = false;
 }
-const isDenied = (e) => /permission[_ ]denied/i.test(`${e?.code || ""} ${e?.message || ""}`);
-
-/* ---------- Login ---------- */
 function setLoginBusy(b) {
-  const btn = $("#btn-login");
-  btn.disabled = b;
+  $("#btn-login").disabled = b;
   $("#btn-login-label").textContent = b ? "מתחבר" : "התחברות עם Google";
 }
 async function login() {
@@ -512,244 +941,109 @@ async function login() {
   setLoginBusy(true);
   try {
     await persistenceReady;
-    // Popup keeps the whole flow in one storage context, which is what an
-    // installed iOS PWA needs; redirect there loses the session on the way back.
     await signInWithPopup(auth, provider);
   } catch (e) {
-    if (["auth/popup-blocked", "auth/popup-closed-by-user", "auth/cancelled-popup-request", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(e?.code)) {
-      if (["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(e?.code)) { setLoginBusy(false); return; }
+    const code = e?.code;
+    if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") { /* user closed it */ }
+    else if (["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(code)) {
       try { await signInWithRedirect(auth, provider); return; } catch (e2) { showLoginError(e2); }
-    } else {
-      showLoginError(e);
-    }
-  } finally {
-    setLoginBusy(false);
-  }
+    } else showLoginError(e);
+  } finally { setLoginBusy(false); }
 }
 $("#btn-login").addEventListener("click", login);
 persistenceReady.then(() => getRedirectResult(auth)).catch((e) => {
-  // A fresh load with no pending redirect is normal, not an error.
   if (!["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(e?.code)) showLoginError(e);
 });
+$("#btn-switch").addEventListener("click", async () => { await signOut(auth).catch(() => {}); });
 
-/* ---------- Realtime session ---------- */
-let unsubs = [];
-let serverOffset = 0;
-let devicesCache = {};
-let netTimer = null;
-let session = 0;
-
+/* ================= Realtime ================= */
+let unsubs = [], session = 0, netTimer = null;
+const isDenied = (e) => /permission[_ ]denied/i.test(`${e?.code || ""} ${e?.message || ""}`);
 function teardown() {
   session++;
   unsubs.forEach(u => { try { u(); } catch {} });
   unsubs = [];
   clearTimeout(netTimer);
   $("#net-banner").hidden = true;
-  devicesCache = {};
+  state.devices = {}; state.connected = false;
 }
-
-function onDbError(e) {
-  if (isDenied(e)) enterDenied(auth.currentUser);
-  else console.error(e);
-}
-
-function setNet(connected) {
+function onDbError(e) { if (isDenied(e)) enterDenied(); else console.error(e); }
+function setNet(on) {
   clearTimeout(netTimer);
-  if (connected) { $("#net-banner").hidden = true; return; }
+  if (on) { $("#net-banner").hidden = true; return; }
   netTimer = setTimeout(() => { $("#net-banner").hidden = false; }, 2500);
 }
-
 function startRealtime() {
-  const mySession = session;
-  const meRef = ref(db, `${userRoot()}/presence/${DEVICE_ID}`);
-
-  unsubs.push(onValue(ref(db, ".info/serverTimeOffset"), s => { serverOffset = s.val() || 0; }));
-
+  const mine = session, root = userRoot();
+  const meRef = ref(db, `${root}/presence/${DEVICE_ID}`);
+  unsubs.push(onValue(ref(db, ".info/serverTimeOffset"), (s) => { state.serverOffset = s.val() || 0; }));
   unsubs.push(onValue(ref(db, ".info/connected"), async (snap) => {
     const on = snap.val() === true;
-    setNet(on);
-    if (!on || mySession !== session) return;
+    state.connected = on; setNet(on); refreshScreens();
+    if (!on || mine !== session) return;
     try {
       await onDisconnect(meRef).update({ online: false, lastSeen: serverTimestamp() });
       await update(meRef, { ...DEVICE, online: true, lastSeen: serverTimestamp() });
     } catch (e) { onDbError(e); }
   }));
-
-  unsubs.push(onValue(ref(db, `${userRoot()}/presence`), (snap) => {
-    devicesCache = snap.val() || {};
-    renderDevices();
+  unsubs.push(onValue(ref(db, `${root}/presence`), (snap) => {
+    state.devices = snap.val() || {};
+    refreshScreens();
   }, onDbError));
 }
+setInterval(() => { if (!stackEl.hidden) refreshScreens(); }, 30000);
 
-/* ---------- Rendering ---------- */
-const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
-function ago(ts) {
-  if (!ts) return "";
-  const now = Date.now() + serverOffset;
-  const sec = Math.round((ts - now) / 1000);
-  const a = Math.abs(sec);
-  if (a < 60) return "לפני רגע";
-  if (a < 3600) return rtf.format(Math.round(sec / 60), "minute");
-  if (a < 86400) return rtf.format(Math.round(sec / 3600), "hour");
-  return rtf.format(Math.round(sec / 86400), "day");
+/* ================= Screens switching ================= */
+function showGate(id) {
+  closeSheet();
+  stackEl.hidden = true;
+  $("#gate-login").hidden = id !== "login";
+  $("#gate-denied").hidden = id !== "denied";
 }
-
-function renderDevices() {
-  const list = Object.entries(devicesCache).map(([id, d]) => ({ id, ...d }));
-  list.sort((a, b) => (b.id === DEVICE_ID) - (a.id === DEVICE_ID) || (!!b.online - !!a.online) || ((b.lastSeen || 0) - (a.lastSeen || 0)));
-
-  const ul = $("#devices");
-  if (!list.length) {
-    ul.innerHTML = `<li class="empty">עדיין אין מכשירים רשומים.</li>`;
-  } else {
-    ul.innerHTML = list.map(d => {
-      const kind = d.kind === "desktop" ? "desktop" : "mobile";
-      const icon = d.kind === "desktop" ? "i-desktop" : d.kind === "tablet" ? "i-tablet" : "i-phone";
-      const mode = d.mode === "app" ? "אפליקציה מותקנת" : "דפדפן";
-      const me = d.id === DEVICE_ID ? `<span class="tag">המכשיר הזה</span>` : "";
-      const status = d.online ? "מחובר עכשיו" : ago(d.lastSeen);
-      return `<li class="device ${kind} ${d.online ? "on" : ""}">
-        <div class="device-ico"><svg class="ico"><use href="#${icon}"/></svg></div>
-        <div class="device-main">
-          <div class="device-name">${esc(d.name || "מכשיר")} ${me}</div>
-          <div class="device-meta">${mode}</div>
-        </div>
-        <div class="status"><span class="dot"></span>${esc(status)}</div>
-      </li>`;
-    }).join("");
-  }
-  renderBridge(list);
+function showApp() {
+  $("#gate-login").hidden = true;
+  $("#gate-denied").hidden = true;
+  stackEl.hidden = false;
 }
-
-function renderBridge(list) {
-  const phoneOn = list.some(d => d.online && d.kind !== "desktop");
-  const deskOn = list.some(d => d.online && d.kind === "desktop");
-  const el = $("#bridge");
-  el.classList.toggle("phone-on", phoneOn);
-  el.classList.toggle("desk-on", deskOn);
-  el.classList.toggle("live", phoneOn && deskOn);
-
-  let title, text;
-  if (phoneOn && deskOn) { title = "הגשר פעיל"; text = "הטלפון והמחשב מחוברים יחד, כל שינוי עובר מיד."; }
-  else if (phoneOn) { title = "ממתין למחשב"; text = "פתיחת גשר קוד במחשב תחבר את הצד השני."; }
-  else if (deskOn) { title = "ממתין לטלפון"; text = "פתיחת גשר קוד בטלפון תחבר את הצד השני."; }
-  else { title = "מתחבר לשרת"; text = "רגע אחד."; }
-  $("#bridge-title").textContent = title;
-  $("#bridge-text").textContent = text;
-}
-setInterval(() => { if (!$("#screen-app").hidden) renderDevices(); }, 30000);
-
-function renderAccount(user) {
-  const av = $("#avatar");
-  if (user.photoURL) {
-    av.innerHTML = `<img class="avatar" src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">`;
-  } else {
-    av.textContent = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
-  }
-}
-
-/* ---------- Access denied ---------- */
-async function enterDenied(user) {
+function enterDenied() {
   teardown();
-  $("#denied-email").textContent = user?.email || "";
-  showScreen("screen-denied");
+  $("#denied-email").textContent = auth.currentUser?.email || "";
+  showGate("denied");
   hideSplash();
 }
-$("#btn-switch").addEventListener("click", async () => {
-  await signOut(auth).catch(() => {});
-  showScreen("screen-login");
-});
-
-/* ---------- Logout ---------- */
-$("#btn-logout").addEventListener("click", async () => {
-  try {
-    await Promise.race([
-      update(ref(db, `${userRoot()}/presence/${DEVICE_ID}`), { online: false, lastSeen: serverTimestamp() }),
-      new Promise(r => setTimeout(r, 1500))
-    ]);
-  } catch {}
-  teardown();
-  await signOut(auth).catch(() => {});
-});
-
-/* ---------- Auth state ---------- */
 onAuthStateChanged(auth, (user) => {
   teardown();
-  if (!user) {
-    showScreen("screen-login");
-    hideSplash();
-    return;
-  }
-  renderAccount(user);
-  renderBridge([]);
-  showScreen("screen-app");
-  renderInstall();
+  if (!user) { showGate("login"); hideSplash(); return; }
+  showApp();
+  resetTo("home");
   startRealtime();
   hideSplash();
 });
 
-/* ---------- Install ---------- */
-let deferredPrompt = null;
-addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; renderInstall(); });
-addEventListener("appinstalled", () => { deferredPrompt = null; store.set("cb.installDismissed", "1"); renderInstall(); });
+/* ================= Zoom guard (iOS ignores user-scalable) ================= */
+document.addEventListener("gesturestart", (e) => e.preventDefault(), { passive: false });
+document.addEventListener("gesturechange", (e) => e.preventDefault(), { passive: false });
+let lastTouchEnd = 0;
+document.addEventListener("touchend", (e) => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300 && !e.target.closest("button, a, input, textarea, select, [data-device]")) e.preventDefault();
+  lastTouchEnd = now;
+}, { passive: false });
 
-function renderInstall() {
-  const card = $("#card-install");
-  if (isStandalone || store.get("cb.installDismissed")) { card.hidden = true; return; }
-  if (deferredPrompt) { $("#install-prompt").hidden = false; $("#install-ios").hidden = true; card.hidden = false; }
-  else if (IS_IOS) { $("#install-ios").hidden = false; $("#install-prompt").hidden = true; card.hidden = false; }
-  else card.hidden = true;
-}
-$("#btn-install").addEventListener("click", async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice.catch(() => {});
-  deferredPrompt = null;
-  renderInstall();
-});
-$("#btn-install-dismiss").addEventListener("click", () => { store.set("cb.installDismissed", "1"); renderInstall(); });
-
-/* ---------- Service worker and updates ---------- */
+/* ================= Service worker ================= */
 if ("serviceWorker" in navigator) {
-  let waitingWorker = null;
-  const offerUpdate = (w) => { waitingWorker = w; $("#update-bar").hidden = false; };
-  $("#btn-update").addEventListener("click", () => waitingWorker?.postMessage({ type: "SKIP_WAITING" }));
-
   let reloading = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (reloading) return;
-    reloading = true;
-    location.reload();
-  });
-
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (!reloading) { reloading = true; location.reload(); } });
   navigator.serviceWorker.register("/sw.js").then((reg) => {
+    swReg = reg;
     if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
     reg.addEventListener("updatefound", () => {
       const nw = reg.installing;
-      nw?.addEventListener("statechange", () => {
-        if (nw.state === "installed" && navigator.serviceWorker.controller) offerUpdate(nw);
-      });
+      nw?.addEventListener("statechange", () => { if (nw.state === "installed" && navigator.serviceWorker.controller) offerUpdate(nw); });
     });
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") reg.update().catch(() => {});
-    });
-  }).catch(err => console.warn("SW registration failed", err));
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") reg.update().catch(() => {}); });
+  }).catch((err) => console.warn("SW registration failed", err));
 }
-
-/* iOS ignores user-scalable, so block pinch and double tap zoom directly */
-document.addEventListener("gesturestart", (e) => e.preventDefault(), { passive: false });
-document.addEventListener("gesturechange", (e) => e.preventDefault(), { passive: false });
-let lastTouch = 0;
-document.addEventListener("touchend", (e) => {
-  const now = Date.now();
-  if (now - lastTouch <= 300 && !e.target.closest("button, a, input, textarea, select, [tabindex]")) {
-    e.preventDefault();
-  }
-  lastTouch = now;
-}, { passive: false });
-
-/* Safety net: never leave the splash up forever */
-setTimeout(hideSplash, 6000);
 </script>
 </body>
 </html>
